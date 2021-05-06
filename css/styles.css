@@ -1,0 +1,108 @@
+/**
+@desc: main styling for the whole system
+*/
+body {
+	font-size:14px;
+	background-color: #FFFFFF;
+}
+table.table-hoverable tr:hover {
+	background-color:#DDDDDD;
+}
+table tr.thead-light {
+	background-color:#DDDDDD;
+}
+.card-title {
+	text-transform:capitalize;
+}
+div.main {
+	padding:0px 10px;
+}
+.capitalize {
+	text-transform:capitalize;
+}
+.center {
+	text-align:center;
+}
+.width100 {
+	width:100%;
+}
+.white {
+	color:#FFFFFF;
+}
+img.logo-small {
+	height:60px;
+}
+a.navbar-brand {
+	background-color:#FFFFFF;
+}
+div.subHeader {
+	background-color:#e9ecef;
+	color:#6c757d;
+	height:50px;
+	padding:12px 15px;
+	margin-bottom:15px;
+	border-bottom:1px solid #0081b8;
+}
+.subHeader div.title{
+	font-size:17px;
+}
+div.testSets {
+	padding-right:0px;
+	border-right:1px solid #e9ecef;
+}
+form.search {
+	position:relative;
+	top:-7px;
+}
+div ul.subHeader-controls {
+	list-style:none;
+	padding:0px;
+	padding-left:80px;
+	margin:0px auto;
+	position:relative;
+	float:right;
+}
+div ul.subHeader-controls li {
+	position:relative;
+	float:left;
+	display:block;
+	padding:0px 5px;
+	text-align:center;
+}
+@media (max-width: 768px) {
+	.navbar-brand {
+		-ms-flex: 0 0 70%;
+		flex: 0 0 70%;
+		max-width: 70%;
+		margin:2px auto;
+	}
+	img.logo-small {
+		width:100%;
+	}
+}
+div.cell-user {
+	border:1px solid #CCCCCC;
+	padding-left:0px;
+	padding-right:0px;
+	margin: 5px;
+	background-color:#FFFFFF;
+
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.6);
+-moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.6);
+box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.6);
+}
+div.cell-detail {
+	padding:15px 10px;
+}
+div.cell-detail p {
+	padding:5px;
+	margin:0px;
+	
+}
+div.cell-controls {
+	text-align:right;
+	width:100%;
+	height:30px;
+	background-color:#D8DEE6;
+	padding:5px;
+}

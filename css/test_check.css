@@ -1,0 +1,29 @@
+/**
+@desc: additional styling for test_check.php
+*/
+div.score {
+	width:80px;
+}
+input.score {
+	width:50px;
+	float:left;
+}
+span.note {
+	font-size:10px;
+	color:green;
+}
+span.save {
+	cursor:pointer;
+	float:right;
+}
+
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.sticky + .content {
+  padding-top: 102px;
+}
