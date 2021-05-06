@@ -228,7 +228,7 @@ class UserController extends DB
 	public function getTrainerTestSetAccess (
 		$idUser = 0 // id of the trainer that will be fetched
 	) {
-        $query = "SELECT s.id_set, s.set_name FROM ta_user u LEFT JOIN ta_trainer_test_set_access a ON u.id_user = a.user_id LEFT JOIN ta_set s ON s.id_set = a.set_id WHERE u.id_user = $idUser";
+        $query = "SELECT s.id_set, s.set_name FROM ta_user u LEFT JOIN ta_trainer_test_set_access a ON u.id_user = a.user_id LEFT JOIN ta_set s ON s.id_set = a.set_id WHERE u.id_user = $idUser order by s.set_name";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
