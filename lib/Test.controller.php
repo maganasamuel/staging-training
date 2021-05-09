@@ -9,6 +9,8 @@
 	JSON
 */
 
+require_once 'package/vendor/autoload.php';
+
 include_once("class/DB.class.php");
 
 class TestController extends DB {	
@@ -71,7 +73,7 @@ class TestController extends DB {
         $statement->bind_param("i", $idUserType);
         $dataset = $this->execute($statement);
 
-		return $dataset;	
+		return collect($dataset)->sortBy('set_name')->all();
 	}
 	
 	/**
