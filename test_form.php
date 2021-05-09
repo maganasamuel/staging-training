@@ -44,8 +44,8 @@ $isAutoCheck = 0;
 //check if the idset is set to the current requesting user.
 $setDataset = $testController->getSetAll($idUserType);
 $isAssigned = false;
-if ($setDataset->num_rows > 0) {
-	while ($row = $setDataset->fetch_assoc()) {
+if (count($setDataset) > 0) {
+	foreach ($setDataset as $row) {
 		$idSetCurrent = $row["id_set"];
 		if ($idSetCurrent == $idSet) {
 			$isAssigned = true;

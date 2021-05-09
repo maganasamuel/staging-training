@@ -41,12 +41,12 @@ if ($emailAddress == "" ||
 $dataset = $testController->getSetAll($idUserType);
 $headers = array("#", "Test Set", "Action");
 $rows = $app->getHeader($headers);
-if ($dataset->num_rows <= 0) {
+if (count($dataset) <= 0) {
 	$rows .= $app->emptyRow(count($headers));
 }
 else {
 	$i = 1;
-	while ($row = $dataset->fetch_assoc()) {
+	foreach ($dataset as $row) {
 		$idSet = $row["id_set"];
 		$setName = $row["set_name"];
 		

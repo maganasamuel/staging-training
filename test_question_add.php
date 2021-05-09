@@ -96,8 +96,8 @@ if ($action == "save") {
                             $setDataset = $testController->getSetAll(-1);
                             $sets = "";
                             $view = $app->param($_GET, "view", 1);
-                            if ($setDataset->num_rows > 0) {
-                                while($row = $setDataset->fetch_assoc()) {
+                            if (count($setDataset) > 0) {
+                                foreach($setDataset as $row) {
                                     $idSet = $row["id_set"];
                                     $setName = $row["set_name"];
                                     $active = ($view == $idSet) ? "active" : "";

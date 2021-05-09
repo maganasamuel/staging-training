@@ -136,8 +136,8 @@ EOF;
 					<?php
 					$setDataset = $testController->getSetAll(-1);
 
-					if ($setDataset->num_rows > 0) {
-						while ($row = $setDataset->fetch_assoc()) {
+					if (count($setDataset) > 0) {
+						foreach ($setDataset as $row) {
 							$idSet = $row["id_set"];
 							$setName = $row["set_name"];
 							echo "<option value='$idSet'>{$setName}</option>";
