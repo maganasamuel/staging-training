@@ -2,6 +2,7 @@
     "require": {
         "mpdf/mpdf": "^7.1",
         "swiftmailer/swiftmailer": "^6.1",
-        "tecnickcom/tcpdf": "^6.3"
+        "tecnickcom/tcpdf": "^6.3",
+        "tightenco/collect": "^8.34"
     }
 }

@@ -54,8 +54,8 @@ $sets = "";
 $ctr = 0;
 $view = $app->param($_GET, "view", 1);
 
-if ($setDataset->num_rows > 0) {
-    while ($row = $setDataset->fetch_assoc()) {
+if (count($setDataset) > 0) {
+    foreach($setDataset as $row) {
         $idSet = $row["id_set"];
 
         if ($currentSessionUserType == 3 && $ctr == 0 && $view == 1)

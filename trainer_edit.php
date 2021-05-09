@@ -77,8 +77,8 @@ if ($action == "save") {
 			$setsAccessibleDataSet = $userController->getTrainerTestSetAccess($idUser);
 			$setsAccessible = [];
 
-			if ($setsAccessibleDataSet->num_rows > 0) {
-				while ($setsAccessibleRow = $setsAccessibleDataSet->fetch_assoc()) {
+			if (count($setsAccessibleDataSet) > 0) {
+				foreach($setsAccessibleDataSet as $setsAccessibleRow) {
 					$setsAccessible[] = $setsAccessibleRow["id_set"];
 				}
 			}
@@ -135,8 +135,8 @@ if ($action == "save") {
 					<?php
 					$setDataset = $testController->getSetAll(-1);
 
-					if ($setDataset->num_rows > 0) {
-						while ($row = $setDataset->fetch_assoc()) {
+					if (count($setDataset) > 0) {
+						foreach ($setDataset as $row) {
 							$idSet = $row["id_set"];
 							$setName = $row["set_name"];
 							$selected = (in_array($idSet, $setsAccessible)) ? " selected" : "";
