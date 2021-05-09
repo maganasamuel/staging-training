@@ -9,7 +9,7 @@
 	JSON
 */
 
-require_once 'package/vendor/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/package/vendor/autoload.php';
 
 include_once("class/DB.class.php");
 
