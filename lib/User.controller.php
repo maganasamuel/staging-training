@@ -7,6 +7,8 @@
 	Handles the manipulation of User data
  */
 
+require_once 'package/vendor/autoload.php';
+
 include_once("class/DB.class.php");
 
 class UserController extends DB
@@ -232,7 +234,7 @@ class UserController extends DB
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
-		return $dataset;
+		return collect($dataset)->all();
 	}
 
 	
