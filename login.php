@@ -7,6 +7,10 @@
 Page that helps the user select on which type of user they would like to access trainer/admin/adviser;
  */
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 ?>
 <!DOCTYPE html>
 <html>
