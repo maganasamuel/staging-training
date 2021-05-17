@@ -6,12 +6,12 @@
 @desc:
 	login page for all trainee or user types that takes the test
  */
-//include necessary files
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+//include necessary files
 include_once("lib/General.helper.php");
 include_once("lib/Session.helper.php");
 include_once("lib/Test.controller.php");
