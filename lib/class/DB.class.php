@@ -5,7 +5,9 @@
  @author: Gio
  @desc: Base class for database manipulation
 */
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 date_default_timezone_set('Pacific/Auckland');
 
@@ -48,7 +50,7 @@ class DB {
         $query
     ) {
         //error_log("[STATEMENT] $query", 0);
-        $statement = $this->mysqli->prepare($query) or die(error_log("[prepare error]" . $this->mysqli->error, 0));
+        $statement = $this->mysqli->prepare($query) or die("[prepare error]" . $this->mysqli->error);
         return $statement;
     }
 
@@ -58,7 +60,7 @@ class DB {
     public function execute (
         $statement
     ) {
-        $statement->execute() or die(error_log("[execute error]" . $this->mysqli->error, 0));
+        $statement->execute() or die("[execute error]" . $this->mysqli->error);
         $dataset = $statement->get_result();
         $statement->close();
         return $dataset;
