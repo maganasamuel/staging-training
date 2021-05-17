@@ -69,7 +69,28 @@ class UserController extends DB
 		$keyword = "" // used for searching for a specific trainer
 	) {
 		$keyword = $keyword . "%";
-		$query = "call ad_trainer_all (?)";
+		// $query = "call ad_trainer_all (?)";
+		$query = "SELECT
+			ta_user.id_user,
+			ta_user.email_address,
+			ta_user.password,
+			ta_user.first_name,
+			ta_user.last_name,
+			ta_user.id_user_type,
+			DATE_FORMAT(DATE(ta_user.date_registered), '%d/%b/%Y') date_registered,
+			ta_user_type.user_type
+		FROM
+			ta_user
+			LEFT JOIN ta_user_type
+				ON ta_user.id_user_type = ta_user_type.id_user_type
+		WHERE
+			ta_user.id_user_type = 3 AND (
+				ta_user.first_name LIKE ? OR
+				ta_user.last_name LIKE ? OR
+				ta_user.email_address LIKE ?
+			)
+		ORDER BY ta_user.id_user DESC"
+
 		$statement = $this->prepare($query);
 		$statement->bind_param("s", $keyword);
 		$dataset = $this->execute($statement);
