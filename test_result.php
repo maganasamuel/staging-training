@@ -50,9 +50,10 @@ switch ($currentSessionUserType) {
         break;
 }
 $sets = "";
-
+$setsOptions = "";
 $ctr = 0;
 $view = $app->param($_GET, "view", 1);
+$adviser_name = $app->param($_GET, "adviser_name", null);
 
 if (count($setDataset) > 0) {
     foreach($setDataset as $row) {
@@ -70,13 +71,20 @@ if (count($setDataset) > 0) {
             </a>
         </li>
 EOF;
+        
+        if($idSet == $view)
+            $setsOptions .= "<option value='{$idSet}' selected>{$setName}</option>";
+        else
+            $setsOptions .= "<option value='{$idSet}'>{$setName}</option>";
+
         $ctr++;
     }
 }
 
 //display
-$dataset = $testController->getTestAll();
+$dataset = $testController->getFilteredTestAll($view,$adviser_name);
 
+// var_export($dataset);die();
 $headers = array("Date Took", "Adviser Name", "E-mail Address", "Duration (H:M:S)", "Score (%)", "Action", "<div class=\"text-center\" data-toggle=\"modal\" data-target=\"#exampleModalCenter\">Bulk Email<br><i class=\"material-icons select-all\" style=\"cursor: pointer;\">mail</i></div>");
 $tableHeader = $app->getHeader($headers);
 $rows = $tableHeader;
@@ -215,6 +223,34 @@ EOF;
     </div>
 </div>
 <div class="main">
+    <form id="filter-form" action="index.php">
+        <div class="row">
+            <div class="col-sm-12">
+                <fieldset class="filter-border">            
+                    <legend class="filter-border">Filter</legend>
+                    <div class="row">
+                        
+                            <div class="col-sm-3">
+                                <input type="hidden" name="page" value="test_result">
+                                <select type="text" name="view" id="view" class="form-control"/>
+                                    <option value="null" disabled selected>-- Select type of insurance test --</options>
+                                    <?php echo $setsOptions; ?>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <input type="text" name="adviser_name" id="adviser_name" class="form-control" placeholder="Adviser Name" value="<?php echo $adviser_name; ?>"/>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <button type="submit" id="searchBtn" class="btn btn-primary">Search</button>
+                            </div>
+                        
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </form>
     <div class="row">
         <div class="col-sm-3 testSets">
             <ul class="list-group list-group-flush">
@@ -278,6 +314,22 @@ EOF;
                 <button type="button" id="confirmSend" class="btn btn-primary" data-dismiss="modal">Confirm</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!--Notification Modal-->
+<div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
         </div>
     </div>
 </div>
@@ -544,6 +596,27 @@ EOF;
         }
 	
     });
+
+    $("#filter-form").on("submit",function(e) {
+        var view = $('#view').val();
+        var adviser_name = $('#adviser_name').val();
+
+        if (view !== null && view !== undefined) {
+            // $('#notificationModal .modal-title').html('Success Message');
+            // $('#notificationModal .modal-body').html('Loading details with selected filter/s... <i class="fas fa-spinner fa-spin"></i>');
+            // $('#notificationModal .modal-footer').html('');
+            // $('#notificationModal').modal('show');
+            return true; 
+        } else {
+            // $('#notificationModal .modal-title').html('Failed Message');
+            // $('#notificationModal .modal-body').html('Please select type of insurance test to proceed.');
+            // $('#notificationModal .modal-footer').html('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>');
+            // $('#notificationModal').modal('show');
+            return false; 
+        }
+        return true; 
+    });
+
 </script>
 <style>
     .main {
@@ -631,5 +704,22 @@ EOF;
         -webkit-transform: rotate(45deg);
         -ms-transform: rotate(45deg);
         transform: rotate(45deg);
+    }
+
+    fieldset.filter-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;
+        margin: 0 0 1.5em 0 !important;
+        -webkit-box-shadow:  0px 0px 0px 0px #000;
+                box-shadow:  0px 0px 0px 0px #000;
+    }
+
+    legend.filter-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width:auto;
+        padding:0 10px;
+        border-bottom:none;
     }
 </style>

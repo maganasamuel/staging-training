@@ -34,9 +34,23 @@ class TestController extends DB {
 	public function getReferralCode (
 		$idUserType = 0 // idUserType of the referral code to be retrieved
 	) {
-        $query = "call ad_referral_code (?)";
+		$query = "SELECT
+			ta_password.id_password,
+			ta_password.password,
+			ta_password.id_user_type,
+			ta_user_type.user_type
+		FROM
+			ta_password
+			LEFT JOIN ta_user_type ON ta_password.id_user_type = ta_user_type.id_user_type
+		WHERE (
+				? > 0 AND
+				ta_password.id_user_type = ?
+			) OR (
+				? < 0 AND
+				ta_password.id_user_type > 0
+			)";
         $statement = $this->prepare($query);
-        $statement->bind_param("i", $idUserType);
+        $statement->bind_param("iii", $idUserType, $idUserType, $idUserType);
         $dataset = $this->execute($statement);
 
 		return $dataset;
@@ -53,16 +67,95 @@ class TestController extends DB {
 		$lastName = "", //last name
 		$idUserType = 0 // user type /admin(2) or adviser (4)
 	) {
+
+		$emailAddress = $this->clean($emailAddress);
+		$password = $this->clean($password);
+		$firstName = $this->clean($firstName);
+		$lastName = $this->clean($lastName);
+
 		//prepare/execute
-        $query = "call ad_user_add (?, ?, ?, ?, ?)";
+		$query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
-        $statement->bind_param("ssssi", 
-						$emailAddress,
-						$password,
-						$firstName,
-						$lastName,
-						$idUserType);
-        $dataset = $this->execute($statement);
+        $this->execute($statement);
+
+		//Check if existing email address 
+		$query = "SELECT 1=1 FROM ta_user
+		WHERE ta_user.email_address = '$emailAddress' AND
+			ta_user.first_name = '$firstName' AND
+			ta_user.last_name = '$lastName' AND
+			ta_user.id_user_type = $idUserType";
+			
+		$statement = $this->prepare($query);
+		$dataset = $this->execute($statement);
+		
+		if ($dataset->num_rows > 0) {
+			$query = " SELECT 
+				ta_user.id_user,
+				ta_user.email_address,
+				ta_user.first_name,
+				ta_user.last_name,
+				ta_user.id_user_type,
+				ta_user.date_registered,
+				ta_user_type.user_type
+			FROM
+				ta_user
+			LEFT JOIN ta_user_type
+			ON ta_user.id_user_type = ta_user_type.id_user_type
+			WHERE ta_user.email_address = '$emailAddress' AND
+				ta_user.first_name = '$first_name' AND
+				ta_user.last_name = '$lastName' AND
+				ta_user.id_user_type = $idUserType";
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+		} else {
+			$query = "INSERT INTO ta_user (
+					email_address,
+					password,
+					first_name,
+					last_name,
+					id_user_type
+				)
+				VALUES (
+					'$emailAddress',
+					'$password',
+					'$first_name',
+					'$lastName',
+					$idUserType
+				)";
+
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+			$insert_id = $this->mysqli->insert_id;
+			
+			$dataset = $this->getUserSpecific($insert_id);
+		}
+
+		return $dataset;
+	}
+	
+	/**
+		@desc: Fetch specific trainee/examinee record
+	 */
+	public function getUserSpecific(
+		$idUser = 0 // id of the trainer that will be fetched
+	) {
+		$query = "SELECT 
+			ta_user.id_user,
+			ta_user.email_address,
+			ta_user.first_name,
+			ta_user.last_name,
+			ta_user.id_user_type,
+			ta_user.date_registered,
+			ta_user_type.user_type
+		FROM
+			ta_user
+			LEFT JOIN ta_user_type
+				ON ta_user.id_user_type = ta_user_type.id_user_type
+		WHERE ta_user.id_user = ?";
+
+		$statement = $this->prepare($query);
+		$statement->bind_param("i", $idUser);
+		$dataset = $this->execute($statement);
 
 		return $dataset;
 	}
@@ -74,9 +167,29 @@ class TestController extends DB {
 		$idUserType = 0 // idUserType of requesting user
 	) {
 		//prepare/execute
-        $query = "call ad_set_all (?)";
+		$query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
-        $statement->bind_param("i", $idUserType);
+        $this->execute($statement);
+		
+		$query = "SELECT
+			ta_set.id_set,
+			ta_set.set_name,
+			ta_set.date_added,
+			ta_set.is_auto_check
+		FROM
+			ta_set
+		WHERE (
+				ta_set.id_user_type_test = ? AND
+				? > 0
+			) OR
+			(
+				? = -1 AND
+				ta_set.id_user_type_test > 0
+			)
+		ORDER BY ta_set.set_index";
+
+        $statement = $this->prepare($query);
+        $statement->bind_param("iii", $idUserType, $idUserType, $idUserType);
         $dataset = $this->execute($statement);
 
 		return collect($dataset)->sortBy('set_name')->all();
@@ -91,13 +204,75 @@ class TestController extends DB {
 		$venue = ""
 	) {		
 		//prepare/execute
-        $query = "call ad_add_test (?, ?, ?)";
+		$query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
-        $statement->bind_param("iis", 
+        $this->execute($statement);
+
+		$query = "SELECT 1=1 FROM ta_test
+			WHERE ta_test.id_user_tested = ? AND
+				ta_test.id_set = ? AND
+				ta_test.id_user_checked = 0";
+        $statement = $this->prepare($query);
+        $statement->bind_param("ii", 
 						$idUser,
-						$idSet,
-						$venue);
+						$idSet);
         $dataset = $this->execute($statement);
+
+		if ($dataset->num_rows > 0) {
+			$query = "SELECT 
+				ta_test.id_test,
+				ta_set.set_name,
+				ta_set.is_auto_check
+			FROM
+				ta_test
+				LEFT JOIN ta_set
+					ON ta_test.id_set = ta_set.id_set
+			WHERE ta_test.id_user_tested = ? AND
+				ta_test.id_set = ? AND
+				ta_test.id_user_checked = 0
+			ORDER BY ta_test.id_test DESC
+			LIMIT 1";
+			$statement = $this->prepare($query);
+			$statement->bind_param("ii", 
+						$idUser,
+						$idSet);
+			$dataset = $this->execute($statement);
+		} else {
+			$query = "INSERT INTO ta_test (
+				id_user_tested,
+				id_user_checked,
+				id_set,
+				venue
+			)
+			VALUES (
+				?,
+				0,
+				?,
+				?
+			)";
+			$statement = $this->prepare($query);
+			$statement->bind_param("iis", 
+						$idUser,
+						$idSet
+						,$venue);
+			$this->execute($statement);
+			$insert_id = $this->mysqli->insert_id;
+				
+			$query = "SELECT 
+				ta_test.id_test,
+				ta_set.set_name,
+				ta_set.is_auto_check
+			FROM
+				ta_test
+				LEFT JOIN ta_set
+					ON ta_test.id_set = ta_set.id_set
+			WHERE
+				ta_test.id_test = ?";
+			$statement = $this->prepare($query);
+			$statement->bind_param("i", 
+						$insert_id);
+			$dataset = $this->execute($statement);
+		}
 
 		return $dataset;
 	}
@@ -118,7 +293,27 @@ class TestController extends DB {
 		 // make sure that the user type is 3. Please refer to the database
 		 // and select * from ta_user_type for the complete list of user type
 		$idUserType = 3;
-        $query = "call ad_set_question_add (?, ?, ?, ?, ?, ?, ?, ?)";
+
+		$query = "INSERT INTO ta_set_question (
+			id_set,
+            question,
+            question_set_index,
+            answer_index,
+            id_set_question_type,
+            max_score,
+            textfield_count,
+            choices
+        )
+		VALUES (
+			?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )";
         $statement = $this->prepare($query);
         $statement->bind_param("isssiiis", 
 					$question_set,
@@ -129,7 +324,32 @@ class TestController extends DB {
 					$max_score,
 					$textfield_count,
 					$choices);
-        $dataset = $this->execute($statement);
+        $this->execute($statement);
+		$insert_id = $this->mysqli->insert_id;
+		
+		$query = " SELECT 
+		? id_set_question,
+		? id_set,
+		? question,
+		? question_set_index,
+		? answer_index,
+		? id_set_question_type,
+		? max_score,
+		? textfield_count,
+		? choices";
+		$statement = $this->prepare($query);
+		$statement->bind_param("iisssiiis", 
+					$insert_id,
+					$question_set,
+					$question,
+					$set_question_index,
+					$answer_index,
+					$question_type,
+					$max_score,
+					$textfield_count,
+					$choices);
+        $this->execute($statement);
+		$dataset = $this->execute($statement);
 
 		return $dataset;
 	}
@@ -148,10 +368,20 @@ class TestController extends DB {
 		$textfield_count = 1,
 		$choices = ""
 	) {
-        $query = "call ad_set_question_update (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		$query = "UPDATE ta_set_question 
+			SET
+				id_set = ?,
+				question = ?,
+				question_set_index = ?,
+				answer_index = ?,
+				id_set_question_type = ?,
+				max_score = ?,
+				textfield_count = ?,
+				choices = ?
+		WHERE
+			ta_set_question.id_set_question = ?";
         $statement = $this->prepare($query);
-		$statement->bind_param("iisssiiis", 
-					$id_set_question,
+		$statement->bind_param("isssiiisi", 
 					$id_set,
 					$question,
 					$set_question_index,
@@ -159,7 +389,8 @@ class TestController extends DB {
 					$question_type,
 					$max_score,
 					$textfield_count,
-					$choices);
+					$choices,
+					$id_set_question);
 
         $dataset = $this->execute($statement);
 
@@ -172,7 +403,35 @@ class TestController extends DB {
 		$idSet = 0 // id of the test set to be taken
 	) {
 		//prepare/execute
-        $query = "call ad_set_question_all (?)";
+		$query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+		$query = "SELECT
+			ta_set_question.id_set_question,
+			ta_set_question.id_set,
+			ta_set_question.question,
+			ta_set_question.date_added,
+			ta_set_question.question_set_index,
+			ta_set_question.answer_index,
+			ta_set_question.id_set_question_type,
+			ta_set_question.max_score,
+			ta_set_question.textfield_count,
+			ta_set_question.choices,
+			ta_set_question_type.set_question_type,
+			IF( 
+				ta_set_question.question_set_index LIKE '% - %', 
+				ta_set_question.question_set_index, 
+				CONCAT('DEALS - ',ta_set_question.question_set_index)
+			) as set_index
+		FROM
+			ta_set_question
+			LEFT JOIN ta_set_question_type
+				ON ta_set_question.id_set_question_type = ta_set_question_type.id_set_question_type
+		WHERE
+			ta_set_question.id_set = ?
+		ORDER BY
+			SUBSTRING_INDEX(set_index, ' - ', 1), CAST(SUBSTRING_INDEX(set_index, ' - ', -1) AS UNSIGNED)";
         $statement = $this->prepare($query);
         $statement->bind_param("i", $idSet);
         $dataset = $this->execute($statement);
@@ -187,7 +446,31 @@ class TestController extends DB {
 		$idSet = 0 // id of the test set to be taken
 	) {
 		//prepare/execute
-        $query = "call ad_set_question_specific (?)";
+		$query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+		$query = "SELECT
+			ta_set_question.id_set_question,
+			ta_set_question.id_set,
+			ta_set_question.question,
+			ta_set_question.date_added,
+			ta_set_question.question_set_index,
+			ta_set_question.answer_index,
+			ta_set_question.id_set_question_type,
+			ta_set_question.max_score,
+			ta_set_question.textfield_count,
+			ta_set_question.choices,
+			ta_set_question_type.set_question_type
+		FROM
+			ta_set_question
+			LEFT JOIN ta_set_question_type
+				ON ta_set_question.id_set_question_type = ta_set_question_type.id_set_question_type
+		WHERE
+			ta_set_question.id_set_question = ?
+		ORDER BY
+			ta_set_question.id_set_question";
+
         $statement = $this->prepare($query);
         $statement->bind_param("i", $idSet);
         $dataset = $this->execute($statement);
@@ -200,7 +483,16 @@ class TestController extends DB {
 	*/
 	public function getSetQuestionTypeAll () {
 		//prepare/execute
-        $query = "call `ad_set_question_type_all` ()";
+		$query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+		$query = "SELECT
+			id_set_question_type,
+			set_question_type,
+			date_added
+		FROM
+			ta_set_question_type";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -222,18 +514,80 @@ class TestController extends DB {
 		$this->execute($statement);
 		
 		//prepare/execute
-        $query = "call ad_add_test_detail (?, ?, ?)";
+		$query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
-        $statement->bind_param("iis", 
+        $this->execute($statement);
+
+		//Check if existing test detail
+		$query = "SELECT 1 = 1 FROM ta_test_detail
+			WHERE ta_test_detail.id_set_question = ? AND
+				ta_test_detail.id_test = ?";
+        $statement = $this->prepare($query);
+        $statement->bind_param("ii", 
+						$idQuestion,
+						$idTest);
+        $dataset = $this->execute($statement);
+		
+		if ($dataset->num_rows > 0) {
+			$idTestDetail = $this->getTestDetailSpecific($idTest, $idQuestion);
+			$query = "UPDATE ta_test_detail tad
+			SET
+				tad.answer = ?
+			WHERE
+				tad.id_test_detail = p_id_test_detail";
+			$statement = $this->prepare($answer);
+			$statement->bind_param("is", 
+						$idTest,
+						$idTestDetail);
+			$this->execute($statement);
+
+			$query = "SELECT 'answer modified.' message";
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+		} else {
+			$query = "INSERT INTO ta_test_detail (
+					id_test,
+					id_set_question,
+					answer
+				)
+				VALUES (
+					p_id_test,
+					p_id_set_question,
+					p_answer
+				)";
+			$statement = $this->prepare($answer);
+			$statement->bind_param("iis", 
 						$idTest,
 						$idQuestion,
 						$answer);
-        $dataset = $this->execute($statement);
-		
+			$this->execute($statement);
+
+			$query = "SELECT 'answer saved.' message";
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+		}
 
 		return $dataset;
 	}
 	
+	public function getTestDetailSpecific (
+		$idTest = 0, // specific ID to be displayed
+		$idQuestion = 0 // specific ID to be displayed
+	) {
+		$query = "SELECT id_test_detail INTO p_id_test_detail FROM ta_test_detail
+		WHERE
+			ta_test_detail.id_test = ? AND
+			ta_test_detail.id_set_question = ?
+		LIMIT 1";
+        $statement = $this->prepare($query);
+        $statement->bind_param("ii"
+							,$idTest
+							,$idQuestion);
+        $dataset = $this->execute($statement);
+
+		return $dataset;
+	}
+
 	/**
 		@desc: Saves the score for the specified item
 	*/
@@ -244,15 +598,55 @@ class TestController extends DB {
 		$score = 0 // score
 	) {
 		//prepare/execute
-        $query = "call ad_score_test_detail (?, ?, ?, ?)";
+		$query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
-        $statement->bind_param("iiii", 
-						$idTest,
-						$idSetQuestion,
-						$idUserChecked,
-						$score);
-        $dataset = $this->execute($statement);
+        $this->execute($statement);
 
+		$query = "UPDATE ta_test
+			SET
+				ta_test.id_user_checked = ?,
+				ta_test.date_checked = NOW()
+			WHERE
+				ta_test.id_test = ?";
+		
+		$statement = $this->prepare($query);
+        $statement->bind_param("ii", 
+						$idTidUserCheckedest,
+						$idTest);
+        $this->execute($statement);
+
+		//Check if existing test 
+		$query = "SELECT 1=1 FROM ta_test_detail
+			WHERE ta_test_detail.id_test = ? AND
+				ta_test_detail.id_set_question = ?";
+			
+		$statement = $this->prepare($query);
+		$statement->bind_param("ii", 
+						$idTest,
+						$idSetQuestion);
+		$dataset = $this->execute($statement);
+
+		if ($dataset->num_rows > 0) {
+			$query = "UPDATE ta_test_detail
+				SET ta_test_detail.score = ?
+				WHERE ta_test_detail.id_test = ? AND
+					ta_test_detail.id_set_question = ?";
+			$statement = $this->prepare($query);
+			$statement->bind_param("iii", 
+						$score,
+						$idTest,
+						$idSetQuestion);
+
+			$this->execute($statement);
+
+			$query = "SELECT 'Score saved.' message";
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+		} else {
+			$query = "SELECT 'Invalid test item to check.' message";
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+		}
 		return $dataset;
 	}
 	
@@ -268,9 +662,68 @@ class TestController extends DB {
 		$idTest = 0 // specific ID to be displayed
 	) {
 		//prepare/execute
-        $query = "call ad_test (?)";
+		$query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
-        $statement->bind_param("i", $idTest);
+        $this->execute($statement);
+		
+		$query ="SELECT
+			ta_test.id_test,
+			ta_test.id_user_tested,
+			DATE_FORMAT(DATE(ta_test.date_took), '%d/%b/%Y') date_took,
+			DATE_FORMAT(fn_get_completion_date(ta_test.id_test), '%d/%b/%Y') date_completed,
+			TIMEDIFF(fn_get_completion_date(ta_test.id_test), ta_test.date_took) time_took,
+			ta_test.id_user_checked,
+			ta_test.date_checked,
+			ta_user_took.first_name,
+			ta_user_took.last_name,
+			ta_user_took.email_address,
+			fn_get_test_score(ta_test.id_test) score,
+			fn_get_test_max_score(ta_test.id_set) max_score,
+			ta_set.id_set,
+			ta_set.set_name,
+			ta_set.is_auto_check,
+			ta_set.id_user_type_test,
+			DATE_FORMAT(NOW() , '%d%m%Y') date_now
+		FROM
+			ta_test
+			LEFT JOIN ta_user ta_user_took
+				ON ta_test.id_user_tested = ta_user_took.id_user
+			LEFT JOIN (
+				SELECT
+					COUNT(*) answer_count,
+					ta_test_detail.id_test
+				FROM
+					ta_test_detail
+				GROUP BY
+					ta_test_detail.id_test
+			)
+			test_detail
+				ON ta_test.id_test = test_detail.id_test
+			LEFT JOIN ta_set
+				ON ta_test.id_set = ta_set.id_set
+			LEFT JOIN (
+				SELECT
+					COUNT(*) question_count,
+					ta_set_question.id_set
+				FROM
+					ta_set_question
+				GROUP BY
+					ta_set_question.id_set
+			) set_question
+				ON ta_set.id_set = set_question.id_set
+		WHERE (
+			(
+				? != 0 AND
+				ta_test.id_test = ?
+			) OR (
+				? = 0
+			)
+		) AND ta_test.is_deleted = 0 AND
+		test_detail.answer_count = set_question.question_count
+		ORDER BY
+			ta_test.id_test DESC";
+        $statement = $this->prepare($query);
+        $statement->bind_param("iii", $idTest, $idTest, $idTest);
         $dataset = $this->execute($statement);
 
 		return $dataset;
@@ -285,7 +738,38 @@ class TestController extends DB {
 		//variables
 		
 		//prepare/execute
-        $query = "call ad_test_detail (?)";
+		$query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+		$query = "SELECT
+			DISTINCT
+			ta_set.id_set,
+			ta_set.set_name,
+			ta_test_detail.id_test_detail,
+			ta_test_detail.id_test,
+			ta_test_detail.id_set_question,
+			ta_test_detail.answer,
+			ta_set_question.question,
+			ta_test_detail.date_answered,
+			ta_test_detail.score,
+			ta_set_question.max_score,
+			ta_set_question.question_set_index,
+			ta_set_question.choices,
+			ta_set_question.answer_index
+		FROM
+			ta_test_detail
+			LEFT JOIN ta_set_question
+				ON ta_test_detail.id_set_question = ta_set_question.id_set_question
+			LEFT JOIN ta_test
+				ON ta_test_detail.id_test = ta_test.id_test
+			LEFT JOIN ta_set
+				ON ta_test.id_set = ta_set.id_set
+		WHERE
+			ta_test_detail.id_test = ? AND
+			ta_test.is_deleted = 0
+		ORDER BY
+			CAST(ta_set_question.question_set_index AS SIGNED) ASC";
         $statement = $this->prepare($query);
         $statement->bind_param("i", $idTest);
         $dataset = $this->execute($statement);
@@ -359,9 +843,14 @@ class TestController extends DB {
 		$idTest = 0 // id of the test to be deleted
 	) {		
 		//prepare/execute
-        $query = "call ad_set_question_delete (?)";
+		$query = "DELETE FROM ta_set_question
+			WHERE ta_set_question.id_set_question = ?";
         $statement = $this->prepare($query);
         $statement->bind_param("i", $idTest);
+        $this->execute($statement);
+
+		$query = "SELECT 'record deleted'  message";
+        $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
 		return $dataset;
@@ -374,11 +863,18 @@ class TestController extends DB {
 		$idTest = 0 // id of the test to be deleted
 	) {		
 		//prepare/execute
-        $query = "call ad_test_delete (?)";
+		$query = "UPDATE ta_test
+			SET
+				ta_test.is_deleted = 1
+			WHERE
+				ta_test.id_test = ?";
         $statement = $this->prepare($query);
         $statement->bind_param("i", $idTest);
-        $dataset = $this->execute($statement);
+        $this->execute($statement);
 
+		$query = "SELECT 'record deleted'  message";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
 		return $dataset;
 	}
 	
@@ -391,16 +887,126 @@ class TestController extends DB {
 		$score = 0 // score
 	) {
 		//prepare/execute
-        $query = "call ad_check_test_detail (?, ?, ?)";
+		$query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
-        $statement->bind_param("iii", 
-						$idTestDetail,
-						$idUserChecked,
-						$score);
+        $this->execute($statement);
+
+		$query = "UPDATE ta_test
+			SET
+				ta_test.id_user_checked = ?,
+				ta_test.date_checked = NOW()
+			WHERE
+				ta_test.id_test IN (SELECT ta_test_detail.id_test FROM ta_test_detail
+									WHERE ta_test_detail.id_test_detail = ?)";
+        $statement = $this->prepare($query);
+        $statement->bind_param("ii", 
+			$idUserChecked,
+			$idTestDetail);
+        $this->execute($statement);
+
+		//Check if existing test details 
+		$query = "SELECT 1=1 FROM ta_test_detail
+				WHERE ta_test_detail.id_test_detail = ?";
+		$statement = $this->prepare($query);
+		$statement->bind_param("i", $idTestDetail);
+		$dataset = $this->execute($statement);
+
+		if ($dataset->num_rows > 0) {
+			$query = "SELECT 'Score saved.' message";
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+		} else {
+			$query = "SELECT 'Invalid test item to check.' message";
+			$statement = $this->prepare($query);
+			$dataset = $this->execute($statement);
+		}
+		return $dataset;
+	}
+	
+	/**
+		@desc: fetch filtered data
+	*/
+	public function getFilteredTestAll (
+		$idSet = 0 // specific ID to be displayed
+		,$adviser_name = null // filtered name to be displayed
+	) {
+		$adviser_name_where = "";
+		if(isset($adviser_name) && !empty($adviser_name)) 
+			$adviser_name_where = "AND (
+					ta_user_took.first_name LIKE '%".$adviser_name."%' OR
+					ta_user_took.last_name LIKE '%".$adviser_name."%' OR
+					CONCAT(ta_user_took.last_name,',') LIKE '%".$adviser_name."%' OR
+					CONCAT(ta_user_took.last_name,', ',ta_user_took.first_name) LIKE '%".$adviser_name."%'
+				)";
+		
+		//prepare/execute
+        $query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+		
+        $query = "SELECT
+			ta_test.id_test,
+			ta_test.id_user_tested,
+			DATE_FORMAT(DATE(ta_test.date_took), '%d/%b/%Y') date_took,
+			DATE_FORMAT(fn_get_completion_date(ta_test.id_test), '%d/%b/%Y') date_completed,
+			TIMEDIFF(fn_get_completion_date(ta_test.id_test), ta_test.date_took) time_took,
+			ta_test.id_user_checked,
+			ta_test.date_checked,
+			ta_user_took.first_name,
+			ta_user_took.last_name,
+			ta_user_took.email_address,
+			fn_get_test_score(ta_test.id_test) score,
+			fn_get_test_max_score(ta_test.id_set) max_score,
+			ta_set.id_set,
+			ta_set.set_name,
+			ta_set.is_auto_check,
+			ta_set.id_user_type_test,
+			DATE_FORMAT(NOW() , '%d%m%Y') date_now
+		FROM
+			ta_test
+			LEFT JOIN ta_user ta_user_took
+				ON ta_test.id_user_tested = ta_user_took.id_user
+			LEFT JOIN (
+				SELECT
+					COUNT(*) answer_count,
+					ta_test_detail.id_test
+				FROM
+					ta_test_detail
+				GROUP BY
+					ta_test_detail.id_test
+			)
+			test_detail
+				ON ta_test.id_test = test_detail.id_test
+			LEFT JOIN ta_set
+				ON ta_test.id_set = ta_set.id_set
+			LEFT JOIN (
+				SELECT
+					COUNT(*) question_count,
+					ta_set_question.id_set
+				FROM
+					ta_set_question
+				GROUP BY
+					ta_set_question.id_set
+			) set_question
+				ON ta_set.id_set = set_question.id_set
+		WHERE (
+			(
+				? != 0 AND
+				ta_test.id_set = ?
+			) OR (
+				? = 0
+			)
+		) 
+		".$adviser_name_where."
+		AND ta_test.is_deleted = 0 AND
+		test_detail.answer_count = set_question.question_count
+		ORDER BY
+			ta_test.id_test DESC";
+        $statement = $this->prepare($query);
+        $statement->bind_param("iii", $idSet, $idSet, $idSet);
         $dataset = $this->execute($statement);
 
 		return $dataset;
 	}
-	
 }
 ?>

@@ -36,13 +36,19 @@ class UserController extends DB
 		$idPassword // the id of the password to replace
 	) {
 		//prepare/execute
-		$query = "call ad_update_referral_code (?, ?)";
+		$query = "UPDATE ta_password
+			SET ta_password.password = ?
+		WHERE ta_password.id_password = ?";
 		$statement = $this->prepare($query);
 		$statement->bind_param(
 			"si",
 			$newPassword,
 			$idPassword
 		);
+		$dataset = $this->execute($statement);
+
+		$query = "SELECT 'New password saved.' message";
+		$statement = $this->prepare($query);
 		$dataset = $this->execute($statement);
 
 		return $dataset;
@@ -54,9 +60,27 @@ class UserController extends DB
 	public function getReferralCode(
 		$idUserType = 0 // type of user requesting the password
 	) {
-		$query = "call ad_referral_code (?)";
+		$query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+		$query = "SELECT
+			ta_password.id_password,
+			ta_password.password,
+			ta_password.id_user_type,
+			ta_user_type.user_type
+		FROM
+			ta_password
+			LEFT JOIN ta_user_type ON ta_password.id_user_type = ta_user_type.id_user_type
+		WHERE (
+				? > 0 AND
+				ta_password.id_user_type = ?
+			) OR (
+				? < 0 AND
+				ta_password.id_user_type > 0
+			)";
 		$statement = $this->prepare($query);
-		$statement->bind_param("i", $idUserType);
+		$statement->bind_param("iii", $idUserType, $idUserType, $idUserType);
 		$dataset = $this->execute($statement);
 
 		return $dataset;
@@ -69,9 +93,29 @@ class UserController extends DB
 		$keyword = "" // used for searching for a specific trainer
 	) {
 		$keyword = $keyword . "%";
-		$query = "call ad_trainer_all (?)";
+		$query = "SELECT
+			ta_user.id_user,
+			ta_user.email_address,
+			ta_user.password,
+			ta_user.first_name,
+			ta_user.last_name,
+			ta_user.id_user_type,
+			DATE_FORMAT(DATE(ta_user.date_registered), '%d/%b/%Y') date_registered,
+			ta_user_type.user_type
+		FROM
+			ta_user
+			LEFT JOIN ta_user_type
+				ON ta_user.id_user_type = ta_user_type.id_user_type
+		WHERE
+			ta_user.id_user_type = 3 AND (
+				ta_user.first_name LIKE ? OR
+				ta_user.last_name LIKE ? OR
+				ta_user.email_address LIKE ?
+			)
+		ORDER BY ta_user.id_user DESC";
+
 		$statement = $this->prepare($query);
-		$statement->bind_param("s", $keyword);
+		$statement->bind_param("sss", $keyword, $keyword, $keyword);
 		$dataset = $this->execute($statement);
 
 		return $dataset;
@@ -83,7 +127,25 @@ class UserController extends DB
 	public function getTrainerSpecific(
 		$idUser = 0 // id of the trainer that will be fetched
 	) {
-		$query = "call ad_trainer_specific (?)";
+		$query = "SELECT
+			ta_user.id_user,
+			ta_user.email_address,
+			ta_user.password,
+			ta_user.first_name,
+			ta_user.last_name,
+			ta_user.id_user_type,
+			DATE_FORMAT(DATE(ta_user.date_registered), '%d/%b/%Y') date_registered,
+			ta_user_type.user_type
+		FROM
+			ta_user
+			LEFT JOIN ta_user_type
+				ON ta_user.id_user_type = ta_user_type.id_user_type
+					
+		WHERE
+			ta_user.id_user_type = 3 AND 
+			ta_user.id_user = ?
+		ORDER BY ta_user.id_user DESC";
+
 		$statement = $this->prepare($query);
 		$statement->bind_param("i", $idUser);
 		$dataset = $this->execute($statement);
@@ -100,9 +162,15 @@ class UserController extends DB
 		if ($idUser == 1) {
 			return array();
 		}
-		$query = "call ad_trainer_delete (?)";
+		$query = "DELETE FROM ta_user
+			WHERE ta_user.id_user = ? AND
+			ta_user.id_user_type = 3";
 		$statement = $this->prepare($query);
 		$statement->bind_param("i", $idUser);
+		$this->execute($statement);
+
+		$query = "SELECT 'record deleted' message";
+		$statement = $this->prepare($query);
 		$dataset = $this->execute($statement);
 
 		return $dataset;
@@ -193,15 +261,22 @@ class UserController extends DB
 		$password = "", //  new/current password
 		$accessibleTestSets = ""
 	) {
-		$query = "call ad_user_update (?, ?, ?, ?, ?)";
+		$query = "UPDATE ta_user
+			SET
+				ta_user.email_address = ?,
+				ta_user.password = ?,
+				ta_user.first_name = ?,
+				ta_user.last_name = ?
+			WHERE
+				ta_user.id_user = ?";
 		$statement = $this->prepare($query);
 		$statement->bind_param(
-			"issss",
-			$idUser,
+			"ssssi",
 			$emailAddress,
 			$password,
 			$firstName,
-			$lastName
+			$lastName,
+			$idUser
 		);
 		$dataset = $this->execute($statement);
 
