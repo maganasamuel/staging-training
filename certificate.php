@@ -39,7 +39,8 @@ class MyCustomPDFWithWatermark extends TCPDF {
 		$this->Image('img/signature001.png', 90, $yPointer, 25.4, 19.4, '', '', '', false, 300, '', false, false, 0);
 		$yPointer += 40;
 		$this->Text(100,$yPointer,$this->date);
-		$this->SetFont("Raleway","",12);
+		$Raleway = TCPDF_FONTS::addTTFfont('font/Raleway.ttf', 'TrueTypeUnicode', '', 32);
+		$this->SetFont($Raleway,"",12);
 		
         $this->SetY(195);
         $this->SetTextWhite();
@@ -84,6 +85,13 @@ class Certificate {
 	function __construct($fullName, $rScore, $totalScore, $set_name, $dayTook, $monthTook, $yearTook, $venue){
 
 		$pdf = new MyCustomPDFWithWatermark();
+
+		// set raleway font
+		$Raleway = TCPDF_FONTS::addTTFfont('font/Raleway.ttf', 'TrueTypeUnicode', '', 32);
+
+		//set raleway font
+		$Ralewaysemibb = TCPDF_FONTS::addTTFfont('font/RalewaySemiBold-Bold.ttf', 'TrueTypeUnicode', '', 32);
+
 		// set document information
 		$pdf->SetCreator(PDF_CREATOR);
 		$pdf->SetAuthor('Jesse Dwight Hernandez');
@@ -129,24 +137,24 @@ class Certificate {
 	
 		$yPointer += 35;
 		$pdf->SetY($yPointer);
-		$pdf->SetFont('Ralewaysemibb', "", 40);
+		$pdf->SetFont($Ralewaysemibb, "", 40);
 		// set font
 		$pdf->SetTextDarkElite();
 		$pdf->Cell(267, 5, "CERTIFICATE OF COMPLETION", "", 1, 'C', 0, '', 0);
 		$pdf->Ln(5);
 		$pdf->SetTextGray();
-		$pdf->SetFont('Raleway', "", 12);
+		$pdf->SetFont($Raleway, "", 12);
 		$pdf->Cell(267, 5, "This certificate is hereby bestowed upon", "", 1, 'C', 0, '', 0);
 	
 		$pdf->Ln(5);
-		$pdf->SetFont('Ralewaysemibb', "", 30);
+		$pdf->SetFont($Ralewaysemibb, "", 30);
 		// set font
 		$pdf->SetTextDarkElite();
 		$pdf->Cell(267, 5, $fullName, "", 1, 'C', 0, '', 0);
 		// output the HTML content
 		$pdf->Ln(5);
 		$yPointer += 50;
-		$pdf->SetFont('Raleway', "", 12);
+		$pdf->SetFont($Raleway, "", 12);
 		$pdf->SetTextGray();
 		$html = "<p style='text-align:center;'>for successfully completing the test with a score of {$rScore}</span>  ({$totalScore}%)<br>
 		therefore, reaching the required level of competency in <strong style='text-decoration:underline;'>{$set_name}</strong>  <br> conducted by <b>EliteInsure Limited</b>.</p>";
@@ -172,7 +180,7 @@ class Certificate {
 
 //variables
 $idTest = $app->param($_GET, "id", 0);
-$dataset = $testController->getTestAll($idTest);
+$dataset = $testController->getTestDetail($idTest);
 
 
 //display
@@ -193,8 +201,8 @@ else {
 		$maxScore = $row["max_score"];
 		$answer = str_replace(";", "<br/>", $answer);
 		$questionSetIndex = $row["question_set_index"];
-		$set_name = $row["set_name"];
-		$venue = $row["venue"];
+		$set_name = isset($row["set_name"]) ? $row["set_name"] : "SET 1";
+		$venue = isset($row["venue"]) ? $row["venue"] : "";
 
 		$choices = $row["choices"];
 		$answerIndex = $row["answer_index"];
