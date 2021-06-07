@@ -102,7 +102,7 @@ class TestController extends DB {
 			LEFT JOIN ta_user_type
 			ON ta_user.id_user_type = ta_user_type.id_user_type
 			WHERE ta_user.email_address = '$emailAddress' AND
-				ta_user.first_name = '$first_name' AND
+				ta_user.first_name = '$firstName' AND
 				ta_user.last_name = '$lastName' AND
 				ta_user.id_user_type = $idUserType";
 			$statement = $this->prepare($query);
