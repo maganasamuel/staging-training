@@ -118,7 +118,7 @@ class TestController extends DB {
 				VALUES (
 					'$emailAddress',
 					'$password',
-					'$first_name',
+					'$firstName',
 					'$lastName',
 					$idUserType
 				)";
@@ -611,7 +611,7 @@ class TestController extends DB {
 		
 		$statement = $this->prepare($query);
         $statement->bind_param("ii", 
-						$idTidUserCheckedest,
+						$idUserChecked,
 						$idTest);
         $this->execute($statement);
 
