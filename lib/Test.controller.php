@@ -507,7 +507,6 @@ class TestController extends DB {
 		$idQuestion = 0, // id of the question being answered
 		$answer = "" // answer for the current item
 	) {
-		
 		//prepare/execute
         $query = "UPDATE ta_test SET is_deleted = 0 WHERE id_test = $idTest";
         $statement = $this->prepare($query);
@@ -534,8 +533,8 @@ class TestController extends DB {
 			SET
 				tad.answer = ?
 			WHERE
-				tad.id_test_detail = p_id_test_detail";
-			$statement = $this->prepare($answer);
+				tad.id_test_detail = ?";
+			$statement = $this->prepare($query);
 			$statement->bind_param("is", 
 						$idTest,
 						$idTestDetail);
@@ -551,11 +550,11 @@ class TestController extends DB {
 					answer
 				)
 				VALUES (
-					p_id_test,
-					p_id_set_question,
-					p_answer
+					?,
+					?,
+					?
 				)";
-			$statement = $this->prepare($answer);
+			$statement = $this->prepare($query);
 			$statement->bind_param("iis", 
 						$idTest,
 						$idQuestion,
@@ -574,7 +573,8 @@ class TestController extends DB {
 		$idTest = 0, // specific ID to be displayed
 		$idQuestion = 0 // specific ID to be displayed
 	) {
-		$query = "SELECT id_test_detail INTO p_id_test_detail FROM ta_test_detail
+		// $query = "SELECT id_test_detail INTO p_id_test_detail FROM ta_test_detail
+		$query = "SELECT id_test_detail FROM ta_test_detail
 		WHERE
 			ta_test_detail.id_test = ? AND
 			ta_test_detail.id_set_question = ?
@@ -998,9 +998,9 @@ class TestController extends DB {
 			)
 		) 
 		".$adviser_name_where."
-		AND ta_test.is_deleted = 0"
-		// AND test_detail.answer_count = set_question.question_count
-		. " ORDER BY
+		AND ta_test.is_deleted = 0
+		AND test_detail.answer_count = set_question.question_count
+		ORDER BY
 			ta_test.id_test DESC";
         $statement = $this->prepare($query);
         $statement->bind_param("iii", $idSet, $idSet, $idSet);
