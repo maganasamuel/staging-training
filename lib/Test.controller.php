@@ -998,9 +998,9 @@ class TestController extends DB {
 			)
 		) 
 		".$adviser_name_where."
-		AND ta_test.is_deleted = 0"
-		// AND test_detail.answer_count = set_question.question_count
-		. " ORDER BY
+		AND ta_test.is_deleted = 0
+		AND test_detail.answer_count = set_question.question_count
+		ORDER BY
 			ta_test.id_test DESC";
         $statement = $this->prepare($query);
         $statement->bind_param("iii", $idSet, $idSet, $idSet);
