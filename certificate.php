@@ -330,9 +330,10 @@ Regards,
 Leif');
 	$message->attach($attachment);
 
-	$transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
-	->setUsername('wilfred@eliteinsure.co.nz')
-  	->setPassword('wilfred2000');
+	$transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 465, 'ssl'));
+	// $transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
+	// ->setUsername('wilfred@eliteinsure.co.nz')
+ //  	->setPassword('wilfred2000');
 
 	// Create the Mailer using your created Transport
     $mailer = new Swift_Mailer($transport);
