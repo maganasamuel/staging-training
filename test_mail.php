@@ -300,7 +300,7 @@ Leif');
 
 	$transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
 	->setUsername('wilfred@eliteinsure.co.nz')
-  	->setPassword('wilfred2000');
+  	->setPassword('wilelite2021');
 
 	// Create the Mailer using your created Transport
     $mailer = new Swift_Mailer($transport);
