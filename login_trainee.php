@@ -15,10 +15,13 @@ error_reporting(E_ALL);
 include_once("lib/General.helper.php");
 include_once("lib/Session.helper.php");
 include_once("lib/Test.controller.php");
+include_once("lib/Training.controller.php");
 
 $app = new GeneralHelper();
 $session = new SessionHelper();
 $test = new TestController();
+$training = new TrainingController();
+
 //variables
 $emailAddress = $app->param($_POST, "email_address");
 $firstName = $app->param($_POST, "first_name");
@@ -42,6 +45,9 @@ switch ($type) {
 	case "telemarketer":
 		$idUserType = 6;
 		break;
+	case "trainer":
+		$idUserType = 4;
+		break;
 }
 
 
@@ -60,8 +66,22 @@ if ($passwordDataset->num_rows > 0) {
 	}
 }
 
+$trainingLogin = $training->trainingLogin($emailAddress,$password);
+
+if($type == "trainer"){
+	if ($trainingLogin->num_rows > 0) {
+		while ($row = $trainingLogin->fetch_assoc()) {
+				$data[] = $row;
+		}
+		$session->createTemporarySession($data);
+		header("location: training_list");
+	}
+
+}
+
 //checks if the referral code written in the form matches any of the existing referral code of the system
-if ($password == $correctPassword) {
+if ($password== $correctPassword) {
+
 	if (
 		$emailAddress != "" &&		//Email not empty
 		$firstName != "" &&			//First name not empty
@@ -82,6 +102,7 @@ if ($password == $correctPassword) {
 			if ($session->createTemporarySession($data)) {
 				
 				header("Location: test.php?page=test_set");
+				
 			}
 		} else {
 			$message = "Something went wrong. Please try again.";
@@ -153,12 +174,24 @@ if ($password == $correctPassword) {
 					<input class="form-control" name="email_address" type="email" placeholder="Email address" />
 				</div>
 			</div>
-			<div class="row justify-content-md-center">
+			<div class="row justify-content-md-center" <?php
+																								if ($type == "trainer") {
+																									echo '
+								style="display:none;"
+							';
+																								}
+																								?> />
 				<div class="col-3">
 					<input class="form-control" name="first_name" type="text" placeholder="First name" />
 				</div>
 			</div>
-			<div class="row justify-content-md-center">
+			<div class="row justify-content-md-center" <?php
+																								if ( $type == "trainer") {
+																									echo '
+								style="display:none;"
+							';
+																								}
+																								?> />
 				<div class="col-3">
 					<input class="form-control" name="last_name" type="text" placeholder="Last name" />
 				</div>
@@ -166,7 +199,7 @@ if ($password == $correctPassword) {
 			<div class="row justify-content-md-center">
 				<div class="col-3">
 					<input class="form-control" name="venue" type="text" placeholder="Venue" <?php
-																								if ($type == "admin") {
+																								if ($type == "admin" || $type == "trainer") {
 																									echo '
 								style="display:none;"
 							';
@@ -177,7 +210,7 @@ if ($password == $correctPassword) {
 
 			<div class="row justify-content-md-center">
 				<div class="col-3">
-					<input class="form-control" name="password" type="password" placeholder="Referral Code" />
+					<input class="form-control" name="password" type="password" placeholder="Password" />
 				</div>
 			</div>
 			<div class="row justify-content-md-center">
