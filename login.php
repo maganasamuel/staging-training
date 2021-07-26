@@ -118,6 +118,19 @@ error_reporting(E_ALL);
 						</div>
 					</a>
 				</div>
+
+				<div class="col-md-4 mt-3" data-toggle="tooltip">
+					<a href="login_trainee?type=trainer">
+						<div class="option" data-toggle="tooltip" data-placement="bottom" title="Training Meeting">
+							<i class="material-icons">
+								book
+							</i>
+							<br />
+							<span>Training</span>
+						</div>
+					</a>
+				</div>
+
 			</div>
 		</div>
 	</div>
