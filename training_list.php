@@ -20,18 +20,71 @@ include_once("lib/Session.helper.php");
 include_once("lib/General.helper.php");
 include_once("lib/Training.controller.php");
 
+
 $session = new SessionHelper();
 $app = new GeneralHelper();
 
 $trainingController = new TrainingController();
 
 $currentSessionFirstName = $app->param($_SESSION, "first_name", "User");
-$currentSessionID = $app->param($_SESSION, "id_user", -1);
 
 $idUserType = $app->param($_SESSION, "id_user_type", -1);
+$userFullName = $app->param($_SESSION, "full_name", -1);
+$fsp = $app->param($_SESSION, "fsp", -1);
+$id_user = $app->param($_SESSION, "id_user", -1);
+$sent = "";
+if(isset($_GET['sent'])) {
+    $sent = '<div class="alert alert-success" role="alert">
+    Certificates successfully sent!
+</div>';
+}
 
-$dataset = $trainingController->getTraining($currentSessionID,$idUserType);
-$headers = array("Date", "Topic", "Trainer", "Action");
+$action = $app->param($_GET, "action");
+
+if ($action == "del") {
+	$idTrain = $app->param($_GET, "id", 0);
+	$deleteDataset = $trainingController->deleteTraining($idTrain);
+}
+
+
+$conductedTraining = $trainingController->conductedTraining($id_user);
+$trConducted = "";
+
+$attendedTraining = $trainingController->attendedTraining($id_user);
+$trAttended = "";
+
+$totalConcducted = $trainingController->gettotalContducted($id_user);
+$totalAttended = $trainingController->gettotalAttended($id_user);
+
+while ($row = $conductedTraining->fetch_assoc()) {
+		$topic = $row["training_topic"];
+		$date = substr($row["training_date"], 0, -3);
+
+		$trConducted .= <<<EOF
+		<tr>
+			<td>{$date}</td>
+			<td class="capitalize">{$topic}</td>
+		</tr>
+
+EOF;
+}
+
+while ($row = $attendedTraining->fetch_assoc()) {
+		$topic = $row["training_topic"];
+		$date = substr($row["training_date"], 0, -3);
+
+		$trAttended .= <<<EOF
+		<tr>
+			<td>{$date}</td>
+			<td class="capitalize">{$topic}</td>
+		</tr>
+
+EOF;
+}
+
+
+$dataset = $trainingController->getTraining($id_user,$idUserType);
+$headers = array("Date", "Topic", "Trainer", "Status","Action");
 $tableHeader = $app->getHeader($headers);
 $rows = $tableHeader;
 $action = $app->param($_POST, "action");
@@ -57,9 +110,6 @@ if ($action == "save_profile") {
 	
 	}
 
-
-
-
 if ($dataset->num_rows <= 0) {
 	$rows .= $app->emptyRow(count($headers));
 }
@@ -67,36 +117,43 @@ else {
 	while ($row = $dataset->fetch_assoc()) {
 		
 		$topic = $row["training_topic"];
-		$date = substr($row["training_date"], 0, -3);
+		$date = $row["training_date"];
+
+    	$newDateTime = date('Y-m-d h:i A', strtotime($date));
 		$trainer = $row["fullname"];
 		$trainingID = $row["training_id"];
 		$today = new DateTime();
-
+		$status = "";
+		
 		if( strtotime($row["training_date"]) < strtotime('now') ) {
-			
+			$status = "<span class='badge bg-success' style='color:white;'>Completed</span>";
 		}else{
+			$status = "<span class='badge bg-info' style='color:white;'>Not Completed</span>";
+		}
+
+
         $rows .= <<<EOF
 		<tr>
-			<td>{$date}</td>
+			<td>{$newDateTime}</td>
 			<td class="capitalize">{$topic}</td>
 			<td>{$trainer}</td>
-			<td><a href="trainingpdf?id={$trainingID}" class="sendEmail" title="View Certificates" data-toggle="tooltip" data-placement="bottom">
+			<td>{$status}</td>
+			<td><a href="trainingpdf?id={$trainingID}" class="sendEmail" target="_blank" title="View Certificates" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">insert_drive_file</i>
 				</a>
-				<a href="trainingpdf?i?id={$trainingID}" class="sendEmail" title="Send Training Email" data-toggle="tooltip" data-placement="bottom">
+				<a href="trainingpdf?id={$trainingID}&mail=1" class="sendEmail" title="Send Attendee Certificates" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">email</i>
 				</a>
-				<a href="?id={$trainingID}" title="Delete" class="delete" data-toggle="tooltip" data-placement="bottom">
+				<a href="training_list?id={$trainingID}&action=del" title="Delete" class="delete" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">delete</i>
 				</a>
-				<a href="?id={$trainingID}" title="Download Certificate" class="donwloadPDF" data-toggle="tooltip" data-placement="bottom">
+				<a href="trainingpdf?id={$trainingID}&download=1" title="Download Certificate" class="donwloadPDF" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">arrow_downward</i>
 				</a>
 			</td>
 		</tr>
 
 EOF;
-}
 }
 }
 ?>
@@ -160,8 +217,16 @@ EOF;
 			</div>
 		</div>
 
+			
+
 		<div class="main">
+				<div class="col-12">
+						
+				 		<?php echo $sent; ?>
+
+					</div>
 			<div class="row justify-content-md-center mt-4">
+				
 
 					<div class="col-3">
 						
@@ -179,7 +244,7 @@ EOF;
 							echo 'style="display:none;"';
 							}
 						?> >Add Leaders / Members</button>
-					  <button class="tablinks" onclick="openCity(event, 'MyProfile')">My Profile</button>
+					  <button class="tablinks" onclick="openCity(event, 'MyProfile')" >My Profile</button>
 					</div>
 
 			<div id="TrainingList" class="tabcontent">
@@ -206,47 +271,105 @@ EOF;
 			</div>
 
 			<div id="AddLeaders" class="tabcontent">
-				<form method="post">
-				<div class="row justify-content-md-center">
-					<div class="col-6 mt-2">
-						<label class="font-weight-normal text-center">Full Name</label>
+
+					<div class="row">
+					<div class="col-2"></div>
+						<div class="col-8">
+							<div class="card">	
+								<div class="card-header"></div>
+							  	<div class="card-body">
+						    		<form method="post">
+						    			<div class="row">
+						    				<div class="col-6">
+						    					<label class="font-weight-normal text-center">Full Name</label>
 						<input type="text" placeholder="Full Name" class="form-control mb-1" name="full_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-					</div>
-					<div class="col-6 mt-2">
-						<label class="font-weight-normal text-center">Email Address</label>
+						    				</div>
+						    				<div class="col-6">
+						    					<label class="font-weight-normal text-center">Email Address</label>
 						<input type="text" placeholder="Email Address" class="form-control mb-1" name="email_address" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						    				</div>
+						    			</div>
+						    			<div class="row">
+						    				<div class="col-6">
+						    				<label class="font-weight-normal text-center">Password</label>
+						<input type="password" placeholder="Password" class="form-control mb-1" name="password" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						    				</div>
+						    				<div class="col-6">
+						    				<label class="font-weight-normal text-center">SSF Number</label>
+						<input type="text" placeholder="SSF Number" class="form-control mb-1" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">	
+						    				</div>
+						    					</div>
+						    			<div class="row">
+						    				<div class="col-6">
+						    					<label class="font-weight-normal text-center">User Type</label>
+												<div class="form-group">
+											    <select class="form-control" id="exampleFormControlSelect1" name="user_type">
+											      <option value="1">Admin</option>
+											      <option value="2">ADR / SADR </option>
+											      <option value="3">Adviser</option>
+											    </select></div>
+						    				</div>
+						    			</div>
+										<div class="row">
+											<div class="col-4"></div>
+						    				<div class="col-4">
+						    					<input type="hidden" name="action" value="save_profile"/>
+												<input id="generate" type="submit" value="Save" class="btn btn-info width100" />
+						    				</div>
+						    			</div>
+									</form>		
+
+							  	</div>
+							</div>
 					</div>
-					<div class="col-4 mt-2">
-						<label class="font-weight-normal text-center">Password</label>
-						<input type="text" placeholder="Password" class="form-control mb-1" name="password" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
 					</div>
-					
-					<div class="col-4 mt-2">
-						<label class="font-weight-normal text-center">SSF Number</label>
-						<input type="text" placeholder="SSF Number" class="form-control mb-1" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">		
-					</div>
-					<div class="col-4 mt-2">
-						<label class="font-weight-normal text-center">User Type</label>
-						<div class="form-group">
-						    <select class="form-control" id="exampleFormControlSelect1" name="user_type">
-						      <option value="2">ADR / SADR </option>
-						      <option value="3">Adviser</option>
-						    </select>
-					  </div>		
-					</div>
-					<div class="col-3 mt-2 mb-2">
-						<input type="hidden" name="action" value="save_profile"/>
-						<input id="generate" type="submit" value="Save" class="btn btn-info width100" />
-					</div>
-					
-				</div>
-				</form>
-				
 			</div>
 
-			<div id="MyProfile" class="tabcontent">
-			  	
-			</div>	
+					<div id="MyProfile" class="tabcontent">
+						<div class="row ml-3">
+					 		<div class="col-3 cell-user">
+								<div class="cell-controls"></div>
+									<div class="cell-detail">
+										<p class="capitalize">Adviser: <?= $userFullName; ?></p>
+										<p >FSP: <?= $fsp; ?></p>
+										<p class="trainConducted">Total Conducted: <?=$totalConcducted;?></p>
+										<p>Total Attended:  <?=$totalAttended;?></p>
+									</div>
+							</div>	
+							<div class="col-4 trainConducted" >
+								<div class="cell-controls text-center" style="font-size: 15px;">Trainings Conducted</div>
+								<table class="table">
+								  <thead>
+								    <tr>
+								      <th scope="col">Date</th>
+								      <th scope="col">Topic</th>
+								    </tr>
+								  </thead>
+								  <tbody>
+								    <?php
+											echo $trConducted;
+									?>
+								  </tbody>
+								</table>
+							</div>	
+							<div class="col-4">
+								<div class="cell-controls text-center" style="font-size: 15px;">Trainings Attended</div>
+								<table class="table">
+								  <thead>
+								    <tr>
+								      <th scope="col">Date</th>
+								      <th scope="col">Topic</th>
+								    </tr>
+								  </thead>
+								  <tbody>
+								  	<?php
+											echo $trAttended;
+									?>
+								  </tbody>
+								</table>
+							</div>	
+						</div>
+					</div>	
 				</div>
 
 				<div class="col-sm-1"></div>
@@ -294,7 +417,13 @@ EOF;
 		  border: 1px solid #ccc;
 		  border-top: none;
 		}
-
+		.table .thead-light th{
+			font-weight: bold;
+			font-size: 16px;
+		}
+		.table .tr .td{
+			font-size: 13px;
+		}
 		<?php if ( $idUserType == "3"){
 			echo "
              .sendEmail{
@@ -304,6 +433,12 @@ EOF;
              	display:none;
              }
              .delete{
+             	display:none;
+             }
+             .fsp{
+             	display:none;
+             }
+             .trainConducted{
              	display:none;
              }
 			";

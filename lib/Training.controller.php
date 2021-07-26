@@ -127,7 +127,7 @@ class TrainingController extends DB {
         $this->execute($statement);
 
 		$query = "SELECT *
-		FROM ta_user
+		FROM ta_user_training
 		WHERE id_user = $id";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -189,6 +189,55 @@ class TrainingController extends DB {
 
 		return $dataset;
 	}
+	public function conductedTraining($id){
+		$query = "SELECT *
+		FROM ta_training
+		WHERE trainer_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset;		
+
+	}
+ 	public function gettotalContducted($id){
+		$query = "SELECT COUNT(trainer_id) AS totalConducted FROM ta_training WHERE trainer_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $totalContacted = $dataset->fetch_assoc();
+
+		return $totalContacted['totalConducted'];		
+
+ 	}
+ 	public function gettotalAttended($id){
+		$query = "SELECT COUNT(trainer_id) AS totalAttended FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee)";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        $totalAttended = $dataset->fetch_assoc();
+
+		return $totalAttended['totalAttended'];
+ 	}
+ 	public function attendedTraining($id){
+ 		$query = "SELECT * FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee)";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+
+ 	}
+ 	public function deleteTraining($id){
+ 		$query = "DELETE FROM ta_training WHERE training_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 	
+ 	}
 }	
 
 ?>
+
+
+
+
+
+
+
+
+
