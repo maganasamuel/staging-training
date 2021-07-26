@@ -71,7 +71,10 @@ $trainingLogin = $training->trainingLogin($emailAddress,$password);
 if($type == "trainer"){
 	if ($trainingLogin->num_rows > 0) {
 		while ($row = $trainingLogin->fetch_assoc()) {
-				$data[] = $row;
+				$_SESSION['full_name']= $row['full_name'];
+				$_SESSION['fsp']= $row['ssf_number'];
+				$_SESSION['id_user_type']= $row['id_user_type'];
+				$_SESSION['id_user']= $row['id_user'];
 		}
 		$session->createTemporarySession($data);
 		header("location: training_list");
