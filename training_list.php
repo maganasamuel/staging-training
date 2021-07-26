@@ -295,7 +295,7 @@ EOF;
 						<input type="password" placeholder="Password" class="form-control mb-1" name="password" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
 						    				</div>
 						    				<div class="col-6">
-						    				<label class="font-weight-normal text-center">SSF Number</label>
+						    				<label class="font-weight-normal text-center">FSP Number</label>
 						<input type="text" placeholder="SSF Number" class="form-control mb-1" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">	
 						    				</div>
 						    					</div>
