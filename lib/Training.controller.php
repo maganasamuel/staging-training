@@ -123,7 +123,7 @@ class TrainingController extends DB {
         $this->execute($statement);
 
 		$query = "SELECT *
-		FROM ta_user
+		FROM ta_user_training
 		WHERE id_user = $id";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -185,6 +185,73 @@ class TrainingController extends DB {
 
 		return $dataset;
 	}
+	public function conductedTraining($id){
+		$query = "SELECT *
+		FROM ta_training
+		WHERE trainer_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset;		
+
+	}
+ 	public function gettotalContducted($id){
+		$query = "SELECT COUNT(trainer_id) AS totalConducted FROM ta_training WHERE trainer_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $totalContacted = $dataset->fetch_assoc();
+
+		return $totalContacted['totalConducted'];		
+
+ 	}
+ 	public function gettotalAttended($id){
+		$query = "SELECT COUNT(trainer_id) AS totalAttended FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee)";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        $totalAttended = $dataset->fetch_assoc();
+
+		return $totalAttended['totalAttended'];
+ 	}
+ 	public function attendedTraining($id){
+ 		$query = "SELECT * FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee)";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+
+ 	}
+ 	public function deleteTraining($id){
+ 		$query = "DELETE FROM ta_training WHERE training_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 	
+ 	}
+ 	public function getUser(){
+ 		$query = "SELECT * FROM ta_user_training where id_user != 1";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+ 	}
+ 	public function getSpecificUser($id){
+ 		$query = "SELECT * FROM ta_user_training where id_user = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+ 	}
+ 	public function updateUserTraining($full_name="",$email_address="",$password="",$ssf_number=0,$user_type="",$id_user=""){
+
+ 		$query = "UPDATE ta_user_training SET email_address = '$email_address' , full_name = '$full_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number'
+				WHERE id_user = '$id_user'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+ 	}
+ 	public function deteUsertraining($id){
+ 		$query = "DELETE FROM ta_user_training WHERE id_user = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset;
+
+ 	}
 }	
 
 ?>
