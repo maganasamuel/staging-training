@@ -10,8 +10,8 @@ ob_start();
 //secure the page
 // include_once("security.php");
 // $prop = array(
-// 			"group_name" => "trainee",
-// 			"allow" => ""
+// 			"group_name" => "index",
+// 			"allow" => "1"
 // 		);
 // securePage($prop);
 
@@ -27,6 +27,13 @@ $app = new GeneralHelper();
 $trainingController = new TrainingController();
 
 $currentSessionFirstName = $app->param($_SESSION, "first_name", "User");
+
+
+$access = $app->param($_SESSION, "grant",-1);
+
+if($access != "yes"){
+	header("location: login_trainee?type=trainer");
+}
 
 $idUserType = $app->param($_SESSION, "id_user_type", -1);
 $userFullName = $app->param($_SESSION, "full_name", -1);
@@ -84,9 +91,9 @@ while ($row = $userList->fetch_assoc()) {
 		$usList .= <<<EOF
 		<tr>
 			<td>{$usFullanme}</td>
-			<td class="capitalize">{$usEmail}</td>
+			<td>{$usEmail}</td>
 			<td>{$usFSP}</td>
-			<td class="capitalize">{$ustype}</td>
+			<td>{$ustype}</td>
 			<td>
 				<a href="training_user?id={$usID}" title="Edit User" class="delete" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">edit</i>
@@ -263,8 +270,8 @@ EOF;
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
 					<div class="tab">
-					  <button class="tablinks" onclick="openCity(event, 'TrainingList')" >Training List</button>
-					  <button class="tablinks" onclick="openCity(event, 'AddLeaders')" id="defaultOpen"
+					  <button class="tablinks" onclick="openCity(event, 'TrainingList')" id="defaultOpen">Training List</button>
+					  <button class="tablinks" onclick="openCity(event, 'AddLeaders')"
 					  	<?php if ( $idUserType != "1") {											
 							echo 'style="display:none;"';
 							}
