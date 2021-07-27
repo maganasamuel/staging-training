@@ -230,7 +230,7 @@ class TrainingController extends DB {
 		return $dataset; 	
  	}
  	public function getUser(){
- 		$query = "SELECT * FROM ta_user_training";
+ 		$query = "SELECT * FROM ta_user_training where id_user != 1";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 		return $dataset; 

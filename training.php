@@ -8,12 +8,6 @@
 ob_start();
 
 //secure the page
-// include_once("security.php");
-// $prop = array(
-// 			"group_name" => "trainee",
-// 			"allow" => ""
-// 		);
-// securePage($prop);
 
 //include necessary files
 include_once("lib/Session.helper.php");
@@ -23,6 +17,11 @@ include_once("lib/Training.controller.php");
 $session = new SessionHelper();
 $app = new GeneralHelper();
 
+$access = $app->param($_SESSION, "grant",-1);
+
+if($access != "yes"){
+	header("location: login_trainee?type=trainer");
+}
 $trainingController = new TrainingController();
 $action = $app->param($_POST, "action");
 $message = "";
