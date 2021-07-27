@@ -1,11 +1,5 @@
 <?php
 
-/**
-@name: index.php
-@author: Gio
-@desc:
-	master page for the trainer's page
- */
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -42,14 +36,13 @@ $app = new GeneralHelper();
 	<title>Test Checker</title>
 
 	<!-- CSS -->
-	<link href="css/bootstrap.css" rel="stylesheet">
+	<!-- <link href="css/onlineinsure-bootstrap.css" rel="stylesheet"> -->
 	<link href="css/styles.css" rel="stylesheet">
 
 	<!-- Icon font -->
 	<link href="css/google-icons.css" rel="stylesheet">
 
 	<!-- Script -->
-	<script src="js/jquery-3.2.1.slim.min.js"></script>
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<script src="js/popper.min.js"></script>
 	<script src="js/bootstrap.js"></script>
