@@ -75,11 +75,11 @@ if($type == "trainer"){
 				$_SESSION['fsp']= $row['ssf_number'];
 				$_SESSION['id_user_type']= $row['id_user_type'];
 				$_SESSION['id_user']= $row['id_user'];
+				$_SESSION['grant']= 'yes';
 		}
 		$session->createTemporarySession($data);
 		header("location: training_list");
 	}
-
 }
 
 //checks if the referral code written in the form matches any of the existing referral code of the system
