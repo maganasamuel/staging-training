@@ -229,15 +229,33 @@ class TrainingController extends DB {
         $dataset = $this->execute($statement);
 		return $dataset; 	
  	}
+ 	public function getUser(){
+ 		$query = "SELECT * FROM ta_user_training";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+ 	}
+ 	public function getSpecificUser($id){
+ 		$query = "SELECT * FROM ta_user_training where id_user = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+ 	}
+ 	public function updateUserTraining($full_name="",$email_address="",$password="",$ssf_number=0,$user_type="",$id_user=""){
+
+ 		$query = "UPDATE ta_user_training SET email_address = '$email_address' , full_name = '$full_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number'
+				WHERE id_user = '$id_user'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset; 
+ 	}
+ 	public function deteUsertraining($id){
+ 		$query = "DELETE FROM ta_user_training WHERE id_user = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+		return $dataset;
+
+ 	}
 }	
 
 ?>
-
-
-
-
-
-
-
-
-

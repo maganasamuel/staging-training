@@ -47,6 +47,11 @@ if ($action == "del") {
 }
 
 
+if ($action == "delUser") {
+	$idUser = $app->param($_GET, "id", 0);
+	$deteUser = $trainingController->deteUsertraining($idUser);
+}
+
 $conductedTraining = $trainingController->conductedTraining($id_user);
 $trConducted = "";
 
@@ -55,6 +60,45 @@ $trAttended = "";
 
 $totalConcducted = $trainingController->gettotalContducted($id_user);
 $totalAttended = $trainingController->gettotalAttended($id_user);
+
+
+$userList = $trainingController->getUser();
+$usList = "";
+
+while ($row = $userList->fetch_assoc()) {
+
+		$usID = $row["id_user"];
+		$usFullanme = $row["full_name"];
+		$usEmail = $row["email_address"];
+		$usFSP = $row["ssf_number"];	
+		$usNumber = $row["id_user_type"];	
+
+		if($usNumber == "1"){
+			$ustype = "Admin";
+		}elseif ($usNumber == "2") {
+			$ustype = "ADR/SADR";
+		}else{
+			$ustype = "Adviser";
+		}
+
+		$usList .= <<<EOF
+		<tr>
+			<td>{$usFullanme}</td>
+			<td class="capitalize">{$usEmail}</td>
+			<td>{$usFSP}</td>
+			<td class="capitalize">{$ustype}</td>
+			<td>
+				<a href="training_user?id={$usID}" title="Edit User" class="delete" data-toggle="tooltip" data-placement="bottom">
+					<i class="material-icons">edit</i>
+				</a>
+				<a href="training_list?id={$usID}&action=delUser" title="Delete User" class="donwloadPDF" data-toggle="tooltip" data-placement="bottom">
+					<i class="material-icons">delete</i>
+				</a>
+			</td>
+		</tr>
+
+EOF;
+}
 
 while ($row = $conductedTraining->fetch_assoc()) {
 		$topic = $row["training_topic"];
@@ -77,6 +121,7 @@ while ($row = $attendedTraining->fetch_assoc()) {
 		<tr>
 			<td>{$date}</td>
 			<td class="capitalize">{$topic}</td>
+			
 		</tr>
 
 EOF;
@@ -89,26 +134,6 @@ $tableHeader = $app->getHeader($headers);
 $rows = $tableHeader;
 $action = $app->param($_POST, "action");
 $message = "";
-
-
-if ($action == "save_profile") {
-
-	$full_name = $app->param($_POST, "full_name");
-	$email_address = $app->param($_POST, "email_address");
-	$password = $app->param($_POST, "password");
-	$ssfnumber = $app->param($_POST, "ssfnumber");
-	$user_type = $app->param($_POST, "user_type");
-
-
-	$datasetuser = $trainingController->addUserTraining($full_name,
-						$email_address,
-						$password,
-						$ssfnumber,$user_type
-					);   
-
-	$message = "<div class=\"alert alert-success\" role=\"alert\">User profile saved.</div>";
-	
-	}
 
 if ($dataset->num_rows <= 0) {
 	$rows .= $app->emptyRow(count($headers));
@@ -238,8 +263,8 @@ EOF;
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
 					<div class="tab">
-					  <button class="tablinks" onclick="openCity(event, 'TrainingList')" id="defaultOpen">Training List</button>
-					  <button class="tablinks" onclick="openCity(event, 'AddLeaders')"
+					  <button class="tablinks" onclick="openCity(event, 'TrainingList')" >Training List</button>
+					  <button class="tablinks" onclick="openCity(event, 'AddLeaders')" id="defaultOpen"
 					  	<?php if ( $idUserType != "1") {											
 							echo 'style="display:none;"';
 							}
@@ -272,57 +297,58 @@ EOF;
 
 			<div id="AddLeaders" class="tabcontent">
 
-					<div class="row">
-					<div class="col-2"></div>
-						<div class="col-8">
-							<div class="card">	
-								<div class="card-header"></div>
-							  	<div class="card-body">
-						    		<form method="post">
-						    			<div class="row">
-						    				<div class="col-6">
-						    					<label class="font-weight-normal text-center">Full Name</label>
-						<input type="text" placeholder="Full Name" class="form-control mb-1" name="full_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-						    				</div>
-						    				<div class="col-6">
-						    					<label class="font-weight-normal text-center">Email Address</label>
-						<input type="text" placeholder="Email Address" class="form-control mb-1" name="email_address" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-						    				</div>
-						    			</div>
-						    			<div class="row">
-						    				<div class="col-6">
-						    				<label class="font-weight-normal text-center">Password</label>
-						<input type="password" placeholder="Password" class="form-control mb-1" name="password" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-						    				</div>
-						    				<div class="col-6">
-						    				<label class="font-weight-normal text-center">FSP Number</label>
-						<input type="text" placeholder="SSF Number" class="form-control mb-1" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">	
-						    				</div>
-						    					</div>
-						    			<div class="row">
-						    				<div class="col-6">
-						    					<label class="font-weight-normal text-center">User Type</label>
-												<div class="form-group">
-											    <select class="form-control" id="exampleFormControlSelect1" name="user_type">
-											      <option value="1">Admin</option>
-											      <option value="2">ADR / SADR </option>
-											      <option value="3">Adviser</option>
-											    </select></div>
-						    				</div>
-						    			</div>
-										<div class="row">
-											<div class="col-4"></div>
-						    				<div class="col-4">
-						    					<input type="hidden" name="action" value="save_profile"/>
-												<input id="generate" type="submit" value="Save" class="btn btn-info width100" />
-						    				</div>
-						    			</div>
-									</form>		
+				<div class="row">
+					<div class="col-2">
+						<!-- <div class="card">
+						<h5 class="card-header">User Info</h5>
+						<div class="card-body">
+						<input type="text" placeholder="Full Name" class="form-control mb-2" name="full_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						<input type="text" placeholder="Email Address" class="form-control mb-2" name="email_address" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						<input type="password" placeholder="Password" class="form-control mb-2" name="password" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						<input type="text" placeholder="FSP Number" class="form-control mb-2" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">		
+						<div class="form-group">
+						    <select class="form-control" id="exampleFormControlSelect1" name="user_type">
+						      <option value="1">Admin</option>
+						      <option value="2">ADR / SADR </option>
+						      <option value="3">Adviser</option>
+						    </select>
+						    <input type="hidden" name="action" value="save_profile"/><br>
+							<input id="generate" type="submit" value="Save" class="btn btn-info width100" />
+						</div>
+					</div>
+					</div> -->
+					</div>
+					<div class="col-12">
+						<ul class="subHeader-controls">
+						<li>
+							<a href="training_user" title="Add New User" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType == "3") {											
+							echo 'style="display:none;"';
+							}
+						?> >
+								<i class="material-icons">add</i>	
+							</a>
+						</li>
+					</ul>
+						<table class="table">
+							  <thead>
+							    <tr>
+							      <th scope="col">Full Name</th>
+							      <th scope="col">Email Address</th>
+							      <th scope="col">FSP</th>
+							      <th scope="col">User Type</th>
+							      <th scope="col">Action</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <?php
+										echo $usList;
+								?>
+							  </tbody>
+						</table>
+					</div>
 
-							  	</div>
-							</div>
-					</div>
-					</div>
+				</div>
+
 			</div>
 
 					<div id="MyProfile" class="tabcontent">
