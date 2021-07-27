@@ -1,69 +1,54 @@
 <?php
+include_once('lib/Test.controller.php');
+include_once('lib/User.controller.php');
 
-/**
-@name: test_result.php
-@author: Gio
-@desc:
-    Display list of tests that has been taken by the examinees
- */
-//secure the page
-include_once("security.php");
-$prop = array(
-    "group_name" => "index",
-    "allow" => ""
-);
-securePage($prop);
-
-//include necessary files
-include_once("lib/General.helper.php");
-include_once("lib/Test.controller.php");
-include_once("lib/User.controller.php");
-
-$app = new GeneralHelper();
 $testController = new TestController();
 $userController = new UserController();
 
 //variables
-$currentSessionFirstName = $app->param($_SESSION, "first_name", "User");
-$currentSessionUserType = $app->param($_SESSION, "id_user_type", -1);
-$currentSessionUserID = $app->param($_SESSION, "id_user", -1);
-$action = $app->param($_GET, "action");
+$currentSessionFirstName = $app->param($_SESSION, 'first_name', 'User');
+$currentSessionUserType = $app->param($_SESSION, 'id_user_type', -1);
+$currentSessionUserID = $app->param($_SESSION, 'id_user', -1);
+$action = $app->param($_GET, 'action');
+
 //delete a test
-if ($action == "del") {
-    $idTest = $app->param($_GET, "id", 0);
+if ('del' == $action) {
+    $idTest = $app->param($_GET, 'id', 0);
     $deleteDataset = $testController->testDelete($idTest);
-} elseif ($action == "answer_sheet") {
-    $idTest = $app->param($_GET, "id", 0);
+} elseif ('answer_sheet' == $action) {
+    $idTest = $app->param($_GET, 'id', 0);
     $answer_sheet_result = $testController->setTestAnswerSheet($idTest);
 }
 
 //sets
-
 $setDataset = null;
 
 switch ($currentSessionUserType) {
     case 1:
         $setDataset = $testController->getSetAll(-1);
+
         break;
     case 3:
         $setDataset = $userController->getTrainerTestSetAccess($currentSessionUserID);
+
         break;
 }
-$sets = "";
-$setsOptions = "";
+$sets = '';
+$setsOptions = '';
 $ctr = 0;
-$view = $app->param($_GET, "view", 1);
-$adviser_name = $app->param($_GET, "adviser_name", null);
+$view = $app->param($_GET, 'view', 1);
+$adviser_name = $app->param($_GET, 'adviser_name', null);
 
 if (count($setDataset) > 0) {
-    foreach($setDataset as $row) {
-        $idSet = $row["id_set"];
+    foreach ($setDataset as $row) {
+        $idSet = $row['id_set'];
 
-        if ($currentSessionUserType == 3 && $ctr == 0 && $view == 1)
+        if (3 == $currentSessionUserType && 0 == $ctr && 1 == $view) {
             $view = $idSet;
+        }
 
-        $setName = $row["set_name"];
-        $active = ($view == $idSet) ? "active" : "";
+        $setName = $row['set_name'];
+        $active = ($view == $idSet) ? 'active' : '';
         $sets .= <<<EOF
         <li class="list-group-item {$active}">
             <a href="index.php?page=test_result&view={$idSet}">
@@ -71,21 +56,22 @@ if (count($setDataset) > 0) {
             </a>
         </li>
 EOF;
-        
-        if($idSet == $view)
+
+        if ($idSet == $view) {
             $setsOptions .= "<option value='{$idSet}' selected>{$setName}</option>";
-        else
+        } else {
             $setsOptions .= "<option value='{$idSet}'>{$setName}</option>";
+        }
 
         $ctr++;
     }
 }
 
 //display
-$dataset = $testController->getFilteredTestAll($view,$adviser_name);
+$dataset = $testController->getFilteredTestAll($view, $adviser_name);
 
 // var_export($dataset);die();
-$headers = array("Date Took", "Adviser Name", "E-mail Address", "Duration (H:M:S)", "Score (%)", "Action", "<div class=\"text-center\" data-toggle=\"modal\" data-target=\"#exampleModalCenter\">Bulk Email<br><i class=\"material-icons select-all\" style=\"cursor: pointer;\">mail</i></div>");
+$headers = ['Date Took', 'Adviser Name', 'E-mail Address', 'Duration (H:M:S)', 'Score (%)', 'Action', '<div class="text-center" data-toggle="modal" data-target="#exampleModalCenter">Bulk Email<br><i class="material-icons select-all" style="cursor: pointer;">mail</i></div>'];
 $tableHeader = $app->getHeader($headers);
 $rows = $tableHeader;
 
@@ -93,65 +79,66 @@ if ($dataset->num_rows <= 0) {
     $rows .= $app->emptyRow(count($headers));
 } else {
     while ($row = $dataset->fetch_assoc()) {
-        $idSet = $row["id_set"];
+        $idSet = $row['id_set'];
+
         if ($idSet != $view) {
             continue;
         }
 
-        $idTest = $row["id_test"];
-        $dateTook = $row["date_took"];
-        $idUserChecked = $row["id_user_checked"];
-        $dateChecked = $row["date_checked"];
-        $firstName = $row["first_name"];
-        $lastName = $row["last_name"];
-        $emailAddress = $row["email_address"];
-        $score = $row["score"];
-        $dateCompleted = $row["date_completed"];
-        $timeTook = $row["time_took"];
-        $setName = $row["set_name"];
-        $maxScore = $row["max_score"];
-        $isAutoCheck = $row["is_auto_check"];
-        $idUserTypeTest = $row["id_user_type_test"];
+        $idTest = $row['id_test'];
+        $dateTook = $row['date_took'];
+        $idUserChecked = $row['id_user_checked'];
+        $dateChecked = $row['date_checked'];
+        $firstName = $row['first_name'];
+        $lastName = $row['last_name'];
+        $emailAddress = $row['email_address'];
+        $score = $row['score'];
+        $dateCompleted = $row['date_completed'];
+        $timeTook = $row['time_took'];
+        $setName = $row['set_name'];
+        $maxScore = $row['max_score'];
+        $isAutoCheck = $row['is_auto_check'];
+        $idUserTypeTest = $row['id_user_type_test'];
 
         //modify display
 
         //fullName
         $fullName = "{$lastName}, {$firstName}";
-        $fname = $firstName . " " . $lastName;
+        $fname = $firstName . ' ' . $lastName;
 
         //score
         $score = (($score / $maxScore) * 100);
         $score = number_format((float) $score, 2, '.', '');
+
         if ($score >= 80) {
             $totalScore = "<span style=\"color:#3AA237;font-weight:bold;\">$score %</span>";
         } else {
             $totalScore = "<span style=\"color:#CA4A4A;font-weight:bold;\">$score %</span>";
         }
-        $totalScore = $idUserChecked == 0 ? "Unchecked" : $totalScore;
+        $totalScore = 0 == $idUserChecked ? 'Unchecked' : $totalScore;
 
         //check link
-        $checkLink = $isAutoCheck == 1 ? "" : "<a href=\"index.php?page=test_check&id={$idTest}&email={$emailAddress}\" title=\"Check Test\"><i class=\"material-icons\">playlist_add_check</i></a>";
+        $checkLink = 1 == $isAutoCheck ? '' : "<a href=\"index.php?page=test_check&id={$idTest}&email={$emailAddress}\" title=\"Check Test\"><i class=\"material-icons\">playlist_add_check</i></a>";
 
         //mail link
-        $mailLink = $totalScore == "Unchecked" ? "" : "<a href=\"index.php?page=test_mail&id={$idTest}&email={$emailAddress}&view={$view}\" title=\"Mail Test\"><i class=\"material-icons\">mail</i></a>";
+        $mailLink = 'Unchecked' == $totalScore ? '' : "<a href=\"index.php?page=test_mail&id={$idTest}&email={$emailAddress}&view={$view}\" title=\"Mail Test\"><i class=\"material-icons\">mail</i></a>";
 
         //pdf link
         //$pdfLink = $totalScore == "Unchecked" ? "" : "<a href=\"index.php?page=test_mail&id={$idTest}\" title=\"View Test\" target=\"_blank\"><i class=\"material-icons\">picture_as_pdf</i></a>";
         $pdfLink = "<a href=\"index.php?page=test_mail&id={$idTest}\" title=\"View Test\" target=\"_blank\"><i class=\"material-icons\">picture_as_pdf</i></a>";
 
         //certificate link
-        $certificateLink = $totalScore == "Unchecked" ? "" : "<a href=\"certificate.php?id={$idTest}\" title=\"View Certificate\" target=\"_blank\"><i class=\"material-icons\">insert_drive_file</i></a>";
-
+        $certificateLink = 'Unchecked' == $totalScore ? '' : "<a href=\"certificate.php?id={$idTest}\" title=\"View Certificate\" target=\"_blank\"><i class=\"material-icons\">insert_drive_file</i></a>";
 
         //mail link
-        $mailCLink = $totalScore == "Unchecked" ? "" : "<a href=\"certificate.php?id={$idTest}&email={$emailAddress}&view={$view}\" title=\"Mail Certificate\"><i class=\"material-icons\">mail</i></a>";
+        $mailCLink = 'Unchecked' == $totalScore ? '' : "<a href=\"certificate.php?id={$idTest}&email={$emailAddress}&view={$view}\" title=\"Mail Certificate\"><i class=\"material-icons\">mail</i></a>";
 
         if ($score <= 79) {
-            $certificateLink = "";
-            $mailCLink = "";
+            $certificateLink = '';
+            $mailCLink = '';
         }
-        /*				        $checkBox = $totalScore == "Unchecked" ? "" : "				 <label class=\"main\">                  <input class=\"form-check-input\" type=\"checkbox\" value={$emailAddress} data-id={$idTest} data-set={$view} data-score={$score} data-name=\"{$firstName} {$lastName}\" id=\"flexCheckDefault\">					<span class=\"myDefault\"></span> 				  </label>				  ";				*/
-        $checkBox = ($totalScore == "Unchecked" || $score <= 79) ? "" : "				        <label class=\"main\">		<input class=\"form-check-input\" type=\"checkbox\" value={$emailAddress} data-id={$idTest} data-set={$view} data-score={$score} data-name=\"{$firstName} {$lastName}\" id=\"flexCheckDefault\">		<span class=\"myDefault\"></span> 	</label> 				  ";
+        // $checkBox = $totalScore == "Unchecked" ? "" : "				 <label class=\"main\">                  <input class=\"form-check-input\" type=\"checkbox\" value={$emailAddress} data-id={$idTest} data-set={$view} data-score={$score} data-name=\"{$firstName} {$lastName}\" id=\"flexCheckDefault\">					<span class=\"myDefault\"></span> 				  </label>				  ";
+        $checkBox = ('Unchecked' == $totalScore || $score <= 79) ? '' : "				        <label class=\"main\">		<input class=\"form-check-input\" type=\"checkbox\" value={$emailAddress} data-id={$idTest} data-set={$view} data-score={$score} data-name=\"{$firstName} {$lastName}\" id=\"flexCheckDefault\">		<span class=\"myDefault\"></span> 	</label> 				  ";
         $rows .= <<<EOF
         <tr>
             <td>{$dateTook}</td>
@@ -181,27 +168,27 @@ EOF;
         $rows .= $app->emptyRow(count($headers));
     }
 }
-$message = $app->param($_GET, "message");
+$message = $app->param($_GET, 'message');
 
-if ($message == "sent") {
+if ('sent' == $message) {
     echo <<<EOF
     <div class="alert alert-success" role="alert">
         An email has been successfully sent!
     </div>
 EOF;
-} else if ($message == "failed") {
+} elseif ('failed' == $message) {
     echo <<<EOF
     <div class="alert alert-warning" role="alert">
         Oops! Failed sending email. Please try again.
     </div>
 EOF;
-} else if ($action == "del") {
+} elseif ('del' == $action) {
     echo <<<EOF
     <div class="alert alert-success" role="alert">
         Test deleted successfully.
     </div>
 EOF;
-} else if ($action == "answer_sheet") {
+} elseif ('answer_sheet' == $action) {
     echo <<<EOF
     <div class="alert alert-success" role="alert">
         $answer_sheet_result
@@ -215,13 +202,14 @@ EOF;
     }
 </style>
 
-<div class="subHeader">
+<div class="subHeader position-sticky" style="top: 75px;">
     <div class="row">
         <div class="col title">
             Hi, <span class="capitalize"><?php echo $currentSessionFirstName; ?>!</span>
         </div>
     </div>
 </div>
+
 <div class="main">
     <form id="filter-form" action="index.php">
         <div class="row">
