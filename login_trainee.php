@@ -78,7 +78,7 @@ if($type == "trainer"){
 				$_SESSION['grant']= 'yes';
 		}
 		$session->createTemporarySession($data);
-		header("location: training_list");
+		header("location: training?page=training_list");
 	}
 }
 

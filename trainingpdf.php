@@ -80,17 +80,29 @@ for($i = 0; $i< count($arrAttendee); $i++) {
 }
 
 
-$ctr = 0;
-$div = "";
+// $to = '<table><tr>';
+
+// $ctr=0;
+// $number = 1;
+// foreach($arrTrainig as $topic){
+//     $to .= '<td><div>'.$number.'. '.$topic.'</div></td>'; 
+//     $ctr++; 
+//     $number++; 
+
+//     if ($ctr % 2 == 0 && $ctr !== 0) {
+//         $to .= '</tr><tr>';
+//     }   
+// }
+
+// $la = $to . '</tr></table>';
 
 for($i = 0; $i< count($arrTrainig); $i++) {
 
     $ctr = $ctr +1;
-
     $div .= '<div class="column">
                   <div style="margin-left: 72px;border-bottom: 1px solid #000; bottom:23px;"> <span style="font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;"> '.$ctr.'. </span> <span style="width: 200px; border-width: thin;font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;">
-                  '.$arrTrainig[$i].'
-                  </span></div>
+                    '.$arrTrainig[$i].'
+                  </span></div> 
               </div>'; 
           }
 
@@ -100,11 +112,7 @@ $html = <<<EOF
 <head>
 <link rel="stylesheet" type="text/css" href="style.css"/>
 <style>
-* {
-  box-sizing: border-box;
-}
 
-/* Create two equal columns that floats next to each other */
 .column {
   float: left;
   width: 45%;
@@ -117,9 +125,17 @@ $html = <<<EOF
   display: table;
   clear: both;
 }
-
 .trainer span span{
    width: 140px;
+}
+ table {
+  table-layout: fixed ;
+  width: 100% ;
+  text-align:left;
+  margin-left: 70px;
+}
+td{
+  width: 50%;
 }
 </style>
 </head>
@@ -190,7 +206,7 @@ $html = <<<EOF
 </div>
 
 
-<div class="row" style="top:3.23in;left:1.36in;left:1.36in;"><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="row"><br><br><br><br><br><br><br><br><br><br><br><br><br>
    {$div}
 </div>
 
@@ -470,11 +486,22 @@ EOF;
 if($download == 1){
      $mpdf->Output('Training.pdf', "D");
   }elseif (isset($_GET['mail'])) {
-    header("location: training_list?sent=1");
+    header("location: training?page=training_list&sent=1");
   }else{
-    $mpdf->Output('Training.pdf', "I");  
+   $mpdf->Output('Training.pdf', "I");  
+  //print_r(' <table> ' .$trv. '</table>');
 }
 ob_end_flush();
 
 
-?>
+
+
+
+
+
+
+
+
+
+
+

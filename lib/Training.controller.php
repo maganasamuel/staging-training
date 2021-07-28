@@ -144,14 +144,28 @@ class TrainingController extends DB
         return $dataset;
     }
 
-    public function addUserTraining(
-        $full_name = '',
-        $email_address = '',
-        $password = '',
-        $ssf_number = 0,
-        $user_type = ''
-    ) {
-        $query = "INSERT INTO ta_user_training (
+
+		$query = "SELECT * FROM ta_user_training where email_address = '$email_address'";
+        $statement = $this->prepare($query);
+        $chckemail = $this->execute($statement);
+
+        $query = "SELECT * FROM ta_user_training where ssf_number = '$ssf_number'";
+        $statement = $this->prepare($query);
+        $chckfsp = $this->execute($statement);
+
+		while ($row = $chckemail->fetch_assoc()) {
+			if($row['email_address'] == $email_address){
+				return "existed";
+			}
+		}
+		while ($row = $chckfsp->fetch_assoc()) {
+			if($row['ssf_number'] == $ssf_number){
+				return "fspexisted";
+			}
+		}   
+
+
+    	$query = "INSERT INTO ta_user_training (
 					email_address,
 					full_name,
 					password,
@@ -166,12 +180,10 @@ class TrainingController extends DB
 					'$ssf_number'
 				)";
 
-        $statement = $this->prepare($query);
-        $dataset = $this->execute($statement);
-        $insert_id = $this->mysqli->insert_id;
-
-        return $insert_id;
-    }
+		$statement = $this->prepare($query);
+		$dataset = $this->execute($statement);
+		$insert_id = $this->mysqli->insert_id;
+			
 
     public function trainingLogin($email_address, $password)
     {
