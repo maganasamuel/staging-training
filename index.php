@@ -7,16 +7,16 @@ error_reporting(E_ALL);
 ob_start();
 
 //secure the page
-include_once("security.php");
-$prop = array(
-	"group_name" => "index",
-	"allow" => ""
-);
+include_once('security.php');
+$prop = [
+    'group_name' => 'index',
+    'allow' => '',
+];
 securePage($prop);
 
 //include nessary files
-include_once("lib/Session.helper.php");
-include_once("lib/General.helper.php");
+include_once('lib/Session.helper.php');
+include_once('lib/General.helper.php');
 
 $session = new SessionHelper();
 $app = new GeneralHelper();
@@ -37,6 +37,7 @@ $app = new GeneralHelper();
 
 	<!-- CSS -->
 	<!-- <link href="css/onlineinsure-bootstrap.css" rel="stylesheet"> -->
+	<link rel="stylesheet" href="css/bootstrap.css">
 	<link href="css/styles.css" rel="stylesheet">
 
 	<!-- Icon font -->
@@ -56,14 +57,14 @@ $app = new GeneralHelper();
 
 <body>
 	<?php
-	include_once("navigation.php");
-	?>
+    include_once('navigation.php');
+    ?>
 	<main role="main">
 		<?php
-		$page = $app->param($_GET, "page", "test_result");
+        $page = $app->param($_GET, 'page', 'test_result');
 
-		include_once("{$page}.php");
-		?>
+        include_once("{$page}.php");
+        ?>
 	</main><!-- /.container -->
 	<script>
 		$(function() {
