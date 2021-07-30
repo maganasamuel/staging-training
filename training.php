@@ -83,6 +83,7 @@ $page = $app->param($_GET, "page", "test_set");
 
 			<div class="collapse navbar-collapse" id="mainNav">
 				<ul class="navbar-nav mr-auto justify-content-end width100">
+					
 					<li class="nav-item">
 					<?php 
 
@@ -92,7 +93,14 @@ $page = $app->param($_GET, "page", "test_set");
 					<li class="nav-item">
 					<?php 
 						if ($idUserType == 1){
-						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=cpd_list\">CPD Topics</a>";
+						}
+					?>
+					</li>
+					<li class="nav-item">
+					<?php 
+						if ($idUserType == 1){
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
 						}
 					?>
 					</li>

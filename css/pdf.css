@@ -1,0 +1,124 @@
+@page {
+    margin-header: 11pt;
+    margin-footer: 0;
+
+    margin-left: 0;
+    margin-right: 0;
+
+    header: page-header;
+    footer: page-footer;
+
+    margin-top: 1.125in;
+    margin-bottom: 0.625in;
+}
+
+@page :first {
+    header: page-header-first;
+}
+
+.margin {
+    height: 100%;
+    margin-left: 0.77in;
+    margin-right: 0.77in;
+    /* border: 1px dashed black; */
+}
+
+.page-break {
+    page-break-after: always;
+}
+
+.header {
+    width: 100%;
+}
+
+.header-image {
+    padding-left: 5.5pt;
+    padding-bottom: 0;
+
+}
+
+.header-title {
+    font-family: 'calibri';
+    font-size: 18pt;
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
+    color: #44546a;
+    padding-left: 5.5pt;
+    padding-right: 5.5pt;
+    padding-bottom: 0;
+    vertical-align: bottom;
+    width: 60%;
+}
+
+.header-left-box {
+    width: 0.68in;
+    height: 0.65in;
+    background-color: #44546a;
+    vertical-align: bottom;
+    padding: 0;
+}
+
+.header-right-box {
+    width: 0.68in;
+    height: 0.65in;
+    background-color: #2e74b6;
+    vertical-align: bottom;
+    padding: 0;
+}
+
+.table-footer {
+    width: 100%;
+    margin-left: 0.25in;
+    margin-right: 0.25in;
+    margin-bottom: 1em;
+}
+
+.footer-logo {
+    width: 50%;
+}
+
+.footer-page {
+    width: 50%;
+    text-align: right;
+    font-family: 'calibri';
+    font-size: 11pt;
+    color: #5b9bd5;
+    vertical-align: bottom;
+}
+
+.footer-link {
+    text-align: right;
+    font-family: 'calibri';
+    font-size: 11pt;
+    color: #5b9bd5;
+    text-decoration: none;
+}
+
+body {
+    font-family: 'calibri';
+    font-size: 11pt;
+    font-weight: normal;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+p {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    text-align: justify;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.leading-6 {
+    line-height: 1.5em;
+}
+
+.leading-8 {
+    line-height: 2em;
+}

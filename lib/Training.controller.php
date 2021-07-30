@@ -1,39 +1,49 @@
 <?php
 /**
-@name: Test.helper.php
-@author: Gio
-@desc:
-	Serves as the API of the test form and test checker page
-	This page handles all asynchronous javascript request from the above mentioned page
-@returnType:
-	JSON
-*/
+ * @name: Test.helper.php
+ * @author: Gio
+ * @desc:
+ * Serves as the API of the test form and test checker page
+ * This page handles all asynchronous javascript request from the above mentioned page
+ * @returnType:
+ * JSON
+ */
 
-if($_SERVER['SERVER_NAME'] == 'onlineinsure.co.nz'){
-	$autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging/staging-training/package/vendor/autoload.php';
-}else{
-	$autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging-training/package/vendor/autoload.php';
-};
+$autoloadPath = __DIR__ . '../package/vendor/autoload.php';
+
+if (! file_exists($autoloadPath)) {
+    $autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging-training/package/vendor/autoload.php';
+}
 
 require_once $autoloadPath;
 
-include_once("class/DB.class.php");
+include_once('class/DB.class.php');
 
-class TrainingController extends DB {	
+class TrainingController extends DB
+{
     /**
-        @desc: Init class
-    */
-    public function __construct () {
+     * @desc: Init class
+     */
+    public function __construct()
+    {
         // init API
         parent::__construct();
     }
 
-    public function addTraining ($trainer_id="",$training_topic = "", 
-		$training_attendee,$training_date = "",$training_venue = "",$attendee_id = "",$trainer_signature=""){
+    public function addTraining(
+        $trainer_id = '',
+        $training_topic = '',
+        $training_attendee,
+        $training_date = '',
+        $training_venue = '',
+        $attendee_id = '',
+        $trainer_signature = '',
+        $topic_type = ''
+    )
+    {
+        $date = date('Y-m-d');
 
-    	$date = date('Y-m-d');
-
-    	$query = "INSERT INTO ta_training (
+        $query = "INSERT INTO ta_training (
 					trainer_id,
 					training_topic,
 					training_attendee,
@@ -41,7 +51,8 @@ class TrainingController extends DB {
 					attendee_signiture,
 					trainer_signiture,
 					training_venue,
-					attendee_id
+					attendee_id,
+					training_type
 				)
 				VALUES (
 					'$trainer_id',
@@ -51,25 +62,27 @@ class TrainingController extends DB {
 					'',
 					'$trainer_signature',
 					'$training_venue',
-					'$attendee_id'
+					'$attendee_id',
+					'$topic_type'
 				)";
 
-			$statement = $this->prepare($query);
-			$dataset = $this->execute($statement);
-			$insert_id = $this->mysqli->insert_id;
-			
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $insert_id = $this->mysqli->insert_id;
 
-    	return $insert_id;
-
+        return $insert_id;
     }
 
-    public function getTraining ($id,$idUserType) {
-		//prepare/execute
-		$query = "SET time_zone = '+13:00'";
+    public function getTraining($id, $idUserType)
+    {
+        //prepare/execute
+        $query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-		$query = "SELECT 
+
+
+		$query = 'SELECT 
 					ta_user_training.id_user,
 					ta_training.training_id,
 					ta_training.training_topic,
@@ -80,67 +93,63 @@ class TrainingController extends DB {
 					ta_training
 					LEFT JOIN ta_user_training
 					ON ta_user_training.id_user = ta_training.trainer_id
-					";
+					';
 
-		if($idUserType != "admin"){
+		if($idUserType != 1){
 			$query .= "WHERE ta_training.trainer_id = '$id' OR 
 					ta_training.training_attendee LIKE '%$id%'";
-		}
+        }
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
-		return $dataset;
-	}
+        return $dataset;
+    }
 
-	public function getAdviser(){
-		$query = " SELECT 
+    public function getAdviser()
+    {
+        $query = ' SELECT 
 					*
 				FROM
-					ta_user_training";
+					ta_user_training';
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
-		return $dataset;
-	}
+        return $dataset;
+    }
 
-	public function getTrainingDetail($id){
-
-
-		$query = "SET time_zone = '+13:00'";
+    public function getTrainingDetail($id)
+    {
+        $query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-		$query = "SELECT *
+        $query = "SELECT *
 		FROM ta_training
 		WHERE training_id = $id";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
-		return $dataset;
-	}
-	public function getAttendee($id){
+        return $dataset;
+    }
 
-		$query = "SET time_zone = '+13:00'";
+    public function getAttendee($id)
+    {
+        $query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-		$query = "SELECT *
+        $query = "SELECT *
 		FROM ta_user_training
 		WHERE id_user = $id";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
-		return $dataset;
+        return $dataset;
+    }
 
-	}
-	public function addUserTraining($full_name="",
-						$email_address="",
-						$password="",
-						$ssf_number=0,$user_type=""
-					){
-
+    public function addUserTraining($email_address,$full_name,$password,$user_type,$ssf_number){
 
 		$query = "SELECT * FROM ta_user_training where email_address = '$email_address'";
         $statement = $this->prepare($query);
@@ -181,102 +190,165 @@ class TrainingController extends DB {
 		$dataset = $this->execute($statement);
 		$insert_id = $this->mysqli->insert_id;
 			
+}
 
-    	return $insert_id;	
-	}
-	public function trainingLogin($email_address,$password){
-		$query = "SET time_zone = '+13:00'";
+    public function trainingLogin($email_address, $password)
+    {
+        $query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-		$query = "SELECT *
+        $query = "SELECT *
 		FROM ta_user_training
 		WHERE email_address = '$email_address' and password = '$password'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
-		return $dataset;
-	}
-	public function adminLogin($email_address){
-		$query = "SET time_zone = '+13:00'";
+        return $dataset;
+    }
+
+    public function adminLogin($email_address)
+    {
+        $query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-		$query = "SELECT *
+        $query = "SELECT *
 		FROM ta_user
 		WHERE email_address = '$email_address'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
-		return $dataset;
-	}
-	public function conductedTraining($id){
-		$query = "SELECT *
+        return $dataset;
+    }
+
+    public function conductedTraining($id)
+    {
+        $query = "SELECT *
 		FROM ta_training
 		WHERE trainer_id = '$id'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
-		return $dataset;		
 
-	}
- 	public function gettotalContducted($id){
-		$query = "SELECT COUNT(trainer_id) AS totalConducted FROM ta_training WHERE trainer_id = '$id'";
+        return $dataset;
+    }
+
+    public function gettotalContducted($id)
+    {
+        $query = "SELECT COUNT(trainer_id) AS totalConducted FROM ta_training WHERE trainer_id = '$id'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
         $totalContacted = $dataset->fetch_assoc();
 
-		return $totalContacted['totalConducted'];		
+        return $totalContacted['totalConducted'];
+    }
 
- 	}
- 	public function gettotalAttended($id){
-		$query = "SELECT COUNT(trainer_id) AS totalAttended FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee)";
+    public function gettotalAttended($id)
+    {
+        $query = "SELECT COUNT(trainer_id) AS totalAttended FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee)";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
         $totalAttended = $dataset->fetch_assoc();
 
-		return $totalAttended['totalAttended'];
- 	}
- 	public function attendedTraining($id){
- 		$query = "SELECT * FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee)";
-        $statement = $this->prepare($query);
-        $dataset = $this->execute($statement);
-		return $dataset; 
+        return $totalAttended['totalAttended'];
+    }
 
- 	}
- 	public function deleteTraining($id){
- 		$query = "DELETE FROM ta_training WHERE training_id = '$id'";
+    public function attendedTraining($id)
+    {
+        $query = "SELECT * FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee) and training_type = '2'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
-		return $dataset; 	
- 	}
- 	public function getUser(){
- 		$query = "SELECT * FROM ta_user_training where id_user != 1";
-        $statement = $this->prepare($query);
-        $dataset = $this->execute($statement);
-		return $dataset; 
- 	}
- 	public function getSpecificUser($id){
- 		$query = "SELECT * FROM ta_user_training where id_user = '$id'";
-        $statement = $this->prepare($query);
-        $dataset = $this->execute($statement);
-		return $dataset; 
- 	}
- 	public function updateUserTraining($full_name="",$email_address="",$password="",$ssf_number=0,$user_type="",$id_user=""){
 
- 		$query = "UPDATE ta_user_training SET email_address = '$email_address' , full_name = '$full_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number'
+        return $dataset;
+    }
+
+    public function cpdTraining($id)
+    {
+        $query = "SELECT * FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee) and training_type = '1'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+
+    public function deleteTraining($id)
+    {
+        $query = "DELETE FROM ta_training WHERE training_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+
+    public function getUser()
+    {
+        $query = 'SELECT * FROM ta_user_training where id_user != 1';
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+
+    public function getSpecificUser($id)
+    {
+        $query = "SELECT * FROM ta_user_training where id_user = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+
+    public function updateUserTraining($full_name = '', $email_address = '', $password = '', $ssf_number = 0, $user_type = '', $id_user = '')
+    {
+        $query = "UPDATE ta_user_training SET email_address = '$email_address' , full_name = '$full_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number'
 				WHERE id_user = '$id_user'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
-		return $dataset; 
- 	}
- 	public function deteUsertraining($id){
- 		$query = "DELETE FROM ta_user_training WHERE id_user = '$id'";
+
+        return $dataset;
+    }
+
+    public function deteUsertraining($id)
+    {
+        $query = "DELETE FROM ta_user_training WHERE id_user = '$id'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
-		return $dataset;
 
- 	}
-}	
+        return $dataset;
+    }
+    public function addCPD($cpd_name,$cpd_description){
+    	    $query = "INSERT INTO training_cpd (
+					cpd_name,
+					cpd_description)
+				VALUES (
+					'$cpd_name',
+					'$cpd_description')";
 
-?>
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $insert_id = $this->mysqli->insert_id;
+
+        return $insert_id;
+    }
+    public function getCPD(){
+    	$query = "SELECT * FROM training_cpd";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        return $dataset;
+    }
+    public function getSpecificCpd($id){
+    	$query = "SELECT * FROM training_cpd where id_cpd = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function deleteCPD($id){
+    	$query = "DELETE FROM training_cpd WHERE id_cpd = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+}
