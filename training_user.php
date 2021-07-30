@@ -40,7 +40,9 @@ while ($row = $userList->fetch_assoc()) {
 
 		$usList .= <<<EOF
 		<tr>
-			<td>{$usFullanme}</td>
+			<td>
+			<a href="training?page=adviser_profile&id={$usID}" title="View Profile" class="delete" data-toggle="tooltip" data-placement="bottom">
+			{$usFullanme}</a></td>
 			<td>{$usEmail}</td>
 			<td>{$usFSP}</td>
 			<td>{$ustype}</td>

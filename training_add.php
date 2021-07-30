@@ -31,7 +31,12 @@ $currentSessionFirstName = $app->param($_SESSION, "first_name", "User");
 $currentSessionID = $app->param($_SESSION, "id_user", -1);
 
 if ($action == "save_training") {
-	$topic = $app->param($_POST, "trainig_topic");
+	$topic_type = $app->param($_POST, "topic_type");
+	if($topic_type == "1"){
+		$topic =  $app->param($_POST, "cpd_topic");
+	}else{
+		$topic =  $app->param($_POST, "trainig_topic");
+	}
 	$attendee = $app->param($_POST, "traning_attendee");
 	$date = $app->param($_POST, "training_date");
 	$venue = $app->param($_POST, "training_venue");
@@ -43,12 +48,13 @@ if ($action == "save_training") {
 	$dataset = $trainingController->addTraining($trainer_id,
 						implode(',',$topic),
 						implode(',',$attendee),
-						$date,$venue,implode(',',$attendee_id),$trainer_signature
+						$date,$venue,implode(',',$attendee_id),$trainer_signature,$topic_type
 					);   
 
 	$message = "<div class=\"alert alert-success\" role=\"alert\">Training session saved.</div>";
 	
 	}
+
 $adviser = $trainingController->getAdviser();
 $sets = "";
 foreach($adviser as $row) {
@@ -58,6 +64,20 @@ foreach($adviser as $row) {
 		
 		$sets .= <<<EOF
 		<option value="{$id}">{$name}</option>
+EOF;
+	}
+
+$cpd = $trainingController->getCPD();
+$cpdList = "";
+$ctr = 0;
+foreach($cpd as $row) {
+
+		$cpdTopic = $row["cpd_name"];
+		$cpdDesc = $row["cpd_description"];
+		$ctr++;
+
+		$cpdList .= <<<EOF
+		<input class="form-check-input mr-2 chkbox" type="checkbox" value="$cpdTopic" id="$ctr" name="cpd_topic[]"><label title = "$cpdDesc" class="form-check-label chkbox mr-4" for="$ctr">$cpdTopic</label></br>
 EOF;
 	}
 ?>
@@ -96,14 +116,33 @@ EOF;
 				</div>
 				<br>
 				<div class="row justify-content-md-center">
-					<div class="col-3">
-						<label class="font-weight-normal text-center">Topic that will discuss</label>
+					<div class="col-3 mb-1">
+						<label class="font-weight-normal text-center">Nature Of Training / Meeting</label>
+						<select class="form-control mb-1" id="natureTraining" onchange="show()" name="topic_type">
+
+						   <option value="0" disabled selected>Select Option</option>
+						   <option value="1">Continuing Professional Development (CPD)</option>
+						   <option value="2">Team Training</option>
+						</select>
+
+						<div class="teamTraining">
+						</br>
 						<input type="hidden" value="1" id="numberChk">	
 						<div id="topicTag">
+							<label class="font-weight-normal text-center">Topics that will discuss</label>
 							<input type="text" placeholder="Topic 1" class="form-control mb-1"name="trainig_topic[]" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
 						</div>
-	
 						<button type="button" onclick="addTopic()" class="btn btn-info width mt-1">Add Topic</button>
+						</div>
+
+						<div class="cpdTraining">
+							</br>
+							<label class="font-weight-normal text-center">Topics that will discuss</label>
+							<div class="form-check">
+							  <?= $cpdList; ?>
+							</div>
+						</div>
+
 					</div>
 				</div>
 				<br>
@@ -111,11 +150,9 @@ EOF;
 					<div class="col-3">
 						<label class="font-weight-normal text-center">Attendee on the training</label>
 						<select class="adviser js-states form-control" multiple="multiple" name="traning_attendee[]">
-							  
 								<?php
 									echo $sets;
 								?>
-							 
 						</select>
 					</div>
 				</div>
@@ -201,6 +238,22 @@ EOF;
 			$(".adviser").select2({
 			    placeholder: "Select a adviser"
 			});
+
+			$(".cpd").select2({
+			    placeholder: "Select a topic"
+			});
+			$(".teamTraining").hide();
+			$(".cpdTraining").hide();
+			function show(){
+				var id = $('#natureTraining :selected').val();
+				if(id == 1){
+					$(".cpdTraining").show();
+					$(".teamTraining").hide();
+				}else{
+					$(".teamTraining").show();
+					$(".cpdTraining").hide();
+				}
+			}
 		</script>
 		<style type="text/css">
 			.wrapper {
@@ -220,6 +273,9 @@ EOF;
 			  width:400px;
 			  height:200px;
 			  background-color: white;
+			}
+			.chkbox{
+				font-size: 15px;
 			}
 		</style>
 
