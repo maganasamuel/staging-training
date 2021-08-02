@@ -38,27 +38,27 @@ $usID = $app->param($_GET, "id");
 $usType = "";
 if ($action == "save_profile") {
 
-  $full_name = $app->param($_POST, "full_name");
+  $first_name = $app->param($_POST, "first_name");
+  $last_name = $app->param($_POST, "first_name");
   $email_address = $app->param($_POST, "email_address");
   $password = $app->param($_POST, "password");
   $ssfnumber = $app->param($_POST, "ssfnumber");
   $user_type = $app->param($_POST, "user_type");
 
 
- if($full_name != "" || $email_address != ""|| $password != "" ){
+ if($first_name != ""|| $last_name != "" || $email_address != ""|| $password != "" ){
   
   if($usID){
-      $datasetuser = $trainingController->updateUserTraining($full_name,
+      $datasetuser = $trainingController->updateUserTraining($first_name,$last_name,
             $email_address,
             $password,
             $ssfnumber,$user_type,$usID
           ); 
 
   }else{
-    $datasetuser = $trainingController->addUserTraining($full_name,
-            $email_address,
-            $password,
-            $ssfnumber,$user_type
+    $datasetuser = $trainingController->addUserTraining($email_address,
+            $first_name,$last_name,
+            $password,$user_type,$ssfnumber
           );   
   }
   
@@ -82,7 +82,8 @@ if($usID){
 $usList = $trainingController->getSpecificUser($usID);
 
 while ($row = $usList->fetch_assoc()) {
-  $usName = $row["full_name"];
+  $usFirstName = $row["first_name"];
+  $usLastName = $row["last_name"];
   $usEmail = $row["email_address"];
   $usFSP = $row["ssf_number"];
   $usPassword = $row["password"];
@@ -111,8 +112,14 @@ while ($row = $usList->fetch_assoc()) {
       <form method="post">
         <div class="row justify-content-md-center">
           <div class="col-3">
-            <label class="font-weight-normal text-center">Full Name<span style="color:red;">*</span></label>
-            <input type="text" placeholder="Full Name" class="form-control mb-2" value="<?= (empty($usName)) ? '' : $usName ?>" name="full_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+            <label class="font-weight-normal text-center">First Name<span style="color:red;">*</span></label>
+            <input type="text" placeholder="Fist Name" class="form-control mb-2" value="<?= (empty($usFirstName)) ? '' : $usFirstName ?>" name="first_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+          </div>
+        </div>
+        <div class="row justify-content-md-center">
+          <div class="col-3">
+            <label class="font-weight-normal text-center">Last Name<span style="color:red;">*</span></label>
+            <input type="text" placeholder="Last Name" class="form-control mb-2" value="<?= (empty($usLastName)) ? '' : $usLastName ?>" name="last_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <div class="row justify-content-md-center">

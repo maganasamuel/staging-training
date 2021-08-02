@@ -59,7 +59,7 @@ $adviser = $trainingController->getAdviser();
 $sets = "";
 foreach($adviser as $row) {
 
-		$name = $row["full_name"];
+		$name = $row["first_name"].' '.$row['last_name'];
 		$id = $row["id_user"];
 		
 		$sets .= <<<EOF
