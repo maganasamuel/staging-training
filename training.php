@@ -106,6 +106,13 @@ $page = $app->param($_GET, "page", "test_set");
 					</li>
 					<li class="nav-item">
 					<?php 
+						if ($idUserType == 3){
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}\">My Profile</a>";
+						}
+					?>
+					</li>
+					<li class="nav-item">
+					<?php 
 						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type=trainer\">Sign out</a>";
 					?>
 					</li>
