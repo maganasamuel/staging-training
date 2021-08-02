@@ -82,6 +82,43 @@ while ($row = $cpdTraining->fetch_assoc()) {
 EOF;
 }
 
+
+
+
+// Modular Training Start
+$modTraining = $trainingController->getModularTraining($idProfile);
+$modList = "";
+
+$topic = '';
+$module_taken = '';
+$score = '';
+$result = '';
+
+while ($row = $modTraining->fetch_assoc()) {
+  $topic = $row["set_name"];
+  $module_taken = $row["date_took"];
+  $score = $row["score"];
+  $maxScore = $row["max_score"];
+  $result = "FAILED";
+
+  //score
+  $score = (($score / $maxScore) * 100);
+  $score = number_format((float) $score, 2, '.', '');
+
+  if($score >= 80)
+    $result = "PASSED";
+
+  $modList .= <<<EOF
+    <tr>
+      <td>{$topic}</td>
+      <td>{$module_taken}</td>
+      <td>{$score}%</td>
+      <td>{$result}</td>
+    </tr>
+  EOF;
+}
+
+// Modular Training End
 ?>
 
     <div class="subHeader">
@@ -109,7 +146,7 @@ EOF;
                   </div>
                 </div>
           </div>
-           <div class="col-4">
+          <div class="col-4">
            <h6>Continuing Professional Development Course</h6>
              <table class="table table-responsive-md table-hoverable">
                 <thead style="background-color:#e9ecef;">
@@ -139,6 +176,26 @@ EOF;
                 <tbody>
                 <?php
                       echo $trAttended;
+                ?>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row  ml-5">
+          <div class="offset-md-3 col-md-4">
+           <h6>Modular Training</h6>
+             <table class="table table-responsive-md table-hoverable">
+                <thead style="background-color:#e9ecef;">
+                  <tr>
+                    <th>Topics Trained On</th>
+                    <th>Module Take</th>
+                    <th>Score</th>
+                    <th>Results</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <?php
+                      echo $modList;
                 ?>
                 </tbody>
             </table>
