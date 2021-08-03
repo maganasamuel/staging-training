@@ -12,7 +12,7 @@
 $autoloadPath = __DIR__ . '../package/vendor/autoload.php';
 
 if (! file_exists($autoloadPath)) {
-    $autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging/staging-training/package/vendor/autoload.php';
+    $autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging-training/package/vendor/autoload.php';
     // $autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/package/vendor/autoload.php';
 }
 
