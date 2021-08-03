@@ -77,6 +77,7 @@ if($type == "trainer"){
 				}else{
 					$_SESSION['full_name']= $row['first_name'] . $row['last_name'] ;
 					$_SESSION['fsp']= $row['ssf_number'];
+					$_SESSION['email']= $row['email_address'];
 					$_SESSION['id_user_type']= $row['id_user_type'];
 					$_SESSION['id_user']= $row['id_user'];
 					$_SESSION['grant']= 'yes';
