@@ -19,6 +19,7 @@ $app = new GeneralHelper();
 $trainingController = new TrainingController();
 
 $idProfile = $app->param($_GET, "id", 0);
+$emailID = $app->param($_GET, "email", 0);
 
 $attendedTraining = $trainingController->attendedTraining($idProfile);
 $trAttended = "";
@@ -85,7 +86,7 @@ while ($row = $cpdTraining->fetch_assoc()) {
 EOF;
 }
 
-$modTraining = $trainingController->getModularTraining($idProfile);
+$modTraining = $trainingController->getModularTraining($emailID);
 $modList = "";
 
 $topic = '';
