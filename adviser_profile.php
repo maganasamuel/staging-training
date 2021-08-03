@@ -98,14 +98,15 @@ while ($row = $modTraining->fetch_assoc()) {
   $module_taken = $row["date_took"];
   $score = $row["score"];
   $maxScore = $row["max_score"];
-  $result = "FAILED";
+  $result = "<span style='color: red'>FAILED</span>";
+  $attempts = $row["attempts"];
 
   //score
   $score = (($score / $maxScore) * 100);
   $score = number_format((float) $score, 2, '.', '');
 
   if($score >= 80)
-    $result = "PASSED";
+    $result = "<span style='color: green'>PASSED</span>";
 
   $modList .= '
     <tr>
@@ -113,6 +114,7 @@ while ($row = $modTraining->fetch_assoc()) {
       <td>'.$module_taken.'</td>
       <td>'.$score.'%</td>
       <td>'.$result.'</td>
+      <td>'.$attempts.'</td>
     </tr>';
   
 }
@@ -190,6 +192,7 @@ while ($row = $modTraining->fetch_assoc()) {
             <th>Module Take</th>
             <th>Score</th>
             <th>Results</th>
+            <th>No. of Attempts</th>
           </tr>
         </thead>
         <tbody>
@@ -201,4 +204,3 @@ while ($row = $modTraining->fetch_assoc()) {
   </div>
 </div>
     </div>
-
