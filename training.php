@@ -21,6 +21,7 @@ if($access != "yes"){
 
 $idUserType = $app->param($_SESSION, "id_user_type", -1);
 $userFullName = $app->param($_SESSION, "full_name", -1);
+$email = $app->param($_SESSION, "email", -1);
 $fsp = $app->param($_SESSION, "fsp", -1);
 $id_user = $app->param($_SESSION, "id_user", -1);
 
@@ -109,7 +110,7 @@ $page = $app->param($_GET, "page", "test_set");
 					<li class="nav-item">
 					<?php 
 						
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}\">My Profile</a>";
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}&email={$email}\">My Profile</a>";
 						
 					?>
 					</li>
