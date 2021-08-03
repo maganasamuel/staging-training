@@ -201,9 +201,8 @@ class TrainingController extends DB
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-        $query = "SELECT *
-        FROM ta_user
-        WHERE email_address = '$email_address' and password = '$password'";
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user)
+FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' GROUP BY email_address)  ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -286,7 +285,7 @@ class TrainingController extends DB
 
     public function getUser()
     {
-        $query = 'SELECT * FROM ta_user where id_user != "1" and email_address like "%eliteinsure.co.nz"';
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" GROUP BY email_address) ';
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -355,7 +354,7 @@ class TrainingController extends DB
         return $dataset;
     }
     public function getModularTraining (
-        $idProfile = 0 // specific ID to be displayed
+        $idProfile // specific ID to be displayed
     ) {
         //prepare/execute
         $query = "SET time_zone = '+13:00'";
@@ -423,7 +422,7 @@ class TrainingController extends DB
                             ta_set_question.id_set
                     ) set_question ON ta_set.id_set = set_question.id_set
                 WHERE 
-                    ta_user_took.id_user = ? AND 
+                    ta_user_took.email_address = '{$idProfile}' AND 
                     ta_test.is_deleted = 0 AND 
                     test_detail.answer_count = set_question.question_count
                 GROUP BY
@@ -434,9 +433,13 @@ class TrainingController extends DB
         ) ORDER BY
             tsa.set_name";
         $statement = $this->prepare($query);
-        $statement->bind_param("i", $idProfile);
         $dataset = $this->execute($statement);
 
         return $dataset;
+    }
+    public function activeStatus($id,$status){
+    	$query = "UPDATE ta_user SET status = '{$status}' where id_user = '{$id}'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
     }
 }

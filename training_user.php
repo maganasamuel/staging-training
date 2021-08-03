@@ -19,6 +19,18 @@ if ($action == "delUser") {
 	$deteUser = $trainingController->deteUsertraining($idUser);
 }
 
+$activate = $app->param($_POST, "activate",0);
+
+if ($activate != 0) {
+	$myStatus = $app->param($_POST, "status",0);	
+	$status = $trainingController->activeStatus($activate,$myStatus);
+}
+
+if ($action == "delUser") {
+	$idUser = $app->param($_GET, "id", 0);
+	$deteUser = $trainingController->deteUsertraining($idUser);
+}
+
 $userList = $trainingController->getUser();
 $usList = "";
 
@@ -29,6 +41,19 @@ while ($row = $userList->fetch_assoc()) {
 		$usEmail = $row["email_address"];
 		$usFSP = $row["ssf_number"];	
 		$usNumber = $row["id_user_type"];	
+		$usStatus = $row["status"];			
+		$newStatus = "";
+		$chck = "";
+
+		if($usStatus == "1"){
+			$newStatus = "0";
+		}else{
+			$newStatus = "1";
+		}
+
+		if($usStatus == 1){
+			$chck = "checked";
+		}
 
 		if($usNumber == "1"){
 			$ustype = "Admin";
@@ -41,11 +66,16 @@ while ($row = $userList->fetch_assoc()) {
 		$usList .= <<<EOF
 		<tr>
 			<td>
-			<a href="training?page=adviser_profile&id={$usID}" title="View Profile" class="delete" data-toggle="tooltip" data-placement="bottom">
+			<a href="training?page=adviser_profile&id={$usID}&email={$usEmail}" title="View Profile" class="delete" data-toggle="tooltip" data-placement="bottom">
 			{$usFullanme}</a></td>
 			<td>{$usEmail}</td>
 			<td>{$usFSP}</td>
 			<td>{$ustype}</td>
+			<td><div class="custom-control custom-switch">
+	  				<input type="checkbox" class="custom-control-input" id="{$usEmail}" onclick="test({$usID},{$newStatus})" {$chck}>
+	  				<label class="custom-control-label" for="{$usEmail}"></label>
+				</div>
+			</td>
 			<td>
 				<a href="training?page=training_user_add&id={$usID}" title="Edit User" class="delete" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">edit</i>
@@ -87,6 +117,7 @@ EOF;
 							      <th scope="col">Email Address</th>
 							      <th scope="col">FSP</th>
 							      <th scope="col">User Type</th>
+							      <th scope="col">Status</th>
 							      <th scope="col">Action</th>
 							    </tr>
 							  </thead>
@@ -102,3 +133,32 @@ EOF;
 				<div class="col-sm-1"></div>
 			</div>
 		</div>
+		<script type="text/javascript">
+			function test(id,status){
+
+				 $.ajax({
+                    url: 'training?page=training_user',
+                    type: 'post',
+                    data: {
+                       activate: id,
+                       status: status
+                    },
+                    success: function(data) {
+						const Toast = Swal.mixin({
+						toast: true,
+						position: 'top-end',
+						showConfirmButton: false,
+						timer: 3000,
+						didOpen: (toast) => {
+						toast.addEventListener('mouseenter', Swal.stopTimer)
+						toast.addEventListener('mouseleave', Swal.resumeTimer)
+					  }
+					})
+						Toast.fire({
+						icon: 'success',
+						title: 'Account successfully updated'
+						})
+                    }
+                });
+			}
+		</script>

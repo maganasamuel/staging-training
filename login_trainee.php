@@ -71,14 +71,21 @@ $trainingLogin = $training->trainingLogin($emailAddress,$password);
 if($type == "trainer"){
 	if ($trainingLogin->num_rows > 0) {
 		while ($row = $trainingLogin->fetch_assoc()) {
-				$_SESSION['full_name']= $row['first_name'] . $row['last_name'] ;
-				$_SESSION['fsp']= $row['ssf_number'];
-				$_SESSION['id_user_type']= $row['id_user_type'];
-				$_SESSION['id_user']= $row['id_user'];
-				$_SESSION['grant']= 'yes';
+
+				if($row['status'] == "0"){
+					$message = "Account is deactivated!";
+				}else{
+					$_SESSION['full_name']= $row['first_name'] . $row['last_name'] ;
+					$_SESSION['fsp']= $row['ssf_number'];
+					$_SESSION['id_user_type']= $row['id_user_type'];
+					$_SESSION['id_user']= $row['id_user'];
+					$_SESSION['grant']= 'yes';
+					$session->createTemporarySession($data);
+					header("location: training?page=training_list");					
+				}
+
 		}
-		$session->createTemporarySession($data);
-		header("location: training?page=training_list");
+		
 	}
 }
 
