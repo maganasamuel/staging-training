@@ -13,6 +13,7 @@ $autoloadPath = __DIR__ . '../package/vendor/autoload.php';
 
 if (! file_exists($autoloadPath)) {
     $autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging/staging-training/package/vendor/autoload.php';
+    // $autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/package/vendor/autoload.php';
 }
 
 require_once $autoloadPath;
@@ -361,56 +362,77 @@ class TrainingController extends DB
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-        $query = "SELECT
-            ta_test.id_test,
-            ta_test.id_user_tested,
-            DATE_FORMAT(DATE(ta_test.date_took), '%d %b %Y') date_took,
-            DATE_FORMAT(fn_get_completion_date(ta_test.id_test), '%d/%b/%Y') date_completed,
-            TIMEDIFF(fn_get_completion_date(ta_test.id_test), ta_test.date_took) time_took,
-            ta_test.id_user_checked,
-            ta_test.date_checked,
-            ta_user_took.first_name,
-            ta_user_took.last_name,
-            ta_user_took.email_address,
-            fn_get_test_score(ta_test.id_test) score,
-            fn_get_test_max_score(ta_test.id_set) max_score,
-            ta_set.id_set,
-            ta_set.set_name,
-            ta_set.is_auto_check,
-            ta_set.id_user_type_test,
-            DATE_FORMAT(NOW() , '%d%m%Y') date_now
-        FROM
-            ta_test
-            LEFT JOIN ta_user ta_user_took
-                ON ta_test.id_user_tested = ta_user_took.id_user
-            LEFT JOIN (
+        $query = "SELECT 
+            tsa.set_name,
+            DATE_FORMAT(DATE(tta.date_took), '%d %b %Y') date_took,
+            fn_get_test_score(tta.id_test) score,
+            fn_get_test_max_score(tta.id_set) max_score,(
+            SELECT
+                COUNT(1)
+            FROM 
+                ta_test ttb LEFT JOIN (
+                    SELECT
+                        COUNT(*) answer_count,
+                        ta_test_detail.id_test
+                    FROM
+                        ta_test_detail
+                    GROUP BY
+                        ta_test_detail.id_test
+                ) tdb ON ttb.id_test = tdb.id_test LEFT JOIN 
+                ta_set tsb ON ttb.id_set = tsb.id_set LEFT JOIN (
+                    SELECT
+                        COUNT(*) question_count,
+                        ta_set_question.id_set
+                    FROM
+                        ta_set_question
+                    GROUP BY
+                        ta_set_question.id_set
+                ) sqb ON tsb.id_set = sqb.id_set
+           WHERE
+                ttb.id_user_tested = tua.id_user AND
+                ttb.id_set = tsa.id_set AND
+                ttb.is_deleted = 0 AND
+                tdb.answer_count = sqb.question_count
+            ) attempts
+        FROM 
+            ta_test tta LEFT JOIN 
+            ta_set tsa ON tta.id_set = tsa.id_set LEFT JOIN
+            ta_user tua ON tta.id_user_tested = tua.id_user
+        WHERE
+            tta.id_test IN (
                 SELECT
-                    COUNT(*) answer_count,
-                    ta_test_detail.id_test
+                    MAX(ta_test.id_test) id_test
                 FROM
-                    ta_test_detail
+                    ta_test LEFT JOIN 
+                    ta_user ta_user_took ON ta_test.id_user_tested = ta_user_took.id_user LEFT JOIN (
+                        SELECT
+                            COUNT(*) answer_count,
+                            ta_test_detail.id_test
+                        FROM
+                            ta_test_detail
+                        GROUP BY
+                            ta_test_detail.id_test
+                    ) test_detail ON ta_test.id_test = test_detail.id_test LEFT JOIN 
+                    ta_set ON ta_test.id_set = ta_set.id_set LEFT JOIN (
+                        SELECT
+                            COUNT(*) question_count,
+                            ta_set_question.id_set
+                        FROM
+                            ta_set_question
+                        GROUP BY
+                            ta_set_question.id_set
+                    ) set_question ON ta_set.id_set = set_question.id_set
+                WHERE 
+                    ta_user_took.id_user = ? AND 
+                    ta_test.is_deleted = 0 AND 
+                    test_detail.answer_count = set_question.question_count
                 GROUP BY
-                    ta_test_detail.id_test
-            )
-            test_detail
-                ON ta_test.id_test = test_detail.id_test
-            LEFT JOIN ta_set
-                ON ta_test.id_set = ta_set.id_set
-            LEFT JOIN (
-                SELECT
-                    COUNT(*) question_count,
-                    ta_set_question.id_set
-                FROM
-                    ta_set_question
-                GROUP BY
-                    ta_set_question.id_set
-            ) set_question
-                ON ta_set.id_set = set_question.id_set
-        WHERE ta_user_took.id_user = ?
-        AND ta_test.is_deleted = 0
-        AND test_detail.answer_count = set_question.question_count
-        ORDER BY
-            ta_test.id_test DESC";
+                    ta_set.id_set
+                ORDER BY
+                    ta_test.id_set DESC,
+                    ta_test.id_test DESC
+        ) ORDER BY
+            tsa.set_name";
         $statement = $this->prepare($query);
         $statement->bind_param("i", $idProfile);
         $dataset = $this->execute($statement);
