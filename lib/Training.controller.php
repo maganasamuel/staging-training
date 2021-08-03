@@ -83,16 +83,16 @@ class TrainingController extends DB
 
 
 		$query = 'SELECT 
-					ta_user_training.id_user,
+					ta_user.id_user,
 					ta_training.training_id,
 					ta_training.training_topic,
 					ta_training.training_attendee,
-					ta_user_training.full_name as fullname,
+					CONCAT(ta_user.first_name," 	",ta_user.last_name) as fullname,
 					ta_training.training_date
 				FROM
 					ta_training
-					LEFT JOIN ta_user_training
-					ON ta_user_training.id_user = ta_training.trainer_id
+					LEFT JOIN ta_user
+					ON ta_user.id_user = ta_training.trainer_id
 					';
 
 		if($idUserType != 1){
@@ -111,7 +111,7 @@ class TrainingController extends DB
         $query = ' SELECT 
 					*
 				FROM
-					ta_user_training';
+					ta_user where email_address like "%eliteinsure.co.nz"';
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -141,7 +141,7 @@ class TrainingController extends DB
         $this->execute($statement);
 
         $query = "SELECT *
-		FROM ta_user_training
+		FROM ta_user
 		WHERE id_user = $id";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -149,13 +149,13 @@ class TrainingController extends DB
         return $dataset;
     }
 
-    public function addUserTraining($email_address,$full_name,$password,$user_type,$ssf_number){
+    public function addUserTraining($email_address,$first_name,$last_name,$password,$user_type,$ssf_number ='0'){
 
-		$query = "SELECT * FROM ta_user_training where email_address = '$email_address'";
+		$query = "SELECT * FROM ta_user where email_address = '$email_address'";
         $statement = $this->prepare($query);
         $chckemail = $this->execute($statement);
 
-        $query = "SELECT * FROM ta_user_training where ssf_number = '$ssf_number'";
+        $query = "SELECT * FROM ta_user where ssf_number = '$ssf_number'";
         $statement = $this->prepare($query);
         $chckfsp = $this->execute($statement);
 
@@ -171,16 +171,18 @@ class TrainingController extends DB
 		}   
 
 
-    	$query = "INSERT INTO ta_user_training (
+    	$query = "INSERT INTO ta_user (
 					email_address,
-					full_name,
+					first_name,
+					last_name,
 					password,
 					id_user_type,
 					ssf_number
 				)
 				VALUES (
 					'$email_address',
-					'$full_name',
+					'$first_name',
+					'$last_name',
 					'$password',
 					'$user_type',
 					'$ssf_number'
@@ -199,7 +201,7 @@ class TrainingController extends DB
         $this->execute($statement);
 
         $query = "SELECT *
-		FROM ta_user_training
+		FROM ta_user
 		WHERE email_address = '$email_address' and password = '$password'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -283,7 +285,7 @@ class TrainingController extends DB
 
     public function getUser()
     {
-        $query = 'SELECT * FROM ta_user_training where id_user != 1';
+        $query = 'SELECT * FROM ta_user where id_user != "1" and email_address like "%eliteinsure.co.nz"';
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -292,16 +294,16 @@ class TrainingController extends DB
 
     public function getSpecificUser($id)
     {
-        $query = "SELECT * FROM ta_user_training where id_user = '$id'";
+        $query = "SELECT * FROM ta_user where id_user = '$id'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
         return $dataset;
     }
 
-    public function updateUserTraining($full_name = '', $email_address = '', $password = '', $ssf_number = 0, $user_type = '', $id_user = '')
+    public function updateUserTraining($first_name='',$last_name='', $email_address = '', $password = '', $ssf_number = 0, $user_type = '', $id_user = '')
     {
-        $query = "UPDATE ta_user_training SET email_address = '$email_address' , full_name = '$full_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number'
+        $query = "UPDATE ta_user SET email_address = '$email_address' , first_name = '$first_name' , last_name = '$last_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number'
 				WHERE id_user = '$id_user'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -311,7 +313,7 @@ class TrainingController extends DB
 
     public function deteUsertraining($id)
     {
-        $query = "DELETE FROM ta_user_training WHERE id_user = '$id'";
+        $query = "DELETE FROM ta_user WHERE id_user = '$id'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -347,6 +349,70 @@ class TrainingController extends DB
     public function deleteCPD($id){
     	$query = "DELETE FROM training_cpd WHERE id_cpd = '$id'";
         $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function getModularTraining (
+        $idProfile = 0 // specific ID to be displayed
+    ) {
+        //prepare/execute
+        $query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+        $query = "SELECT
+            ta_test.id_test,
+            ta_test.id_user_tested,
+            DATE_FORMAT(DATE(ta_test.date_took), '%d %b %Y') date_took,
+            DATE_FORMAT(fn_get_completion_date(ta_test.id_test), '%d/%b/%Y') date_completed,
+            TIMEDIFF(fn_get_completion_date(ta_test.id_test), ta_test.date_took) time_took,
+            ta_test.id_user_checked,
+            ta_test.date_checked,
+            ta_user_took.first_name,
+            ta_user_took.last_name,
+            ta_user_took.email_address,
+            fn_get_test_score(ta_test.id_test) score,
+            fn_get_test_max_score(ta_test.id_set) max_score,
+            ta_set.id_set,
+            ta_set.set_name,
+            ta_set.is_auto_check,
+            ta_set.id_user_type_test,
+            DATE_FORMAT(NOW() , '%d%m%Y') date_now
+        FROM
+            ta_test
+            LEFT JOIN ta_user ta_user_took
+                ON ta_test.id_user_tested = ta_user_took.id_user
+            LEFT JOIN (
+                SELECT
+                    COUNT(*) answer_count,
+                    ta_test_detail.id_test
+                FROM
+                    ta_test_detail
+                GROUP BY
+                    ta_test_detail.id_test
+            )
+            test_detail
+                ON ta_test.id_test = test_detail.id_test
+            LEFT JOIN ta_set
+                ON ta_test.id_set = ta_set.id_set
+            LEFT JOIN (
+                SELECT
+                    COUNT(*) question_count,
+                    ta_set_question.id_set
+                FROM
+                    ta_set_question
+                GROUP BY
+                    ta_set_question.id_set
+            ) set_question
+                ON ta_set.id_set = set_question.id_set
+        WHERE ta_user_took.id_user = ?
+        AND ta_test.is_deleted = 0
+        AND test_detail.answer_count = set_question.question_count
+        ORDER BY
+            ta_test.id_test DESC";
+        $statement = $this->prepare($query);
+        $statement->bind_param("i", $idProfile);
         $dataset = $this->execute($statement);
 
         return $dataset;

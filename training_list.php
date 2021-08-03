@@ -161,11 +161,6 @@ EOF;
 			<div class="row">
 				<div class="col-sm-1"></div>
 				<div class="col-sm-10">
-					<div class="tab">
-					  <button class="tablinks" onclick="openCity(event, 'TrainingList')" id="defaultOpen">Training List</button>
-					  <button class="tablinks" onclick="openCity(event, 'MyProfile')" >Training Summary</button>
-					</div>
-
 			<div id="TrainingList" class="tabcontent">
 			  <div class="row">
 				<div class="col-sm-12">					
@@ -179,51 +174,6 @@ EOF;
 				
 			</div>
 			</div>
-					<div id="MyProfile" class="tabcontent">
-						<div class="row ml-3">
-					 		<div class="col-3 cell-user">
-								<div class="cell-controls"></div>
-									<div class="cell-detail">
-										<p class="capitalize">Adviser: <?= $userFullName; ?></p>
-										<p >FSP: <?= $fsp; ?></p>
-										<p class="trainConducted">Total Conducted: <?=$totalConcducted;?></p>
-										<p>Total Attended:  <?=$totalAttended;?></p>
-									</div>
-							</div>	
-							<div class="col-4 trainConducted" >
-								<div class="cell-controls text-center" style="font-size: 15px;">Trainings Conducted</div>
-								<table class="table">
-								  <thead>
-								    <tr>
-								      <th scope="col">Date</th>
-								      <th scope="col">Topic</th>
-								    </tr>
-								  </thead>
-								  <tbody>
-								    <?php
-											echo $trConducted;
-									?>
-								  </tbody>
-								</table>
-							</div>	
-							<div class="col-4">
-								<div class="cell-controls text-center" style="font-size: 15px;">Trainings Attended</div>
-								<table class="table">
-								  <thead>
-								    <tr>
-								      <th scope="col">Date</th>
-								      <th scope="col">Topic</th>
-								    </tr>
-								  </thead>
-								  <tbody>
-								  	<?php
-											echo $trAttended;
-									?>
-								  </tbody>
-								</table>
-							</div>	
-						</div>
-					</div>	
 				</div>
 
 				<div class="col-sm-1"></div>
@@ -236,45 +186,6 @@ EOF;
 		}
 		td:nth-child(2),td:nth-child(3),td:nth-child(1),td:nth-child(4),td:nth-child(5){
 			text-align: center;
-		}
-		
-		.tab {
-		  overflow: hidden;
-		  border: 1px solid #ccc;
-		}
-
-		.tab button {
-		  background-color: inherit;
-		  float: left;
-		  border: none;
-		  outline: none;
-		  cursor: pointer;
-		  padding: 14px 16px;
-		  transition: 0.3s;
-		  font-size: 17px;
-		}
-
-		.tab button:hover {
-		  background-color: #ddd;
-		}
-
-		.tab button.active {
-		  background-color: #ccc;
-		}
-
-		/* Style the tab content */
-		.tabcontent {
-		  display: none;
-		  padding: 6px 12px;
-		  border: 1px solid #ccc;
-		  border-top: none;
-		}
-		.table .thead-light th{
-			font-weight: bold;
-			font-size: 16px;
-		}
-		.table .tr .td{
-			font-size: 13px;
 		}
 		<?php if ( $idUserType == "3"){
 			echo "
@@ -297,22 +208,7 @@ EOF;
 		}
 		?>
 	</style>
-	<script type="text/javascript">
-		function openCity(evt, cityName) {
-			  var i, tabcontent, tablinks;
-			  tabcontent = document.getElementsByClassName("tabcontent");
-			  for (i = 0; i < tabcontent.length; i++) {
-			    tabcontent[i].style.display = "none";
-			  }
-			  tablinks = document.getElementsByClassName("tablinks");
-			  for (i = 0; i < tablinks.length; i++) {
-			    tablinks[i].className = tablinks[i].className.replace(" active", "");
-			  }
-			  document.getElementById(cityName).style.display = "block";
-			  evt.currentTarget.className += " active";
-			}
-			document.getElementById("defaultOpen").click();
-	</script>
+	
 
 
 
