@@ -25,7 +25,7 @@ $usList = "";
 while ($row = $userList->fetch_assoc()) {
 
 		$usID = $row["id_user"];
-		$usFullanme = $row["full_name"];
+		$usFullanme = $row["first_name"].' '.$row['last_name'];
 		$usEmail = $row["email_address"];
 		$usFSP = $row["ssf_number"];	
 		$usNumber = $row["id_user_type"];	

@@ -37,7 +37,7 @@ $fullnameTrainer = "";
 $emailTrainer = "";
 $trainerName = $trainingController->getAttendee($trainerID);
   while ($row = $trainerName->fetch_assoc()) {
-        $fullnameTrainer = $row["full_name"];
+        $fullnameTrainer = $row["first_name"].' '.$row["last_name"];
         $emailTrainer = $row["email_address"];
   }
 
@@ -57,7 +57,7 @@ for($i = 0; $i< count($arrAttendee); $i++) {
   while ($row = $data->fetch_assoc()) {
   
 
-    $firstName = $row["full_name"];
+    $firstName = $row["first_name"].' '.$row["last_name"];
     $emailAddress = $row["email_address"];
     $crtAttendee = $crtAttendee +1;
 
@@ -321,7 +321,7 @@ for($i = 0; $i< count($arrAttendee); $i++){
            $mpdf = new \Mpdf\Mpdf();
       }
 
-      $firstName = $row["full_name"];
+      $firstName = $row["first_name"].' '.$row["last_name"];
       $email = $row["email_address"];
 
       $mpdf->AddPage('P');
