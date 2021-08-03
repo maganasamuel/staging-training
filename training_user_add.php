@@ -39,7 +39,7 @@ $usType = "";
 if ($action == "save_profile") {
 
   $first_name = $app->param($_POST, "first_name");
-  $last_name = $app->param($_POST, "first_name");
+  $last_name = $app->param($_POST, "last_name");
   $email_address = $app->param($_POST, "email_address");
   $password = $app->param($_POST, "password");
   $ssfnumber = $app->param($_POST, "ssfnumber");
