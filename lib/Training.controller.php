@@ -109,10 +109,7 @@ class TrainingController extends DB
 
     public function getAdviser()
     {
-        $query = ' SELECT 
-                    *
-                FROM
-                    ta_user where email_address like "%eliteinsure.co.nz"';
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" and status = "1" GROUP BY email_address) ';
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
