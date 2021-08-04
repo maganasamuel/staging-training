@@ -57,7 +57,7 @@ while ($row = $userList->fetch_assoc()) {
 
 		if($usNumber == "1"){
 			$ustype = "Admin";
-		}elseif ($usNumber == "2") {
+		}elseif ($usNumber == "3") {
 			$ustype = "ADR/SADR";
 		}else{
 			$ustype = "Adviser";
@@ -110,7 +110,7 @@ EOF;
 				<div class="row">
 					<div class="col-1"></div>
 					<div class="col-10">
-						  <table class="table table-responsive-md table-hoverable">
+						  <table class="table table-responsive-md table-hoverable usList">
 							  <thead style="background-color:#e9ecef;">
 							    <tr>
 							      <th scope="col">Full Name</th>
@@ -161,4 +161,9 @@ EOF;
                     }
                 });
 			}
+			$(document).ready( function () {
+          		$('.usList').dataTable( {
+ 				 "pageLength": 25
+				});
+      		});
 		</script>

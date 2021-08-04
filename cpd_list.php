@@ -66,7 +66,7 @@ EOF;
 				<div class="row">
 					<div class="col-1"></div>
 					<div class="col-10">
-						  <table class="table table-responsive-md table-hoverable">
+						  <table class="table table-responsive-md table-hoverable cpdList">
 							  <thead style="background-color:#e9ecef;">
 							    <tr>
 							      <th >CPD Topic</th>
@@ -94,3 +94,10 @@ EOF;
 				width: 70%;
 			}
 		</style>
+		<script type="text/javascript">
+			$(document).ready( function () {
+          		$('.cpdList').dataTable( {
+ 				 "pageLength": 25
+				});
+      		});
+		</script>

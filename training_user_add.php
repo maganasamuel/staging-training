@@ -146,8 +146,8 @@ while ($row = $usList->fetch_assoc()) {
            <div class="form-group">
             <select class="form-control" id="exampleFormControlSelect1" name="user_type">
               <option value="1" <?php if($usType == 1) echo "Selected";?> >Admin</option>
-              <option value="2" <?php if($usType == 2) echo "Selected";?> >ADR / SADR </option>
-              <option value="3" <?php if($usType == 3) echo "Selected";?> >Adviser</option>
+              <option value="3" <?php if($usType == 3) echo "Selected";?> >ADR / SADR </option>
+              <option value="2" <?php if($usType == 2) echo "Selected";?> >Adviser</option>
             </select>
             </div>
           </div>
