@@ -439,4 +439,9 @@ FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' G
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
     }
+    public function updateCPD($topic,$description,$id){
+    	$query = "UPDATE training_cpd SET cpd_name = '{$topic}',cpd_description = '{$description}' where id_cpd = '{$id}'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+    }
 }
