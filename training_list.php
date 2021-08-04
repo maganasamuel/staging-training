@@ -70,14 +70,11 @@ EOF;
 
 
 $dataset = $trainingController->getTraining($id_user,$idUserType);
-$headers = array("Date", "Topic", "Trainer", "Status","Action");
-$tableHeader = $app->getHeader($headers);
-$rows = $tableHeader;
+$rows = "";
 $action = $app->param($_POST, "action");
 $message = "";
 
 if ($dataset->num_rows <= 0) {
-	$rows .= $app->emptyRow(count($headers));
 }
 else {
 	while ($row = $dataset->fetch_assoc()) {
@@ -130,7 +127,7 @@ EOF;
 				</div>
 				<ul class="subHeader-controls">
 						<li>
-							<a href="training?page=training_add" title="Add new training" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType == "3") {											
+							<a href="training?page=training_add" title="Add new training" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType == "2") {											
 							echo 'style="display:none;"';
 							}
 						?> >
@@ -165,11 +162,22 @@ EOF;
 			  <div class="row">
 				<div class="col-sm-12">					
 					
-					 <table class="table table-responsive-md table-hoverable">
-					<?php
-						echo $rows;
-					?>
-					</table>
+					 <table class="table table-responsive-md table-hoverable training">
+							  <thead style="background-color:#e9ecef;">
+							    <tr>
+							      <th scope="col">Date</th>
+							      <th scope="col">Topic</th>
+							      <th scope="col">Trainer</th>
+							      <th scope="col">Status</th>
+							      <th scope="col">Action</th>
+							    </tr>
+							  </thead>
+							  <tbody>
+							    <?php
+										echo $rows;
+								?>
+							  </tbody>
+						</table>
 				</div>
 				
 			</div>
@@ -187,7 +195,7 @@ EOF;
 		td:nth-child(2),td:nth-child(3),td:nth-child(1),td:nth-child(4),td:nth-child(5){
 			text-align: center;
 		}
-		<?php if ( $idUserType == "3"){
+		<?php if ( $idUserType == "2"){
 			echo "
              .sendEmail{
              	display:none;
@@ -208,7 +216,13 @@ EOF;
 		}
 		?>
 	</style>
-	
+	<script type="text/javascript">
+		$(document).ready( function () {
+          	$('.training').dataTable( {
+ 				 "pageLength": 25
+			});
+      	});
+	</script>
 
 
 
