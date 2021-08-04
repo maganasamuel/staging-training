@@ -40,6 +40,7 @@ while ($row = $usProfile->fetch_assoc()) {
   $usName = $row["first_name"] .' '.$row["last_name"];
   $email = $row["email_address"];
   $fsp = $row["ssf_number"];
+  $password = $row["password"];
 
   }
 
@@ -144,13 +145,14 @@ while ($row = $modTraining->fetch_assoc()) {
                   <div class="card-body">
                     <p class="card-text">Adviser: <?= $usName ?></p>
                     <p>FSP: <?= $fsp ?></p>
-                    <p>Email:<a href="mailto:<?= $email ?>"> <?= $email ?></a></p>
+                    <p>Email: <a href="mailto:<?= $email ?>"> <?= $email ?></a></p>
+                    <p>Password: <?= $password ?></p>
                   </div>
                 </div>
           </div>
            <div class="col-4">
            <h6>Continuing Professional Development Course</h6>
-             <table class="table table-responsive-md table-hoverable">
+             <table class="table table-responsive-md table-hoverable cpd">
                 <thead style="background-color:#e9ecef;">
                   <tr>
                     <th>Topic Trained On</th>
@@ -167,7 +169,7 @@ while ($row = $modTraining->fetch_assoc()) {
           </div>
           <div class="col-4">
            <h6>Team Training Course</h6>
-             <table class="table table-responsive-md table-hoverable">
+             <table class="table table-responsive-md table-hoverable team">
                 <thead style="background-color:#e9ecef;">
                   <tr>
                     <th>Topic Trained On </th>
@@ -184,9 +186,11 @@ while ($row = $modTraining->fetch_assoc()) {
           </div>
         </div>
         <div class="row  ml-5">
+
   <div class="offset-md-3 col-md-8">
+    <br><br>
    <h6>Modular Training</h6>
-     <table class="table table-responsive-md table-hoverable">
+     <table class="table table-responsive-md table-hoverable modular">
         <thead style="background-color:#e9ecef;">
           <tr>
             <th>Topics Trained On</th>
@@ -205,3 +209,11 @@ while ($row = $modTraining->fetch_assoc()) {
   </div>
 </div>
     </div>
+    <script type="text/javascript">
+      $(document).ready( function () {
+          $('.modular').DataTable();
+          $('.cpd').DataTable();
+          $('.team').DataTable();
+      });
+
+    </script>
