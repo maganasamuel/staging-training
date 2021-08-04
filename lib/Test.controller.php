@@ -134,6 +134,33 @@ class TestController extends DB {
 	}
 	
 	/**
+		@desc: check existing trainee/examinee to the system
+	*/
+	public function userCheck (
+		$emailAddress = "", //email address of the examinee
+		$idUserType = 0 // user type 
+	) {
+
+		$emailAddress = $this->clean($emailAddress);
+
+		//prepare/execute
+		$query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+		//Check if existing email address 
+		$query = "SELECT * FROM ta_user
+		WHERE ta_user.email_address = '$emailAddress' AND
+			ta_user.id_user_type = $idUserType
+		ORDER BY date_registered DESC 
+		LIMIT 0,1";
+			
+		$statement = $this->prepare($query);
+		$dataset = $this->execute($statement);
+		return $dataset;
+	}
+
+	/**
 		@desc: Fetch specific trainee/examinee record
 	 */
 	public function getUserSpecific(

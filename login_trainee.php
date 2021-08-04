@@ -30,7 +30,12 @@ $password = $app->param($_POST, "password");
 $action = $app->param($_POST, "action");
 $message = $app->param($_GET, "message");
 $type = $app->param($_GET, "type");
+//for adviser/tester
+$venue_for_adviser = $app->param($_POST, "venue");
+
 $idUserType = 0;
+
+$testerDiv = false;
 
 switch ($type) {
 	case "admin":
@@ -77,7 +82,6 @@ if($type == "trainer"){
 				}else{
 					$_SESSION['full_name']= $row['first_name'] . $row['last_name'] ;
 					$_SESSION['fsp']= $row['ssf_number'];
-					$_SESSION['email']= $row['email_address'];
 					$_SESSION['id_user_type']= $row['id_user_type'];
 					$_SESSION['id_user']= $row['id_user'];
 					$_SESSION['grant']= 'yes';
@@ -92,7 +96,6 @@ if($type == "trainer"){
 
 //checks if the referral code written in the form matches any of the existing referral code of the system
 if ($password== $correctPassword) {
-
 	if (
 		$emailAddress != "" &&		//Email not empty
 		$firstName != "" &&			//First name not empty
@@ -119,14 +122,33 @@ if ($password== $correctPassword) {
 			$message = "Something went wrong. Please try again.";
 		}
 	} else {
-		if ($action != "") {
-			//$session->destroySession();
-			$message = "All fields are required.";
+		if($idUserType == 2) {
+			$dataset = $test->userCheck($emailAddress,$idUserType);
+
+			if($dataset->num_rows > 0) {				
+				unset($data);
+				while ($row = $dataset->fetch_assoc()) {
+					$row["venue"] = $app->param($_POST, "venue");
+					$data[] = $row;
+				}
+
+				if ($session->createTemporarySession($data)) {
+					header("Location: test.php?page=test_set");	
+				}
+			} else {
+				$message = "All fields are required.";
+				$testerDiv = true;
+			}
+		} else {
+			if ($action != "") {
+				//$session->destroySession();
+				$message = "All fields are required.";
+			}
 		}
 	}
 } else {
 	//$session->destroySession();
-	if ($action == "login") {
+	if (($action == "login") || ($action == "login_tester")) {
 		$message = "Invalid referral code.";
 	}
 }
@@ -180,6 +202,7 @@ if ($password== $correctPassword) {
 					</p>
 				</div>
 			</div>
+			<?php if($type != "adviser") : ?>
 			<div class="row justify-content-md-center">
 				<div class="col-3">
 					<input class="form-control" name="email_address" type="email" placeholder="Email address" />
@@ -246,6 +269,69 @@ EOF;
 					</a>
 				</div>
 			</div>
+			<?php else : ?>
+				<?php if($testerDiv) : ?>
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<input class="form-control" name="email_address" type="email" placeholder="Email address" value="<?php echo $emailAddress; ?>" />
+					</div>
+				</div>
+				<div class="row justify-content-md-center"/>
+					<div class="col-3">
+						<input class="form-control" name="first_name" type="text" placeholder="First name" value="<?php echo $firstName; ?>"/>
+					</div>
+				</div>
+				<div class="row justify-content-md-center"/>
+					<div class="col-3">
+						<input class="form-control" name="last_name" type="text" placeholder="Last name" value="<?php echo $lastName; ?>"/>
+					</div>
+				</div>
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<input class="form-control" name="venue" type="text" placeholder="Venue" value="<?php echo $venue_for_adviser; ?>"/>
+					</div>
+				</div>
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<input class="form-control" name="password" type="password" placeholder="Password" value="<?php echo $password; ?>"/>
+					</div>
+				</div>
+				<?php else : ?>
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<input class="form-control" name="email_address" type="email" placeholder="Email address" value="<?php echo $emailAddress; ?>" />
+					</div>
+				</div>
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<input class="form-control" name="password" type="password" placeholder="Password" />
+					</div>
+				</div>
+				<?php endif; ?>
+				
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<?php
+						if ($message != "") {
+							echo <<<EOF
+								<div class="alert alert-danger" role="alert">
+								{$message}
+								</div>
+								EOF;
+						}
+						?>
+						<input type="hidden" name="action" value="login_tester" />
+						<input type="submit" value="Start" class="btn btn-info width100">
+						<br />
+						<br />
+						<a href="login" class="center">
+							<p>
+								Back to login options
+							</p>
+						</a>
+					</div>
+				</div>
+			<?php endif; ?>
 		</form>
 	</div>
 </body>
