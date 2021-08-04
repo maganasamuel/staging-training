@@ -22,26 +22,29 @@ $message = "";
 
 $action = $app->param($_POST, "action");
 
-if ($action == "save_cpd") {
-  $cpd_name = $app->param($_POST, "cpd_name");
-  $cpd_description = $app->param($_POST, "cpd_description");
-
-  $dataset = $trainingController->addCPD($cpd_name,$cpd_description);   
-
-  $message = "<div class=\"alert alert-success\" role=\"alert\">CPD topic created!.</div>";
-  
-  }
-
 $cpdID = $app->param($_GET, "id");  
 
 if($cpdID){
 $cpdList = $trainingController->getSpecificCpd($cpdID);
-
 while ($row = $cpdList->fetch_assoc()) {
   $cpd_name = $row["cpd_name"];
   $cpd_description = trim($row["cpd_description"]);
   }
 }
+
+
+if ($action == "save_cpd") {
+  $cpd_name = $app->param($_POST, "cpd_name");
+  $cpd_description = $app->param($_POST, "cpd_description");
+  if($cpdID != ""){
+     $dataset = $trainingController->updateCPD($cpd_name,$cpd_description,$cpdID);   
+  }else{
+     $dataset = $trainingController->addCPD($cpd_name,$cpd_description);   
+  }
+  $message = "<div class=\"alert alert-success\" role=\"alert\">CPD topic created!.</div>";
+  
+  }
+
 ?>
 
     <div class="subHeader">
