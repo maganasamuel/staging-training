@@ -444,4 +444,19 @@ FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' G
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
     }
+
+    public function verfiyEmail($emailAddress){
+        $query = "SELECT link_status FROM ta_user WHERE email_address = '{$emailAddress}' ORDER BY date_registered DESC LIMIT 0,1";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $dataset = $dataset->fetch_assoc();
+
+        $link_status = $dataset['link_status'];
+
+        if($link_status == 1) {
+            $query = "UPDATE ta_user SET status = '1' , link_status = '0' where email_address = '{$emailAddress}'";
+            $statement = $this->prepare($query);
+            $dataset = $this->execute($statement);
+        }
+    }
 }
