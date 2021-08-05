@@ -459,4 +459,13 @@ FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' G
             $dataset = $this->execute($statement);
         }
     }
+    public function sendPassword($emailAddress){
+        $query = "SELECT * FROM ta_user where email_address = '$emailAddress'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $pword = $dataset->fetch_assoc();
+
+        return $pword['password'];
+
+    }
 }
