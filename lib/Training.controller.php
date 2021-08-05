@@ -460,7 +460,8 @@ FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' G
         }
     }
     public function sendPassword($emailAddress){
-        $query = "SELECT * FROM ta_user where email_address = '$emailAddress'";
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user)
+FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address) ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
         $pword = $dataset->fetch_assoc();
