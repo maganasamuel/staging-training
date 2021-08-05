@@ -30,6 +30,14 @@ $password = $app->param($_POST, "password");
 $action = $app->param($_POST, "action");
 $message = $app->param($_GET, "message");
 $type = $app->param($_GET, "type");
+$confirm = $app->param($_GET, "confirm");
+
+if($_SERVER['SERVER_NAME'] == 'onlineinsure.co.nz'){
+	$verifyAddress = 'https://onlineinsure.co.nz/staging/staging-training/login_trainee?confirm=yes&email_address='.$emailAddress;
+} else {
+	$verifyAddress = 'https://staging-training.test/login_trainee?confirm=yes&email_address='.$emailAddress;
+};
+
 //for adviser/tester
 $venue_for_adviser = $app->param($_POST, "venue");
 
@@ -95,50 +103,112 @@ if($type == "trainer"){
 	}
 }
 
-//checks if the referral code written in the form matches any of the existing referral code of the system
-if ($password== $correctPassword) {
-	if (
-		$emailAddress != "" &&		//Email not empty
-		$firstName != "" &&			//First name not empty
-		$lastName != "" &&			//Last name not empty
-		($idUserType != 2 || $idUserType != 4 || $idUserType != 5 || $idUserType != 6)		//Not an admin or an adviser
-	) {
-		$message = "";
+if($confirm == "yes"){
+	$emailVerify  = $app->param($_GET, "email_address");
+	$trainingLogin = $training->verfiyEmail($emailVerify);
+	header("location: login_trainee?type=adviser");	
+}
 
-		$dataset = $test->userAdd($emailAddress, $password, $firstName, $lastName, $idUserType);
+if($idUserType == 2) {
+	$message = "";
+	$message_green = "";	
 
-		$data = [];
-		if ($dataset->num_rows > 0) {
-			unset($data);
-			while ($row = $dataset->fetch_assoc()) {
-				$row["venue"] = $app->param($_POST, "venue");
-				$data[] = $row;
-			}
-			if ($session->createTemporarySession($data)) {
-				
-				header("Location: test.php?page=test_set");
-				
+	if($emailAddress != "" && $password != "") {
+		if(str_contains($emailAddress, '@eliteinsure.co.nz')) {
+			$details = $dataset = $test->userCheck($emailAddress,$idUserType);
+
+			$data = [];
+			if($dataset->num_rows > 0) {
+				$details = $dataset->fetch_assoc();
+				if($details['password'] == $password) {
+
+					if($details['status'] == 1) {
+						unset($data);
+
+						$details["venue"] = $app->param($_POST, "venue");
+						$data[] = $details;
+
+						if ($session->createTemporarySession($data)) {
+							header("Location: test.php?page=test_set");	
+						}
+					} else {
+						$message = "Account is deactivated.";
+						$message_green = "";	
+					}
+				} else {
+					$message = "Email address and password do not match.";
+					$message_green = "";
+				}
+			} else {
+				if($emailAddress != "" && $firstName != "" && $lastName != "" && $password != "") {
+					$dataset = $test->userAdd($emailAddress, $password, $firstName, $lastName, $idUserType);
+					//params from $dataset
+					//email function
+					$content = new Swift_Message();
+					$content->setSubject('Email Verification');
+					//$message->setfrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
+					//Remove the venue at the certificate.
+					//Move date to footer.
+
+					$content->setfrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
+					$content->setTo($emailAddress);
+
+					$content->setBody('Please click this link for activating your account <p>Verification Link: <a href="'. $verifyAddress .'">Verify my account</a></p>','text/html');
+
+
+					$transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
+					->setusername('wilfred@eliteinsure.co.nz')
+					->setPassword('wilelite2021');
+
+					// Create the Mailer using your created Transport
+					$mailer = new Swift_Mailer($transport);
+
+					// Send the created message
+					$isSent = $mailer->send($content);
+
+					$message_green = "An email has been sent to your email address. Please verify your account to proceed.";
+					$message = "";
+				} else {
+					$message_green = "All fields are required.";
+					$message = "";
+					$testerDiv = true;
+				}			
 			}
 		} else {
-			$message = "Something went wrong. Please try again.";
-		}
-	} else {
-		if($idUserType == 2) {
-			$dataset = $test->userCheck($emailAddress,$idUserType);
+			$message = "Invalid email address.";	
+			$message_green = "";
+		} 
+		
 
-			if($dataset->num_rows > 0) {				
+			
+	}
+} else {
+	//checks if the referral code written in the form matches any of the existing referral code of the system
+	if ($password== $correctPassword) {
+		if (
+			$emailAddress != "" &&		//Email not empty
+			$firstName != "" &&			//First name not empty
+			$lastName != "" &&			//Last name not empty
+			($idUserType != 2 || $idUserType != 4 || $idUserType != 5 || $idUserType != 6)		//Not an admin or an adviser
+		) {
+			$message = "";
+
+			$dataset = $test->userAdd($emailAddress, $password, $firstName, $lastName, $idUserType);
+
+			$data = [];
+			if ($dataset->num_rows > 0) {
 				unset($data);
 				while ($row = $dataset->fetch_assoc()) {
 					$row["venue"] = $app->param($_POST, "venue");
 					$data[] = $row;
 				}
-
 				if ($session->createTemporarySession($data)) {
-					header("Location: test.php?page=test_set");	
+					
+					header("Location: test.php?page=test_set");
+					
 				}
 			} else {
-				$message = "All fields are required.";
-				$testerDiv = true;
+				$message = "Something went wrong. Please try again.";
 			}
 		} else {
 			if ($action != "") {
@@ -146,13 +216,14 @@ if ($password== $correctPassword) {
 				$message = "All fields are required.";
 			}
 		}
-	}
-} else {
-	//$session->destroySession();
-	if (($action == "login") || ($action == "login_tester")) {
-		$message = "Invalid referral code.";
+	} else {
+		//$session->destroySession();
+		if ($action == "login") {
+			$message = "Invalid referral code.";
+		}
 	}
 }
+	
 
 
 
@@ -256,7 +327,7 @@ if ($password== $correctPassword) {
 							<div class="alert alert-danger" role="alert">
 							{$message}
 							</div>
-EOF;
+						EOF;
 					}
 					?>
 					<input type="hidden" name="action" value="login_trainee" />
@@ -313,6 +384,15 @@ EOF;
 				<div class="row justify-content-md-center">
 					<div class="col-3">
 						<?php
+						if ($message_green != "") {
+							echo <<<EOF
+								<div class="alert alert-success" role="alert">
+								{$message_green}
+								</div>
+								EOF;
+						}
+
+
 						if ($message != "") {
 							echo <<<EOF
 								<div class="alert alert-danger" role="alert">

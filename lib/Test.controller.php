@@ -108,19 +108,24 @@ class TestController extends DB {
 			$statement = $this->prepare($query);
 			$dataset = $this->execute($statement);
 		} else {
+			$status = 1;
+			if($idUserType == 2) $status = 0;
+
 			$query = "INSERT INTO ta_user (
 					email_address,
 					password,
 					first_name,
 					last_name,
-					id_user_type
+					id_user_type,
+					status
 				)
 				VALUES (
 					'$emailAddress',
 					'$password',
 					'$firstName',
 					'$lastName',
-					$idUserType
+					$idUserType,
+					$status
 				)";
 
 			$statement = $this->prepare($query);
@@ -152,7 +157,7 @@ class TestController extends DB {
 		$query = "SELECT * FROM ta_user
 		WHERE ta_user.email_address = '$emailAddress' AND
 			ta_user.id_user_type = $idUserType
-		ORDER BY date_registered DESC 
+		ORDER BY date_registered DESC
 		LIMIT 0,1";
 			
 		$statement = $this->prepare($query);
