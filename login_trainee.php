@@ -216,6 +216,7 @@ if($idUserType == 2) {
 			
 	}
 } else {
+
 	//checks if the referral code written in the form matches any of the existing referral code of the system
 	if ($password== $correctPassword) {
 		if (
@@ -246,7 +247,11 @@ if($idUserType == 2) {
 		} else {
 			if ($action != "") {
 				//$session->destroySession();
-				$message = "All fields are required.";
+				if($type == "trainer"){
+					//do nothing
+				}else{
+					$message = "All fields are required.";	
+				}
 			}
 		}
 	} else {
