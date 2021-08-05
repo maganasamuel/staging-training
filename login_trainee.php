@@ -31,6 +31,7 @@ $action = $app->param($_POST, "action");
 $message = $app->param($_GET, "message");
 $type = $app->param($_GET, "type");
 $confirm = $app->param($_GET, "confirm");
+$forgot_password = $app->param($_POST, "forgot_password");
 
 if($_SERVER['SERVER_NAME'] == 'onlineinsure.co.nz'){
 	$verifyAddress = 'https://onlineinsure.co.nz/staging/staging-training/login_trainee?confirm=yes&email_address='.$emailAddress;
@@ -79,6 +80,37 @@ if ($passwordDataset->num_rows > 0) {
 	}
 }
 
+
+
+$mpassword = "";
+if($forgot_password == "yes"){
+		print_r("send password");
+		$p_email = $app->param($_POST, "password_email");
+		$recoveryPassword = $training->sendPassword($p_email);
+
+		$content = new Swift_Message();
+		$content->setSubject('Password Recovery');
+		//$message->setfrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
+		//Remove the venue at the certificate.
+		//Move date to footer.
+
+		$content->setfrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
+		$content->setTo($p_email);
+
+		$content->setBody('Your password is:'.$recoveryPassword);
+
+		$transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
+		->setusername('wilfred@eliteinsure.co.nz')
+		->setPassword('wilelite2021');
+
+		// Create the Mailer using your created Transport
+		$mailer = new Swift_Mailer($transport);
+
+		// Send the created message
+		$isSent = $mailer->send($content);
+
+}
+
 $trainingLogin = $training->trainingLogin($emailAddress,$password);
 
 if($type == "trainer"){
@@ -108,6 +140,7 @@ if($confirm == "yes"){
 	$trainingLogin = $training->verfiyEmail($emailVerify);
 	header("location: login_trainee?type=adviser");	
 }
+
 
 if($idUserType == 2) {
 	$message = "";
@@ -254,6 +287,8 @@ if($idUserType == 2) {
 	<script src="js/jquery-3.2.1.min.js"></script>
 	<script src="js/popper.min.js"></script>
 	<script src="js/bootstrap.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -323,11 +358,8 @@ if($idUserType == 2) {
 				<div class="col-3">
 					<?php
 					if ($message != "") {
-						echo <<<EOF
-							<div class="alert alert-danger" role="alert">
-							{$message}
-							</div>
-						EOF;
+						echo '<div class="alert alert-danger" role="alert">'.$message.'</div>';
+
 					}
 					?>
 					<input type="hidden" name="action" value="login_trainee" />
@@ -385,26 +417,25 @@ if($idUserType == 2) {
 					<div class="col-3">
 						<?php
 						if ($message_green != "") {
-							echo <<<EOF
-								<div class="alert alert-success" role="alert">
-								{$message_green}
-								</div>
-								EOF;
+							echo '<div class="alert alert-success" role="alert">'.$message_green.'</div>';
 						}
 
 
 						if ($message != "") {
-							echo <<<EOF
-								<div class="alert alert-danger" role="alert">
-								{$message}
-								</div>
-								EOF;
+							echo '<div class="alert alert-danger" role="alert">'.$message.'</div>';
+								
 						}
+						echo $mpassword;
 						?>
 						<input type="hidden" name="action" value="login_tester" />
 						<input type="submit" value="Start" class="btn btn-info width100">
 						<br />
 						<br />
+						<a href="javascript:;" onclick="sendPassword()" class="center">
+							<p>
+								Forgot Password
+							</p>
+						</a>
 						<a href="login" class="center">
 							<p>
 								Back to login options
@@ -415,6 +446,49 @@ if($idUserType == 2) {
 			<?php endif; ?>
 		</form>
 	</div>
+<div class="modal"  id="myModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Password Recovery</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        	<input type="text" placeholder="Email Address" id="pemail" class="form-control">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="emailPassword()">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
+<script type="text/javascript">
+	function sendPassword(){
+		 $("#myModal").modal('show');
+	}
+	function emailPassword(){
+			 $.ajax({
+                url: 'login_trainee',
+                type: 'post',
+                data: {
+                   password_email: $("#pemail").val(),
+                   forgot_password: "yes"
+                },
+                success: function(data) {
+                	 $("#myModal").modal('hide');
+					Swal.fire({
+					  position: 'center',
+					  icon: 'success',
+					  title: 'Please check your email',
+					  showConfirmButton: false,
+					  timer: 1500
+					})
+                }
+            });
+	}
+</script>
 
 </html>
