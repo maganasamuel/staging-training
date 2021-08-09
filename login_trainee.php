@@ -127,14 +127,19 @@ if($type == "trainer"){
 				if($row['status'] == "0"){
 					$message = "Account is deactivated!";
 				}else{
-					$_SESSION['full_name']= $row['first_name'] . $row['last_name'] ;
-					$_SESSION['fsp']= $row['ssf_number'];
-					$_SESSION['email']= $row['email_address'];
-					$_SESSION['id_user_type']= $row['id_user_type'];
-					$_SESSION['id_user']= $row['id_user'];
-					$_SESSION['grant']= 'yes';
-					$session->createTemporarySession($data);
-					header("location: training?page=training_list");					
+
+					if($password == $row['password']){
+						$_SESSION['full_name']= $row['first_name'] . $row['last_name'] ;
+						$_SESSION['fsp']= $row['ssf_number'];
+						$_SESSION['email']= $row['email_address'];
+						$_SESSION['id_user_type']= $row['id_user_type'];
+						$_SESSION['id_user']= $row['id_user'];
+						$_SESSION['grant']= 'yes';
+						$session->createTemporarySession($data);
+						header("location: training?page=training_list");
+					}else{
+						$message = "Email address and password do not match.";
+					}								
 				}
 
 			}	
@@ -151,13 +156,15 @@ if($confirm == "yes"){
 	header("location: login_trainee?type=adviser");	
 }
 
-// if($idUserType == 2){
-// 	 $userType = $test->userCheckType($emailAddress);
-// 	if($userType->num_rows > 0) {
-// 		$details = $userType->fetch_assoc();
-// 		$idUserType = $details['id_user_type'];	
-// 	}
-// }
+if($idUserType == 2){
+	 $userType = $test->userCheckType($emailAddress);
+	if($userType->num_rows > 0) {
+		$details = $userType->fetch_assoc();
+		if($details['id_user_type'] == 7 || $details['id_user_type'] == 8){
+			$idUserType = $details['id_user_type'];	
+		}
+	}
+}
 
 if($idUserType == 2 || $idUserType == 8 || $idUserType == 7) {
 	$message = "";
