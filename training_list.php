@@ -127,12 +127,12 @@ EOF;
 				</div>
 				<ul class="subHeader-controls">
 						<li>
-							<a href="training?page=training_add" title="Add new training" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType == "2") {											
+						<a href="training?page=training_add"
+						<?php if ( $idUserType == "2") {											
 							echo 'style="display:none;"';
 							}
-						?> >
-								<i class="material-icons">add</i>	
-							</a>
+						?> ><button type="button" class="btn btn-primary btn-sm" onclick="create()">Create Training Attestation	</button></a>
+
 						</li>
 					</ul>
 			</div>
@@ -151,7 +151,6 @@ EOF;
 
 				<div class="col-3">
 			 		<?php echo $message; ?>
-					
 				</div>
 			</div>	
 			</div>
@@ -222,6 +221,9 @@ EOF;
  				 "pageLength": 25
 			});
       	});
+      	function create(){
+      		window.location.href = '/training?page=training_add';
+      	}
 	</script>
 
 

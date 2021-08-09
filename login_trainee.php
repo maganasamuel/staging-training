@@ -62,6 +62,12 @@ switch ($type) {
 	case "trainer":
 		$idUserType = 4;
 		break;
+	case "adr":
+		$idUserType = 7;
+		break;
+	case "sadr":
+		$idUserType = 8;
+		break;
 }
 
 
@@ -114,7 +120,8 @@ if($forgot_password == "yes"){
 $trainingLogin = $training->trainingLogin($emailAddress,$password);
 
 if($type == "trainer"){
-	if ($trainingLogin->num_rows > 0) {
+	if($emailAddress != "" || $password != ""){
+		if ($trainingLogin->num_rows > 0) {
 		while ($row = $trainingLogin->fetch_assoc()) {
 
 				if($row['status'] == "0"){
@@ -130,6 +137,9 @@ if($type == "trainer"){
 					header("location: training?page=training_list");					
 				}
 
+			}	
+		}else{
+			$message = "Email address and password do not match.";
 		}
 		
 	}
@@ -141,8 +151,15 @@ if($confirm == "yes"){
 	header("location: login_trainee?type=adviser");	
 }
 
+if($idUserType == 2){
+	 $userType = $test->userCheckType($emailAddress);
+	if($userType->num_rows > 0) {
+		$details = $userType->fetch_assoc();
+		$idUserType = $details['id_user_type'];	
+	}
+}
 
-if($idUserType == 2) {
+if($idUserType == 2 || $idUserType == 8 || $idUserType == 7) {
 	$message = "";
 	$message_green = "";	
 
@@ -159,6 +176,7 @@ if($idUserType == 2) {
 						unset($data);
 
 						$details["venue"] = $app->param($_POST, "venue");
+						$details["id_user_type"] = 2;
 						$data[] = $details;
 
 						if ($session->createTemporarySession($data)) {
@@ -309,7 +327,12 @@ if($idUserType == 2) {
 				<div class="col center">
 					<p style="font-size:14px; text-transform:capitalize;">
 						<?php
-						echo "---{$type}---";
+
+						if($type == "trainer"){
+							//display nothing
+						}else{
+							echo "---{$type}---";
+						}
 						?>
 					</p>
 				</div>

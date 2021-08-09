@@ -109,7 +109,26 @@ class TrainingController extends DB
 
     public function getAdviser()
     {
-        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" and status = "1" GROUP BY email_address) ';
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" and status = "1" and id_user_type = "2" GROUP BY email_address) ';
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function getADR()
+    {
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" and status = "1" and id_user_type = "7" GROUP BY email_address) ';
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+
+     public function getSADR()
+    {
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" and status = "1" and id_user_type = "8" GROUP BY email_address) ';
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -147,7 +166,7 @@ class TrainingController extends DB
         return $dataset;
     }
 
-    public function addUserTraining($email_address,$first_name,$last_name,$password,$user_type,$ssf_number ='0'){
+    public function addUserTraining($email_address,$first_name,$last_name,$password,$user_type,$ssf_number ='0',$adr_id,$sadr_id){
 
         $query = "SELECT * FROM ta_user where email_address = '$email_address'";
         $statement = $this->prepare($query);
@@ -175,7 +194,9 @@ class TrainingController extends DB
                     last_name,
                     password,
                     id_user_type,
-                    ssf_number
+                    ssf_number,
+                    adr_id,
+                    sadr_id
                 )
                 VALUES (
                     '$email_address',
@@ -183,7 +204,9 @@ class TrainingController extends DB
                     '$last_name',
                     '$password',
                     '$user_type',
-                    '$ssf_number'
+                    '$ssf_number',
+                    '$adr_id',
+                    '$sadr_id'
                 )";
 
         $statement = $this->prepare($query);
@@ -298,9 +321,9 @@ FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' G
         return $dataset;
     }
 
-    public function updateUserTraining($first_name='',$last_name='', $email_address = '', $password = '', $ssf_number = 0, $user_type = '', $id_user = '')
+    public function updateUserTraining($first_name='',$last_name='', $email_address = '', $password = '', $ssf_number = 0, $user_type = '', $id_user = '',$adr_id,$sadr_id)
     {
-        $query = "UPDATE ta_user SET email_address = '$email_address' , first_name = '$first_name' , last_name = '$last_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number'
+        $query = "UPDATE ta_user SET email_address = '$email_address' , first_name = '$first_name' , last_name = '$last_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number' , adr_id = '$adr_id' , sadr_id = '$sadr_id'
                 WHERE id_user = '$id_user'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -468,5 +491,40 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
 
         return $pword['password'];
 
+    }
+    public function adviserTeam($id){
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE sadr_id = '$id' and id_user_type = '2' GROUP BY email_address)  ";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function adminadrTeam($id){
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE sadr_id = '$id' and id_user_type = '7' GROUP BY email_address)  ";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function adrTeam($id){
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE adr_id = '$id' GROUP BY email_address)  ";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function getAdrMember($id){
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE adr_id = '$id' GROUP BY email_address)  ";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function getSadrMember($id){
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE sadr_id = '$id'  GROUP BY email_address)  ";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
     }
 }
