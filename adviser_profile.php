@@ -22,6 +22,8 @@ $idProfile = $app->param($_GET, "id", 0);
 $emailID = $app->param($_GET, "email", 0);
 $usType = $app->param($_GET, "user_type", 0);
 
+$sessID = $app->param($_SESSION, "id_user", 0);
+$sessUserType = $app->param($_SESSION, "id_user_type", 0);
 
 $attendedTraining = $trainingController->attendedTraining($idProfile);
 $trAttended = "";
@@ -194,8 +196,10 @@ while ($row = $modTraining->fetch_assoc()) {
                 <p class="card-text">Adviser: <?= $usName ?></p>
                 <p>FSP: <?= $fsp ?></p>
                 <p>Email: <a href="mailto:<?= $email ?>"> <?= $email ?></a></p>
-                <p>Password: <?= $password ?></p>
-                <a href="<?php echo 'profilepdf?id='.$idProfile.'&email='.$emailID; ?>" class="sendEmail" target="_blank" title="View Certificates" data-toggle="tooltip" data-placement="bottom">
+                <?php if(($sessID == $idProfile) || ($sessUserType == 1)) : ?>
+                  <p>Password: <?= $password ?></p>
+                <?php endif; ?>
+                <a href="<?php echo 'profilepdf?id='.$idProfile.'&email='.$emailID; ?>" class="sendEmail" target="_blank" title="Print Adviser Profile" data-toggle="tooltip" data-placement="bottom">
                   <button class="btn btn-primary btn-sm">Print to PDF</button>
                 </a>
               </div>
