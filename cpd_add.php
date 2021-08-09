@@ -71,7 +71,7 @@ if ($action == "save_cpd") {
         <div class="row justify-content-md-center">
           <div class="col-3">
             <label class="font-weight-normal text-center">Topic</label>
-            <input type="text" class="form-control mb-1" value="<?= (empty($cpd_name)) ? '' : $cpd_name ?>" name="cpd_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+            <input type="text" class="form-control mb-1" placeholder="Topic Title" value="<?= (empty($cpd_name)) ? '' : $cpd_name ?>" name="cpd_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <br>

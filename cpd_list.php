@@ -52,12 +52,11 @@ EOF;
 				</div>
 				<ul class="subHeader-controls">
 						<li>
-							<a href="training?page=cpd_add" title="Add new cpd topic" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType == "3") {											
+							<a href="training?page=cpd_add" title="Create CPD Course" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType != "1") {											
 							echo 'style="display:none;"';
 							}
 						?> >
-								<i class="material-icons">add</i>	
-							</a>
+								<button type="button" class="btn btn-primary btn-sm" onclick="create()">Create CPD Course</button></a>
 						</li>
 					</ul>
 			</div>
