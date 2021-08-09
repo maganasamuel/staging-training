@@ -51,6 +51,10 @@ if ($action == "save_profile") {
  if($first_name != ""|| $last_name != "" || $email_address != ""|| $password != "" ){
   
   if($usID){
+      if($ssfnumber == '') $ssfnumber = 0;
+      if($adr_id == '') $adr_id = 0;
+      if($sadr_id == '') $sadr_id = 0;
+
       $datasetuser = $trainingController->updateUserTraining($first_name,$last_name,
             $email_address,
             $password,
@@ -90,7 +94,8 @@ while ($row = $usList->fetch_assoc()) {
   $usFSP = $row["ssf_number"];
   $usPassword = $row["password"];
   $usType = $row["id_user_type"];  
-
+  $usAdr = $row["adr_id"];  
+  $usSadr = $row["sadr_id"];  
   }
 }
 
@@ -100,10 +105,15 @@ foreach($adviser as $row) {
 
     $name = $row["first_name"].' '.$row['last_name'];
     $id = $row["id_user"];
-    
-    $adrSet .= <<<EOF
-    <option value="{$id}">{$name}</option>
-EOF;
+    if(isset($usAdr) && $usAdr == $id) {
+      $adrSet .= <<<EOF
+      <option value="{$id}" selected>{$name}</option>
+      EOF;
+    } else {
+      $adrSet .= <<<EOF
+      <option value="{$id}">{$name}</option>
+      EOF;
+    }
   }
 
 $adr = $trainingController->getSADR();
@@ -112,10 +122,15 @@ foreach($adr as $row) {
 
     $name = $row["first_name"].' '.$row['last_name'];
     $id = $row["id_user"];
-    
-    $sadrSet .= <<<EOF
-    <option value="{$id}">{$name}</option>
-EOF;
+    if(isset($usSadr) && $usSadr == $id) {
+      $sadrSet .= <<<EOF
+      <option value="{$id}" selected>{$name}</option>
+      EOF;
+    } else {
+      $sadrSet .= <<<EOF
+      <option value="{$id}">{$name}</option>
+      EOF;
+    }
   }
 
 ?>
@@ -185,7 +200,7 @@ EOF;
             <label class="font-weight-normal text-center">ADR Team<span style="color:red;">*</span></label>
            <div class="form-group">
             <select class="adr form-control" name="adr">
-              <option selected>Select Option</option>
+              <option value="0">N/A</option>
               <?php
                   echo $adrSet;
                 ?>
@@ -198,7 +213,7 @@ EOF;
             <label class="font-weight-normal text-center">SADR Team<span style="color:red;">*</span></label>
            <div class="form-group">
             <select class="sadr js-states form-control" name="sadr">
-              <option selected>Select Option</option>
+              <option value="0">N/A</option>
               <?php
                   echo $sadrSet;
                 ?>
