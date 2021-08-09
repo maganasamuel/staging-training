@@ -222,7 +222,7 @@ class TrainingController extends DB
         $this->execute($statement);
 
         $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user)
-FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' GROUP BY email_address)  ";
+FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
