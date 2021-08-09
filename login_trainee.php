@@ -151,20 +151,20 @@ if($confirm == "yes"){
 	header("location: login_trainee?type=adviser");	
 }
 
-if($idUserType == 2){
-	 $userType = $test->userCheckType($emailAddress);
-	if($userType->num_rows > 0) {
-		$details = $userType->fetch_assoc();
-		$idUserType = $details['id_user_type'];	
-	}
-}
+// if($idUserType == 2){
+// 	 $userType = $test->userCheckType($emailAddress);
+// 	if($userType->num_rows > 0) {
+// 		$details = $userType->fetch_assoc();
+// 		$idUserType = $details['id_user_type'];	
+// 	}
+// }
 
 if($idUserType == 2 || $idUserType == 8 || $idUserType == 7) {
 	$message = "";
 	$message_green = "";	
 
 	if($emailAddress != "" && $password != "") {
-		if(str_contains($emailAddress, '@eliteinsure.co.nz')) {
+		if(str_ends_with($emailAddress, '@eliteinsure.co.nz')) {
 			$details = $dataset = $test->userCheck($emailAddress,$idUserType);
 
 			$data = [];
@@ -236,7 +236,7 @@ if($idUserType == 2 || $idUserType == 8 || $idUserType == 7) {
 } else {
 
 	//checks if the referral code written in the form matches any of the existing referral code of the system
-	if ($password== $correctPassword) {
+	if ($password == $correctPassword) {
 		if (
 			$emailAddress != "" &&		//Email not empty
 			$firstName != "" &&			//First name not empty
@@ -267,7 +267,7 @@ if($idUserType == 2 || $idUserType == 8 || $idUserType == 7) {
 				//$session->destroySession();
 				if($type == "trainer"){
 					//do nothing
-				}else{
+				} else {
 					$message = "All fields are required.";	
 				}
 			}
@@ -444,7 +444,7 @@ if($idUserType == 2 || $idUserType == 8 || $idUserType == 7) {
 				<div class="row justify-content-md-center">
 					<div class="col-3">
 						<?php
-						if ($message_green != "") {
+						if (isset($message_green) && $message_green != "") {
 							echo '<div class="alert alert-success" role="alert">'.$message_green.'</div>';
 						}
 

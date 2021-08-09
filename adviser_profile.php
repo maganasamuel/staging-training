@@ -189,14 +189,17 @@ while ($row = $modTraining->fetch_assoc()) {
         <div class="row  ml-5">
           <div class="col-3">
             <div class="card">
-                <h5 class="card-header"></h5>
-                  <div class="card-body">
-                    <p class="card-text">Adviser: <?= $usName ?></p>
-                    <p>FSP: <?= $fsp ?></p>
-                    <p>Email: <a href="mailto:<?= $email ?>"> <?= $email ?></a></p>
-                    <p>Password: <?= $password ?></p>
-                  </div>
-                </div>
+              <h5 class="card-header"></h5>
+              <div class="card-body">
+                <p class="card-text">Adviser: <?= $usName ?></p>
+                <p>FSP: <?= $fsp ?></p>
+                <p>Email: <a href="mailto:<?= $email ?>"> <?= $email ?></a></p>
+                <p>Password: <?= $password ?></p>
+                <a href="<?php echo 'profilepdf?id='.$idProfile.'&email='.$emailID; ?>" class="sendEmail" target="_blank" title="View Certificates" data-toggle="tooltip" data-placement="bottom">
+                  <button class="btn btn-primary btn-sm">Print to PDF</button>
+                </a>
+              </div>
+            </div>
           </div>
            <div class="col-4">
            <h6>Continuing Professional Development Course</h6>
