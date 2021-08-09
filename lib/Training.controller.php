@@ -321,7 +321,7 @@ FROM ta_user WHERE email_address = '$email_address' AND PASSWORD = '$password' G
         return $dataset;
     }
 
-    public function updateUserTraining($first_name='',$last_name='', $email_address = '', $password = '', $ssf_number = 0, $user_type = '', $id_user = '',$adr_id,$sadr_id)
+    public function updateUserTraining($first_name='',$last_name='', $email_address = '', $password = '', $ssf_number = 0, $user_type = '', $id_user = '',$adr_id = 0,$sadr_id = 0)
     {
         $query = "UPDATE ta_user SET email_address = '$email_address' , first_name = '$first_name' , last_name = '$last_name' , password = '$password' , id_user_type = '$user_type' , ssf_number = '$ssf_number' , adr_id = '$adr_id' , sadr_id = '$sadr_id'
                 WHERE id_user = '$id_user'";

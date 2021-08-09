@@ -11,6 +11,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+//include necessary files
+include_once("lib/General.helper.php");
+
+$app = new GeneralHelper();
+$menu = $app->param($_GET, "menu");
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -51,87 +57,112 @@ error_reporting(E_ALL);
 			<div class="row">
 				<div class="col">
 					<p class="label">
-						Login as:
+						<?php echo (isset($menu) && $menu == "tests") ? 'Click the type of test you are taking: ' : 'Login as: '  ?>
 					</p>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
-					<a href="login_master">
-						<div class="option" data-toggle="tooltip" data-placement="bottom" title="Users that has access to the checking tool.">
-							<i class="material-icons">
-								how_to_reg
-							</i>
-							<br />
-							<span>Checker</span>
-						</div>
-					</a>
+			<?php if(isset($menu) && $menu == "tests") : ?>
+				<div class="row">
+					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+						<a href="login_trainee?type=admin">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Internal admins that will answer the assigned test.">
+								<i class="material-icons">
+									card_travel
+								</i>
+								<br />
+								<span>Admin</span>
+							</div>
+						</a>
+					</div>
+
+					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+						<a href="login_trainee?type=adviser">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Adviser trainee that will answer the set of tests.">
+								<i class="material-icons">
+									face
+								</i>
+								<br />
+								<span>Adviser</span>
+							</div>
+						</a>
+					</div>
+
+					<div class="col-md-4 mt-3" data-toggle="tooltip">
+						<a href="login_trainee?type=bdm">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="BDM trainee that will answer the set of tests.">
+								<i class="material-icons">
+									contact_mail
+								</i>
+								<br />
+								<span>BDM</span>
+							</div>
+						</a>
+					</div>
 				</div>
+				<div class="row">
+					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+						<a href="login_trainee?type=telemarketer">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="BDM trainee that will answer the set of tests.">
+								<i class="material-icons">
+									contact_phone
+								</i>
+								<br />
+								<span>Telemarketer</span>
+							</div>
+						</a>
+					</div>
 
-				<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
-					<a href="login_trainee?type=admin">
-						<div class="option" data-toggle="tooltip" data-placement="bottom" title="Internal admins that will answer the assigned test.">
-							<i class="material-icons">
-								card_travel
-							</i>
-							<br />
-							<span>Admin</span>
-						</div>
-					</a>
+					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+						<a href="login">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Back to main menu.">
+								<i class="material-icons">
+									settings_backup_restore
+								</i>
+								<br />
+								<span>Back to Main Menu</span>
+							</div>
+						</a>
+					</div>
 				</div>
+			<?php else : ?>
+				<div class="row">
+					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+						<a href="login_master">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Users that has access to the checking tool.">
+								<i class="material-icons">
+									how_to_reg
+								</i>
+								<br />
+								<span>Checker</span>
+							</div>
+						</a>
+					</div>
 
-				<div class="col-md-4 mt-3" data-toggle="tooltip">
-					<a href="login_trainee?type=adviser">
-						<div class="option" data-toggle="tooltip" data-placement="bottom" title="Adviser trainee that will answer the set of tests.">
-							<i class="material-icons">
-								face
-							</i>
-							<br />
-							<span>Adviser</span>
-						</div>
-					</a>
+					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+						<a href="login?menu=tests">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Menu for selecting type of test to take.">
+								<i class="material-icons">
+									description
+								</i>
+								<br />
+								<span>Tests</span>
+							</div>
+						</a>
+					</div>
+
+					<div class="col-md-4 mt-3" data-toggle="tooltip">
+						<a href="login_trainee?type=trainer">
+							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Training Meeting">
+								<i class="material-icons">
+									book
+								</i>
+								<br />
+								<span>Training</span>
+							</div>
+						</a>
+					</div>
 				</div>
-			</div>
-
-			<div class="row">
-
-				<div class="col-md-4 mt-3" data-toggle="tooltip">
-					<a href="login_trainee?type=bdm">
-						<div class="option" data-toggle="tooltip" data-placement="bottom" title="BDM trainee that will answer the set of tests.">
-							<i class="material-icons">
-								contact_mail
-							</i>
-							<br />
-							<span>BDM</span>
-						</div>
-					</a>
-				</div>
-
-				<div class="col-md-4 mt-3" data-toggle="tooltip">
-					<a href="login_trainee?type=telemarketer">
-						<div class="option" data-toggle="tooltip" data-placement="bottom" title="BDM trainee that will answer the set of tests.">
-							<i class="material-icons">
-								contact_phone
-							</i>
-							<br />
-							<span>Telemarketer</span>
-						</div>
-					</a>
-				</div>
-
-				<div class="col-md-4 mt-3" data-toggle="tooltip">
-					<a href="login_trainee?type=trainer">
-						<div class="option" data-toggle="tooltip" data-placement="bottom" title="Training Meeting">
-							<i class="material-icons">
-								book
-							</i>
-							<br />
-							<span>Training</span>
-						</div>
-					</a>
-				</div>
-
-			</div>
+			<?php endif; ?>
 		</div>
 	</div>
 	<script>
