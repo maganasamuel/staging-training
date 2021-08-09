@@ -44,6 +44,8 @@ if ($action == "save_profile") {
   $password = $app->param($_POST, "password");
   $ssfnumber = $app->param($_POST, "ssfnumber");
   $user_type = $app->param($_POST, "user_type");
+  $adr_id = $app->param($_POST, "adr");
+  $sadr_id = $app->param($_POST, "sadr");
 
 
  if($first_name != ""|| $last_name != "" || $email_address != ""|| $password != "" ){
@@ -52,13 +54,13 @@ if ($action == "save_profile") {
       $datasetuser = $trainingController->updateUserTraining($first_name,$last_name,
             $email_address,
             $password,
-            $ssfnumber,$user_type,$usID
+            $ssfnumber,$user_type,$usID,$adr_id,$sadr_id
           ); 
 
   }else{
     $datasetuser = $trainingController->addUserTraining($email_address,
             $first_name,$last_name,
-            $password,$user_type,$ssfnumber
+            $password,$user_type,$ssfnumber,$adr_id,$sadr_id
           );   
   }
   
@@ -91,6 +93,31 @@ while ($row = $usList->fetch_assoc()) {
 
   }
 }
+
+$adviser = $trainingController->getADR();
+$adrSet = "";
+foreach($adviser as $row) {
+
+    $name = $row["first_name"].' '.$row['last_name'];
+    $id = $row["id_user"];
+    
+    $adrSet .= <<<EOF
+    <option value="{$id}">{$name}</option>
+EOF;
+  }
+
+$adr = $trainingController->getSADR();
+$sadrSet = "";
+foreach($adr as $row) {
+
+    $name = $row["first_name"].' '.$row['last_name'];
+    $id = $row["id_user"];
+    
+    $sadrSet .= <<<EOF
+    <option value="{$id}">{$name}</option>
+EOF;
+  }
+
 ?>
     <div class="subHeader">
       <div class="row">
@@ -144,10 +171,37 @@ while ($row = $usList->fetch_assoc()) {
           <div class="col-3">
             <label class="font-weight-normal text-center">User Type<span style="color:red;">*</span></label>
            <div class="form-group">
-            <select class="form-control" id="exampleFormControlSelect1" name="user_type">
+            <select class="form-control" id="userType" name="user_type" onchange="changeProp(this)">
               <option value="1" <?php if($usType == 1) echo "Selected";?> >Admin</option>
-              <option value="3" <?php if($usType == 3) echo "Selected";?> >ADR / SADR </option>
+              <option value="8" <?php if($usType == 8) echo "Selected";?> >SADR </option>
+              <option value="7" <?php if($usType == 7) echo "Selected";?> >ADR </option>
               <option value="2" <?php if($usType == 2) echo "Selected";?> >Adviser</option>
+            </select>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-md-center adrMember">
+          <div class="col-3">
+            <label class="font-weight-normal text-center">ADR Team<span style="color:red;">*</span></label>
+           <div class="form-group">
+            <select class="adr form-control" name="adr">
+              <option selected>Select Option</option>
+              <?php
+                  echo $adrSet;
+                ?>
+            </select>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-md-center sadrMember">
+          <div class="col-3">
+            <label class="font-weight-normal text-center">SADR Team<span style="color:red;">*</span></label>
+           <div class="form-group">
+            <select class="sadr js-states form-control" name="sadr">
+              <option selected>Select Option</option>
+              <?php
+                  echo $sadrSet;
+                ?>
             </select>
             </div>
           </div>
@@ -161,3 +215,37 @@ while ($row = $usList->fetch_assoc()) {
         </div>
       </form>
     </div>
+    <script type="text/javascript">
+      
+      $( document ).ready(function() {
+        if($("#userType").val() == "8" || $("#userType").val() == "1"  ){
+            $(".adrMember").hide();
+            $(".sadrMember").hide();
+        }else if($("#userType").val() == "7"){
+            $(".adrMember").hide();
+        }else {
+          $(".adrMember").show();
+          $(".sadrMember").show();
+        }
+      });
+       function changeProp(id){
+          if(id.value == "2"){
+              $(".adrMember").show();
+              $(".sadrMember").show();   
+          }else if(id.value == "8" || id.value == "1"){
+              $(".adrMember").hide();
+              $(".sadrMember").hide();
+          }else if(id.value == "7"){
+               $(".adrMember").hide();
+               $(".sadrMember").show();
+          }
+        }
+    </script>
+
+
+
+
+
+
+
+

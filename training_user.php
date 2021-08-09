@@ -31,8 +31,16 @@ if ($action == "delUser") {
 	$deteUser = $trainingController->deteUsertraining($idUser);
 }
 
-$userList = $trainingController->getUser();
-$usList = "";
+if($idUserType == "1"){
+	$userList = $trainingController->getUser();
+	$usList = "";
+}elseif($idUserType == "7"){
+	$userList = $trainingController->getAdrMember($id_user);
+	$usList = "";
+}elseif($idUserType == "8"){
+	$userList = $trainingController->getSadrMember($id_user);
+	$usList = "";
+}
 
 while ($row = $userList->fetch_assoc()) {
 
@@ -57,8 +65,10 @@ while ($row = $userList->fetch_assoc()) {
 
 		if($usNumber == "1"){
 			$ustype = "Admin";
-		}elseif ($usNumber == "3") {
-			$ustype = "ADR/SADR";
+		}elseif ($usNumber == "7") {
+			$ustype = "ADR";
+		}elseif ($usNumber == "8") {
+			$ustype = "SADR";
 		}else{
 			$ustype = "Adviser";
 		}
@@ -66,17 +76,17 @@ while ($row = $userList->fetch_assoc()) {
 		$usList .= <<<EOF
 		<tr>
 			<td>
-			<a href="training?page=adviser_profile&id={$usID}&email={$usEmail}" title="View Profile" class="delete" data-toggle="tooltip" data-placement="bottom">
+			<a href="training?page=adviser_profile&id={$usID}&email={$usEmail}&user_type={$usNumber}" title="View Profile" class="delete" data-toggle="tooltip" data-placement="bottom">
 			{$usFullanme}</a></td>
 			<td>{$usEmail}</td>
 			<td>{$usFSP}</td>
 			<td>{$ustype}</td>
-			<td><div class="custom-control custom-switch">
+			<td class="stat"><div class="custom-control custom-switch">
 	  				<input type="checkbox" class="custom-control-input" id="{$usEmail}" onclick="test({$usID},{$newStatus})" {$chck}>
 	  				<label class="custom-control-label" for="{$usEmail}"></label>
 				</div>
 			</td>
-			<td>
+			<td class="act">
 				<a href="training?page=training_user_add&id={$usID}" title="Edit User" class="delete" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">edit</i>
 				</a>
@@ -96,12 +106,12 @@ EOF;
 				</div>
 				<ul class="subHeader-controls">
 						<li>
-							<a href="training?page=training_user_add" title="Add new user" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType == "3") {											
+							<li>
+							<a href="training?page=training_user_add" title="Add new user" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType != "1") {											
 							echo 'style="display:none;"';
 							}
 						?> >
-								<i class="material-icons">add</i>	
-							</a>
+								<button type="button" class="btn btn-primary btn-sm" onclick="create()">Add New User</button></a>
 						</li>
 					</ul>
 			</div>
@@ -117,8 +127,8 @@ EOF;
 							      <th scope="col">Email Address</th>
 							      <th scope="col">FSP</th>
 							      <th scope="col">User Type</th>
-							      <th scope="col">Status</th>
-							      <th scope="col">Action</th>
+							      <th scope="col" class="stat">Status</th>
+							      <th scope="col" class="act">Action</th>
 							    </tr>
 							  </thead>
 							  <tbody>
@@ -167,3 +177,27 @@ EOF;
 				});
       		});
 		</script>
+		<style type="text/css">
+			<?php 
+				if ( $idUserType == "8"){
+					echo "
+					.stat{
+						display:none;
+					}
+					.act{
+						display:none;
+					}
+					";
+				}
+			?>
+		</style>
+
+
+
+
+
+
+
+
+
+

@@ -105,7 +105,7 @@ $page = $app->param($_GET, "page", "test_set");
 					</li>
 					<li class="nav-item">
 					<?php 
-						if ($idUserType == 1){
+						if ($idUserType == 1 || $idUserType == 7 || $idUserType == 8){
 							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
 						}
 					?>
@@ -113,7 +113,7 @@ $page = $app->param($_GET, "page", "test_set");
 					<li class="nav-item">
 					<?php 
 						
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}&email={$email}\">My Profile</a>";
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}&email={$email}&user_type={$idUserType}\">My Profile</a>";
 						
 					?>
 					</li>
