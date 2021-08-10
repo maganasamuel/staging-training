@@ -154,10 +154,10 @@ class TestController extends DB {
         $this->execute($statement);
 
 		//Check if existing email address 
-		$query = "SELECT * FROM ta_user
+		$query = "SELECT ta_user.*, ta_user_type.user_type FROM ta_user LEFT JOIN ta_user_type ON ta_user.id_user_type = ta_user_type.id_user_type
 		WHERE ta_user.email_address = '$emailAddress' AND
 			ta_user.id_user_type = $idUserType
-		ORDER BY date_registered DESC
+		ORDER BY ta_user.date_registered DESC
 		LIMIT 0,1";
 			
 		$statement = $this->prepare($query);

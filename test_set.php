@@ -38,6 +38,10 @@ if ($emailAddress == "" ||
 	//header("Location: login");
 }
 
+//adr and sadr share same set with adviser
+if(($idUserType == 2) || ($idUserType == 7) || ($idUserType == 8))
+	$idUserType = 2;
+
 $dataset = $testController->getSetAll($idUserType);
 $headers = array("#", "Test Set", "Action");
 $rows = $app->getHeader($headers);
@@ -55,7 +59,7 @@ else {
 			<td>{$i}</td>
 			<td class="capitalize">{$setName}</td>
 			<td>
-				<a href="test.php?page=test_form&idqs={$idSet}" title="Take this test.">
+				<a href="test?page=test_form&idqs={$idSet}" title="Take this test.">
 					<i class="material-icons">create</i>
 				</a>
 			</td>
