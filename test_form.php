@@ -41,6 +41,10 @@ $setName = "";
 $idUser = $session->get("id_user");
 $isAutoCheck = 0;
 
+//adr and sadr share same set with adviser
+if(($idUserType == 2) || ($idUserType == 7) || ($idUserType == 8))
+	$idUserType = 2;
+
 //check if the idset is set to the current requesting user.
 $setDataset = $testController->getSetAll($idUserType);
 $isAssigned = false;
