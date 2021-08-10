@@ -29,6 +29,10 @@ $idUserType = $session->get("id_user_type");
 $userType = $session->get("user_type");
 $idTest = $app->param($_GET, "idt", 0);
 
+$email = $app->param($_SESSION, "email", 0);
+$id_user = $app->param($_SESSION, "id_user", 0);
+$idUserType = $app->param($_SESSION, "id_user_type", 0);
+
 //validate
 if ($emailAddress == "" ||
 	$firstName == "" ||
@@ -77,16 +81,63 @@ $page = $app->param($_GET, "page", "test_set");
 
 			<div class="collapse navbar-collapse" id="mainNav">
 				<ul class="navbar-nav mr-auto justify-content-end width100">
-					<li class="nav-item">
+<!-- 					<li class="nav-item">
 					<?php 
 						if ($page != "test_set") {
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"test?page=test_set\">Close Test</a>";
+							// echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"test?page=test_set\">Close Test</a>";
 						}
 						else {
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type={$userType}\">Sign out</a>";
+							// echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type={$userType}\">Sign out</a>";
 						}
 					?>
-					</li>
+					</li> -->
+
+					<?php if($page != "test_set") : ?>
+						<li class="nav-item">
+						<?php 
+
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"test?page=test_set\">Close Test</a>";
+						?>
+						</li>
+					<?php else : ?>
+						<li class="nav-item">
+						<?php 
+
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_list\">Training List</a>";
+						?>
+						</li>
+						<li class="nav-item">
+						<?php 
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"test?page=test_set\">Take Assessment</a>";
+						?>
+						</li>
+						<li class="nav-item">
+						<?php 
+							if ($idUserType == 1){
+								echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=cpd_list\">CPD Topics</a>";
+							}
+						?>
+						</li>
+						<li class="nav-item">
+						<?php 
+							if ($idUserType == 1 || $idUserType == 7 || $idUserType == 8){
+								echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
+							}
+						?>
+						</li>
+						<li class="nav-item">
+						<?php 
+							
+								echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}&email={$email}&user_type={$idUserType}\">My Profile</a>";
+							
+						?>
+						</li>
+						<li class="nav-item">
+						<?php 
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type=trainer\">Sign out</a>";
+						?>
+						</li>
+					<?php endif; ?>
 				</ul>
 			</div>
 		</nav>

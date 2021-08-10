@@ -31,9 +31,11 @@ include_once("lib/Session.helper.php");
 function securePage (
 	$prop // array with indeces described above
 ) {
+
 	$groupName = isset($prop["group_name"]) ? $prop["group_name"] : "";
 	$allow = isset($prop["allow"]) ? $prop["allow"] : "";
 	$session = new SessionHelper();
+
 	//check if there's no active session
 	if (!$session->isSessionActive()) {
 		destroyCurrentSession();
@@ -54,7 +56,7 @@ function securePage (
 					correctPageURL($groupName, $allow);
 				}
 			break;
-			case 2: case 4: case 5: case 6://adviser, admin, bdm, telemarketer
+			case 2: case 4: case 5: case 6: case 7: case 8://adviser, admin, bdm, telemarketer
 				if ($groupName != "trainee") {
 					destroyCurrentSession();
 				}

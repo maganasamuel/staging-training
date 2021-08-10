@@ -128,6 +128,7 @@ if($type == "trainer"){
 					$message = "Account is deactivated!";
 				}else{
 
+					$data = [];
 					if($password == $row['password']){
 						$_SESSION['full_name']= $row['first_name'] . $row['last_name'] ;
 						$_SESSION['fsp']= $row['ssf_number'];
@@ -135,8 +136,15 @@ if($type == "trainer"){
 						$_SESSION['id_user_type']= $row['id_user_type'];
 						$_SESSION['id_user']= $row['id_user'];
 						$_SESSION['grant']= 'yes';
-						$session->createTemporarySession($data);
-						header("location: training?page=training_list");
+
+						$training_details = $test->userCheck($row['email_address'],$row['id_user_type']);
+						$training_details = $training_details->fetch_assoc();
+
+						$data[] = $training_details;
+						if($session->createTemporarySession($data)) {
+							header("location: training?page=training_list");		
+						}
+						
 					}else{
 						$message = "Email address and password do not match.";
 					}								

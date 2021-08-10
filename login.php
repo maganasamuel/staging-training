@@ -76,7 +76,8 @@ $menu = $app->param($_GET, "menu");
 					</div>
 
 					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
-						<a href="login_trainee?type=adviser">
+						<!-- <a href="login_trainee?type=adviser"> -->
+						<a href="login_trainee?type=trainer">
 							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Adviser trainee that will answer the set of tests.">
 								<i class="material-icons">
 									face
@@ -142,15 +143,15 @@ $menu = $app->param($_GET, "menu");
 						<a href="login?menu=tests">
 							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Menu for selecting type of test to take.">
 								<i class="material-icons">
-									description
+									supervisor_account
 								</i>
 								<br />
-								<span>Tests</span>
+								<span>Users</span>
 							</div>
 						</a>
 					</div>
 
-					<div class="col-md-4 mt-3" data-toggle="tooltip">
+					<!-- <div class="col-md-4 mt-3" data-toggle="tooltip">
 						<a href="login_trainee?type=trainer">
 							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Training Meeting">
 								<i class="material-icons">
@@ -160,7 +161,7 @@ $menu = $app->param($_GET, "menu");
 								<span>Training</span>
 							</div>
 						</a>
-					</div>
+					</div> -->
 				</div>
 			<?php endif; ?>
 		</div>
