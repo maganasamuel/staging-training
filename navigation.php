@@ -39,6 +39,12 @@ switch ($page) {
         $isTrainee = 'active';
 
     break;
+    case 'training_material':
+    case 'training_material_add':
+        $isTraining = 'active';
+
+
+    break;
     case 'password':
         $isPassword = 'active';
 
@@ -65,9 +71,13 @@ switch ($page) {
 			<li class="nav-item <?php echo $isTest; ?>">
 				<a class="nav-link" href="index.php?page=test_result">Tests</a>
 			</li>
+            
 				<?php
                     if (1 == $session->get('id_user_type')) {
                         ?>
+                <li class="nav-item <?php echo $isTraining; ?>">
+                    <a class="nav-link" href="index.php?page=training_material">Training Material</a>
+                </li>
 				<li class="nav-item <?php echo $isTestQuestions; ?>">
 					<a class="nav-link" href="index.php?page=test_questions">Test Questions</a>
 				</li>
