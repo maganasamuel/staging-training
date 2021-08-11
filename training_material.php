@@ -28,8 +28,6 @@ if($action == "del"){
 	$dataset = $trainingController->deleteMaterials($id);	
 }
 
-$directory = $_SERVER['SERVER_NAME'];
-
 $dataset = $trainingController->getMaterials();
 $rows = "";
 
@@ -44,7 +42,7 @@ else {
 		<tr>
 			<td>{$material_title}</td>
 			<td>
-			<a href="/staging-training/training_materials/{$file_name}" target="_blank" title="Preview" class="download" data-toggle="tooltip" data-placement="bottom" >{$file_name}</a></td>
+			<a href="/staging/staging-training/training_materials/{$file_name}" target="_blank" title="Preview" class="download" data-toggle="tooltip" data-placement="bottom" >{$file_name}</a></td>
 			<td>
 				<a href="index?page=training_material_add&id={$id_material}&action=edit" title="Edit Traning Material" class="edit" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">edit</i>
@@ -124,13 +122,11 @@ EOF;
     </div>
   </div>
 </div>
-<input type="hidden" value="<?=$directory?>\staging-training\" id="path">
 <script type="text/javascript">
 	function preview(id){
-		console.log(id.text);
-		console.log();
+		
 		$('.modal').modal('show');
-  		$("#videoSource").attr('src','/staging-training/training_materials/' + id.text);
+  		$("#videoSource").attr('src','/staging/staging-training/training_materials/' + id.text);
   		$("#videoSource").play();
 	}
 	$(document).ready( function () {

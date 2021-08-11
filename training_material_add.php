@@ -88,7 +88,7 @@ li.active a { color:#FFFFFF; }
 			<label>Training Topic Title</label>
             <input type="text" class="form-control" name="topic_title" value="<?= (empty($title)) ? '' : $title ?>">
             <?php (empty($title)) ? '' : '' ?>
-            	<label class="mt-1"><?= (empty($title)) ? '' : 'Uploaded File:<br><a class="mt-2" href="/staging-training/training_materials/'.$fileName.'" download="'.$fileName.'">' .$fileName. '</a>' ?></label>
+            	<label class="mt-1"><?= (empty($title)) ? '' : 'Uploaded File:<br><a class="mt-2" href="/staging/staging-training/training_materials/'.$fileName.'" download="'.$fileName.'">' .$fileName. '</a>' ?></label>
             <?php ?>
             <div class="form-group">
                 <label for="fileUp">Training File</label>
