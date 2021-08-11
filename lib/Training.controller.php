@@ -527,4 +527,11 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
 
         return $dataset;
     }
+    public function getTrainingMaterials(){
+        $query = "SELECT * FROM ta_materials ORDER BY material_title DESC";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
 }
