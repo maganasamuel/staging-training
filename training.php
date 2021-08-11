@@ -105,6 +105,12 @@ $page = $app->param($_GET, "page", "test_set");
 					</li>
 					<li class="nav-item">
 					<?php 
+
+						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_material_view\">Training Materials</a>";
+					?>
+					</li>
+					<li class="nav-item">
+					<?php 
 						if ($idUserType == 1){
 							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=cpd_list\">CPD Topics</a>";
 						}
