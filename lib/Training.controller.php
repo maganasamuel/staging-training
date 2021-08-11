@@ -534,4 +534,46 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
 
         return $dataset;
     }
+     public function getMaterials(){
+        $query = "SELECT * FROM ta_materials";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;   
+    }
+    public function addMaterial($topicTitle,$fileName,$path){
+         $query = "INSERT INTO ta_materials (
+                    material_title,
+                    file_name,
+                    file_uploaded
+                )
+                VALUES (
+                    '$topicTitle',
+                    '$fileName',
+                    '$path'
+                )";
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $insert_id = $this->mysqli->insert_id;
+
+        return $insert_id;
+    }
+    public function deleteMaterials($id){
+        $query = "DELETE FROM ta_materials WHERE id_material = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        return $dataset;
+    }
+    public function getMaterial($id){
+        $query = "SELECT * FROM ta_materials where id_material = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        return $dataset;
+    }
+     public function updateMaterial($topicTitle,$fileName,$id){
+        $query = "UPDATE ta_materials SET material_title = '{$topicTitle}', file_name = '{$fileName}' where id_material = '{$id}'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+    }
 }
