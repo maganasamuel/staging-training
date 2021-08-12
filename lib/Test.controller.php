@@ -12,7 +12,7 @@
 if($_SERVER['SERVER_NAME'] == 'onlineinsure.co.nz'){
 	$autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging/staging-training/package/vendor/autoload.php';
 }else{
-	$autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/package/vendor/autoload.php';
+	$autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging/staging-training/package/vendor/autoload.php';
 };
 
 require_once $autoloadPath;
