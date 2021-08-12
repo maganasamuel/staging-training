@@ -81,69 +81,64 @@ $page = $app->param($_GET, "page", "test_set");
 
 			<div class="collapse navbar-collapse" id="mainNav">
 				<ul class="navbar-nav mr-auto justify-content-end width100">
-<!-- 					<li class="nav-item">
+					
+					<li class="nav-item dropdown">
 					<?php 
-						if ($page != "test_set") {
-							// echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"test?page=test_set\">Close Test</a>";
-						}
-						else {
-							// echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type={$userType}\">Sign out</a>";
+
+						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Training</a>";
+					?>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<?php 
+								if ($idUserType != 1){
+									echo "<a class='dropdown-item' href=\"test?page=test_set\">Take Assessment</a>";
+								}
+							?>
+							<a class="dropdown-item" href="training?page=training_list">Training List</a>
+							<a class="dropdown-item" href="training?page=training_material_view">Training Materials</a>
+	        			</div>
+					</li>
+					<li class="nav-item">
+					
+					</li>
+					<li class="nav-item dropdown">
+					<?php 
+
+						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;'' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Resources</a>";
+					?>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" href="https://www.eliteinsure.co.nz/forms/">Forms</a>
+							<a class="dropdown-item" href="https://www.eliteinsure.co.nz/fact-sheets/">Fact Sheet</a>
+	        			</div>
+					</li>
+					<li class="nav-item">
+						<a class='nav-link' href='https://onlineinsure.co.nz/adviceprocess/' style="color:white;">Advise Process</a>
+					</li>
+					<li class="nav-item">
+					<?php 
+						if ($idUserType == 1){
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=cpd_list\">CPD Topics</a>";
 						}
 					?>
-					</li> -->
-
-					<?php if($page != "test_set") : ?>
-						<li class="nav-item">
-						<?php 
-
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"test?page=test_set\">Close Test</a>";
-						?>
-						</li>
-					<?php else : ?>
-						<li class="nav-item">
-						<?php 
-
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_list\">Training List</a>";
-						?>
-						</li>
-						<li class="nav-item">
-						<?php 
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"test?page=test_set\">Take Assessment</a>";
-						?>
-						</li>
-						<li class="nav-item">
-						<?php 
-
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_material_view\">Training Materials</a>";
-						?>
-						</li>
-						<li class="nav-item">
-						<?php 
-							if ($idUserType == 1){
-								echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=cpd_list\">CPD Topics</a>";
-							}
-						?>
-						</li>
-						<li class="nav-item">
-						<?php 
-							if ($idUserType == 1 || $idUserType == 7 || $idUserType == 8){
-								echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
-							}
-						?>
-						</li>
-						<li class="nav-item">
-						<?php 
-							
-								echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}&email={$email}&user_type={$idUserType}\">My Profile</a>";
-							
-						?>
-						</li>
-						<li class="nav-item">
-						<?php 
-							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type=trainer\">Sign out</a>";
-						?>
-						</li>
-					<?php endif; ?>
+					</li>
+					<li class="nav-item">
+					<?php 
+						if ($idUserType == 1 || $idUserType == 7 || $idUserType == 8){
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
+						}
+					?>
+					</li>
+					<li class="nav-item">
+					<?php 
+						
+							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}&email={$email}&user_type={$idUserType}\">My Profile</a>";
+						
+					?>
+					</li>
+					<li class="nav-item">
+					<?php 
+						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type=trainer\">Sign out</a>";
+					?>
+					</li>
 				</ul>
 			</div>
 		</nav>

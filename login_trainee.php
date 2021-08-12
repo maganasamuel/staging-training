@@ -140,9 +140,16 @@ if($type == "trainer"){
 						$training_details = $test->userCheck($row['email_address'],$row['id_user_type']);
 						$training_details = $training_details->fetch_assoc();
 
+						$location = 'training?page=adviser_profile&id='.$row['id_user'].'&email='.$row['email_address'].'&user_type='.$row['id_user_type'];
+						
 						$data[] = $training_details;
 						if($session->createTemporarySession($data)) {
-							header("location: training?page=training_list");		
+							if($row['id_user_type'] == 1){
+								header("location: training?page=training_list");
+							}else{
+								header("location:".$location);	
+							}
+							
 						}
 						
 					}else{
