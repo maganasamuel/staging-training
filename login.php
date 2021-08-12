@@ -127,7 +127,7 @@ $menu = $app->param($_GET, "menu");
 				</div>
 			<?php else : ?>
 				<div class="row">
-					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+					<div class="offset-md-2 col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
 						<a href="login_master">
 							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Users that has access to the checking tool.">
 								<i class="material-icons">
@@ -139,7 +139,7 @@ $menu = $app->param($_GET, "menu");
 						</a>
 					</div>
 
-					<div class="col-md-4 mt-3" style="border-right: 1px dotted #CCCCCC;">
+					<div class="col-md-4 mt-3">
 						<a href="login?menu=tests">
 							<div class="option" data-toggle="tooltip" data-placement="bottom" title="Menu for selecting type of test to take.">
 								<i class="material-icons">
