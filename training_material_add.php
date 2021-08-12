@@ -83,27 +83,62 @@ li.active a { color:#FFFFFF; }
 	<div class="row">
 		<div class="col-sm-12" >
 			<div class="offset-md-5 col-3 text-center">
-						
-				 		<?php echo $message; ?>
-
-					</div>
-		<form action="" method="POST" enctype="multipart/form-data">
+				<div class="alert alert-success" id="alert" role="alert" style="display: none;">Training material saved.</div>
+			</div>
+		<form id="myForm" action="" method="POST" enctype="multipart/form-data">
 			<div class="offset-md-5 col-md-3">
 			<label>Training Topic Title</label>
-            <input type="text" class="form-control" name="topic_title" value="<?= (empty($title)) ? '' : $title ?>">
+            <input type="text" class="form-control" id="topic_title" name="topic_title" value="<?= (empty($title)) ? '' : $title ?>">
             <?php (empty($title)) ? '' : '' ?>
             	<label class="mt-1"><?= (empty($title)) ? '' : 'Uploaded File:<br><a class="mt-2" href="/staging/staging-training/training_materials/'.$fileName.'" download="'.$fileName.'">' .$fileName. '</a>' ?></label>
             <?php ?>
             <div class="form-group">
                <input type="file" name="file" />
             </div>
+             <div class="progress" id="progressDiv" style="display: none;">
+  				<div class="progress-bar" role="progressbar" aria-valuemax="100"></div>
+  			</div>
              <input type="hidden" name="action" value="save_material">   
             <input type="hidden" name="fileUploaded" id="fileUploaded">
             <div class="preview"></div>
-            <input id="generate" type="submit" value="Save" class="btn btn-primary btn-md btn-block mt-4" />
-			</div>
+            <input id="generate" type="submit" value="Save" class="btn btn-primary btn-md btn-block mt-4" onclick="upload_image()" />
+ 			</div>
 		</form>
-	
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+function upload_image() 
+{
+  var bar = $('.progress-bar');
+  var percent= "";
+  var progDiv = $("#progressDiv");
+  $('#myForm').ajaxForm({
+    beforeSubmit: function() {
+       $("#alert").css('display',"none");
+       progDiv.css('display', "block");
+       bar.css('width',"0%"); 
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+      bar.css('width', percentComplete + "%");
+      bar.html(percentComplete + "%");
+    },
+	success: function() {
+      var percentVal = '100%';
+      bar.width(percentVal)
+      bar.html(percentVal);
+    },
+
+    complete: function(xhr) {
+      if(xhr.responseText)
+      {
+      	$("#alert").css('display',"block");
+      	$("#topic_title").val('');
+      	bar.css('width',"0%"); 
+      	bar.html("0");
+      	progDiv.css('display', "none");
+      }
+    }
+  }); 
+}
+</script>
