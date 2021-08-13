@@ -136,7 +136,7 @@ $page = $app->param($_GET, "page", "test_set");
 					</li>
 					<li class="nav-item">
 					<?php 
-						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type=trainer\">Sign out</a>";
+						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type=trainer&action=logout\">Sign out</a>";
 					?>
 					</li>
 				</ul>

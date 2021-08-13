@@ -32,7 +32,7 @@ $message = $app->param($_GET, "message");
 $type = $app->param($_GET, "type");
 $confirm = $app->param($_GET, "confirm");
 $forgot_password = $app->param($_POST, "forgot_password");
-
+$action = $app->param($_GET, "action");
 if($_SERVER['SERVER_NAME'] == 'onlineinsure.co.nz'){
 	$verifyAddress = 'https://onlineinsure.co.nz/staging/staging-training/login_trainee?confirm=yes&email_address='.$emailAddress;
 } else {
@@ -74,6 +74,10 @@ switch ($type) {
 //check if type is included from the parameter
 if ($type == "") {
 	header("location: login");
+}
+
+if ($action == "logout") {
+	$session->destroySession();
 }
 
 //fetch all referral code related to the idUserType
