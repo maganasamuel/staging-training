@@ -106,12 +106,12 @@ $page = $app->param($_GET, "page", "test_set");
 						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;'' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Resources</a>";
 					?>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="https://www.eliteinsure.co.nz/forms/">Forms</a>
-							<a class="dropdown-item" href="https://www.eliteinsure.co.nz/fact-sheets/">Fact Sheet</a>
+							<a class="dropdown-item" target="_blank" href="https://www.eliteinsure.co.nz/forms/">Forms</a>
+							<a class="dropdown-item" target="_blank" href="https://www.eliteinsure.co.nz/fact-sheets/">Fact Sheet</a>
 	        			</div>
 					</li>
 					<li class="nav-item">
-						<a class='nav-link' href='https://onlineinsure.co.nz/adviceprocess/' style="color:white;">Advise Process</a>
+						<a class='nav-link' target="_blank" href='https://onlineinsure.co.nz/adviceprocess/' style="color:white;">Advise Process</a>
 					</li>
 					<li class="nav-item">
 					<?php 
