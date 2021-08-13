@@ -97,7 +97,7 @@ $page = $app->param($_GET, "page", "test_set");
 					?>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<?php 
-								if ($idUserType != 1){
+								if ($idUserType === "1" || $idUserType === "3"){
 									echo "<a class='dropdown-item' href=\"test?page=test_set\">Take Assessment</a>";
 								}
 							?>
@@ -114,23 +114,23 @@ $page = $app->param($_GET, "page", "test_set");
 						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;'' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Resources</a>";
 					?>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="https://www.eliteinsure.co.nz/forms/">Forms</a>
-							<a class="dropdown-item" href="https://www.eliteinsure.co.nz/fact-sheets/">Fact Sheet</a>
+							<a class="dropdown-item" target="_blank" href="https://www.eliteinsure.co.nz/forms/">Forms</a>
+							<a class="dropdown-item" target="_blank" href="https://www.eliteinsure.co.nz/fact-sheets/">Fact Sheet</a>
 	        			</div>
 					</li>
 					<li class="nav-item">
-						<a class='nav-link' href='https://onlineinsure.co.nz/adviceprocess/' style="color:white;">Advise Process</a>
+						<a class='nav-link' target="_blank"  href='https://onlineinsure.co.nz/adviceprocess/' style="color:white;">Advise Process</a>
 					</li>
 					<li class="nav-item">
 					<?php 
-						if ($idUserType == 1){
+						if ($idUserType == 1 || $idUserType == 3 ){
 							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=cpd_list\">CPD Topics</a>";
 						}
 					?>
 					</li>
 					<li class="nav-item">
 					<?php 
-						if ($idUserType == 1 || $idUserType == 7 || $idUserType == 8){
+						if ($idUserType == 1 || $idUserType == 7 || $idUserType == 8 || $idUserType == 3){
 							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
 						}
 					?>

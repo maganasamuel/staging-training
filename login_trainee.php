@@ -144,7 +144,7 @@ if($type == "trainer"){
 						
 						$data[] = $training_details;
 						if($session->createTemporarySession($data)) {
-							if($row['id_user_type'] == 1){
+							if($row['id_user_type'] == 1 || $row['id_user_type'] == 3 ){
 								header("location: training?page=training_list");
 							}else{
 								header("location:".$location);	

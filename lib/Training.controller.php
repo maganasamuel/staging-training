@@ -96,8 +96,10 @@ class TrainingController extends DB
                     ON ta_user.id_user = ta_training.trainer_id
                     ';
 
-        if($idUserType != 1){
-            $query .= "WHERE ta_training.trainer_id = '$id' OR 
+        if($idUserType == 1  || $idUserType == 3){
+            //do nothing
+        }else{
+             $query .= "WHERE ta_training.trainer_id = '$id' OR 
                     ta_training.training_attendee LIKE '%$id%'";
         }
 

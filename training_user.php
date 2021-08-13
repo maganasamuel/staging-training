@@ -34,7 +34,11 @@ if ($action == "delUser") {
 if($idUserType == "1"){
 	$userList = $trainingController->getUser();
 	$usList = "";
-}elseif($idUserType == "7"){
+}elseif($idUserType == "3"){
+	$userList = $trainingController->getUser();
+	$usList = "";
+}
+elseif($idUserType == "7"){
 	$userList = $trainingController->getAdrMember($id_user);
 	$usList = "";
 }elseif($idUserType == "8"){
@@ -69,6 +73,8 @@ while ($row = $userList->fetch_assoc()) {
 			$ustype = "ADR";
 		}elseif ($usNumber == "8") {
 			$ustype = "SADR";
+		}elseif ($usNumber == "3") {
+			$ustype = "Checker";
 		}else{
 			$ustype = "Adviser";
 		}
@@ -107,7 +113,8 @@ EOF;
 				<ul class="subHeader-controls">
 						<li>
 							<li>
-							<a href="training?page=training_user_add" title="Add new user" data-toggle="tooltip" data-placement="bottom" <?php if ( $idUserType != "1") {											
+							<a href="training?page=training_user_add" title="Add new user" data-toggle="tooltip" data-placement="bottom" <?php 
+							if ( $idUserType != "1" ) {											
 							echo 'style="display:none;"';
 							}
 						?> >
@@ -179,7 +186,7 @@ EOF;
 		</script>
 		<style type="text/css">
 			<?php 
-				if ( $idUserType == "8"){
+				if ( $idUserType == "8" || $idUserType == "3" ){
 					echo "
 					.stat{
 						display:none;
