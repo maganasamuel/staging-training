@@ -188,6 +188,7 @@ foreach($adr as $row) {
            <div class="form-group">
             <select class="form-control" id="userType" name="user_type" onchange="changeProp(this)">
               <option value="1" <?php if($usType == 1) echo "Selected";?> >Admin</option>
+              <option value="3" <?php if($usType == 3) echo "Selected";?> >Checker</option>
               <option value="8" <?php if($usType == 8) echo "Selected";?> >SADR </option>
               <option value="7" <?php if($usType == 7) echo "Selected";?> >ADR </option>
               <option value="2" <?php if($usType == 2) echo "Selected";?> >Adviser</option>
@@ -233,7 +234,7 @@ foreach($adr as $row) {
     <script type="text/javascript">
       
       $( document ).ready(function() {
-        if($("#userType").val() == "8" || $("#userType").val() == "1"  ){
+        if($("#userType").val() == "8" || $("#userType").val() == "1" || $("#userType").val() == "3"  ){
             $(".adrMember").hide();
             $(".sadrMember").hide();
         }else if($("#userType").val() == "7"){
@@ -247,7 +248,7 @@ foreach($adr as $row) {
           if(id.value == "2"){
               $(".adrMember").show();
               $(".sadrMember").show();   
-          }else if(id.value == "8" || id.value == "1"){
+          }else if(id.value == "8" || id.value == "1" || id.value == "3"){
               $(".adrMember").hide();
               $(".sadrMember").hide();
           }else if(id.value == "7"){
