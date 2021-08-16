@@ -35,14 +35,17 @@ if ($dataset->num_rows <= 0) {
 }
 else {
 	while ($row = $dataset->fetch_assoc()) {
+
 		$material_title = $row["material_title"];
 		$id_material = $row["id_material"];
 		$file_name = $row["file_name"];
+		$dir = "training_materials/".$file_name;
+		
         $rows .= <<<EOF
 		<tr>
 			<td>{$material_title}</td>
 			<td>
-			<a href="/staging/staging-training/training_materials/{$file_name}" target="_blank" title="Preview" class="download" data-toggle="tooltip" data-placement="bottom" >{$file_name}</a></td>
+			<a href="{$dir}" target="_blank" title="Preview" class="download" data-toggle="tooltip" data-placement="bottom" >{$file_name}</a></td>
 			<td>
 				<a href="index?page=training_material_add&id={$id_material}&action=edit" title="Edit Traning Material" class="edit" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">edit</i>
