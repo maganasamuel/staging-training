@@ -24,6 +24,17 @@ $id = $app->param($_GET, "id");
 
 if($saveMat == "save_material"){
 	if(!isset($_FILES['file']) && $id != ""){
+		$file_name = $_FILES['file']['name'];
+		$file_size =$_FILES['file']['size'];
+		$file_tmp =$_FILES['file']['tmp_name'];
+		$file_type=$_FILES['file']['type'];
+		$topic_title = $app->param($_POST, 'topic_title', 1);
+
+		if($file_name == ""){
+			$file_name = $app->param($_POST, 'old_file', 1);
+		}
+
+		
 		$dataset = $trainingController->updateMaterial($topic_title,$file_name,$id);
 		$message = "<div class=\"alert alert-success\" role=\"alert\">Training material saved.</div>"; 
 	}
@@ -94,6 +105,7 @@ li.active a { color:#FFFFFF; }
             <?php ?>
             <div class="form-group">
                <input type="file" name="file" />
+               <input type="hidden" name="old_file" value="<?= (empty($fileName)) ? '' : $fileName ?>" />
             </div>
              <div class="progress" id="progressDiv" style="display: none;">
   				<div class="progress-bar" role="progressbar" aria-valuemax="100"></div>
