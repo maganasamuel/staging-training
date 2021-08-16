@@ -76,9 +76,7 @@ if ($type == "") {
 	header("location: login");
 }
 
-if ($action == "logout") {
-	$session->destroySession();
-}
+
 
 //fetch all referral code related to the idUserType
 $correctPassword = "";
@@ -166,6 +164,10 @@ if($type == "trainer"){
 			$message = "Email address and password do not match.";
 		}
 		
+	}else{
+		if ($action == "logout") {
+			$session->destroySession();
+		}
 	}
 }
 
