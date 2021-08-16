@@ -97,7 +97,7 @@ $page = $app->param($_GET, "page", "test_set");
 					?>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<?php 
-								if ($idUserType === "1" || $idUserType === "3"){
+								if ($idUserType != 1 && $idUserType != 3){
 									echo "<a class='dropdown-item' href=\"test?page=test_set\">Take Assessment</a>";
 								}
 							?>

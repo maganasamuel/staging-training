@@ -34,6 +34,7 @@ if ($action == "delUser") {
 if($idUserType == "1"){
 	$userList = $trainingController->getUser();
 	$usList = "";
+
 }elseif($idUserType == "3"){
 	$userList = $trainingController->getUser();
 	$usList = "";
@@ -104,6 +105,8 @@ while ($row = $userList->fetch_assoc()) {
 
 EOF;
 }
+
+
 ?>
 		<div class="subHeader">
 			<div class="row">
@@ -186,7 +189,7 @@ EOF;
 		</script>
 		<style type="text/css">
 			<?php 
-				if ( $idUserType == "8" || $idUserType == "3" ){
+				if ( $idUserType == "8" || $idUserType == "3" || $idUserType == "7" ){
 					echo "
 					.stat{
 						display:none;
