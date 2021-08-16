@@ -57,7 +57,7 @@ $menu = $app->param($_GET, "menu");
 			<div class="row">
 				<div class="col">
 					<p class="label">
-						<?php echo (isset($menu) && $menu == "tests") ? 'Click the type of test you are taking: ' : 'Login as: '  ?>
+						<?php echo (isset($menu) && $menu == "tests") ? 'Click as per role: ' : 'Login as: '  ?>
 					</p>
 				</div>
 			</div>
