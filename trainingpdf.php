@@ -189,7 +189,7 @@ td{
   </div>
 
 <div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:2.63in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">{$trainingVenue}</span>
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">{$newDateTime}</span>
 </div>
 
 <div class="trainer" width="150" style="position:absolute;top:2.52in;left:4.25in;line-height:0.17in;">
@@ -197,7 +197,7 @@ td{
 </div>
 
 <div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:4.43in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">{$newDateTime}</span>
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000"> {$trainingVenue}</span>
 </div> 
 
 <div style="position:absolute;top:2.96in;left:1.36in;">
