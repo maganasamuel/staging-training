@@ -101,7 +101,10 @@ else {
 			<td class="capitalize">{$topic}</td>
 			<td>{$trainer}</td>
 			<td>{$status}</td>
-			<td><a href="training?page=trainingpdf&id={$trainingID}" class="sendEmail" target="_blank" title="View Certificates" data-toggle="tooltip" data-placement="bottom">
+			<td><a href="training?page=training_add&id={$trainingID}" class="sendEmail" title="Edit Training" data-toggle="tooltip" data-placement="bottom">
+					<i class="material-icons">edit</i>
+				</a>
+				<a href="training?page=trainingpdf&id={$trainingID}" class="sendEmail" target="_blank" title="View Certificates" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">insert_drive_file</i>
 				</a>
 				<a href="training?page=trainingpdf&id={$trainingID}&mail=1" class="sendEmail" title="Send Attendee Certificates" data-toggle="tooltip" data-placement="bottom">
