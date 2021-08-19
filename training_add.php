@@ -30,42 +30,111 @@ $message = "";
 $currentSessionFirstName = $app->param($_SESSION, "first_name", "User");
 $currentSessionID = $app->param($_SESSION, "id_user", -1);
 
+$tID = $app->param($_GET, "id");
+
+$newDateTime = ""; 
+$trainDate = "";
+$venue = "";
+$topics_title = "";
+$attendeeUID = "";
+
+if($tID != ""){
+	$uTraining = $trainingController->getTrainingSpecific($tID);
+	foreach($uTraining as $row) {
+
+		$trainDate = $row["training_date"];
+		
+		$newDateTime = date('d/m/Y h:i A', strtotime($trainDate));
+		
+		$venue = $row["training_venue"];
+		$topics_title = $row["training_topic"];
+		$attendeeUID = $row["training_attendee"];
+	}
+}
+
 if ($action == "save_training") {
+
 	$topic_type = $app->param($_POST, "topic_type");
+
 	if($topic_type == "1"){
 		$topic =  $app->param($_POST, "cpd_topic");
 	}else{
 		$topic =  $app->param($_POST, "trainig_topic");
 	}
 	$attendee = $app->param($_POST, "traning_attendee");
-	$date = $app->param($_POST, "training_date");
+
+	if($app->param($_POST, "training_date") != ""){
+		$date = $app->param($_POST, "training_date");
+	}else{
+		
+		$format = date('Y-m-d H:i:s', strtotime($trainDate));
+		$date = $format;
+	}
+
 	$venue = $app->param($_POST, "training_venue");
 	$attendee_id = $app->param($_POST, "traning_attendee");
 	$trainer_id = $currentSessionID;
 	$trainer_signature = $app->param($_POST, "signature");
 
+	if($app->param($_POST, "traning_attendee") == ""){
+		$message = "<div class=\"alert alert-danger\" role=\"alert\">Please select attendee's</div>";
+	}else{
+		if($tID != ""){
 
-	$dataset = $trainingController->addTraining($trainer_id,
+		$dataset = $trainingController->updateTraining($trainer_id,
+						implode(',',$topic),
+						implode(',',$attendee),
+						$date,$venue,implode(',',$attendee_id),$topic_type,$tID
+					);   
+	}else{
+		$dataset = $trainingController->addTraining($trainer_id,
 						implode(',',$topic),
 						implode(',',$attendee),
 						$date,$venue,implode(',',$attendee_id),$trainer_signature,$topic_type
 					);   
 
-	$message = "<div class=\"alert alert-success\" role=\"alert\">Training session saved.</div>";
-	
 	}
+	if($tID != ""){
+		echo "<script>
+		swal.fire({
+			 position: 'center',
+			  icon: 'success',
+			  title: 'Training session successfully updated',
+			  showConfirmButton: false,
+			  timer: 2500
+			}).then(function() {
+			    window.location = 'training?page=training_list';
+			});
+			</script>";
+	}else{
+		$message = "<div class=\"alert alert-success\" role=\"alert\">Training session saved.</div>";
+	}
+	}
+}
 
 $adviser = $trainingController->getAdviser();
 $sets = "";
+
+
+$arrAttendee = explode(",",$attendeeUID);
+
 foreach($adviser as $row) {
 
+try{
+	
 		$name = $row["first_name"].' '.$row['last_name'];
 		$id = $row["id_user"];
 		
-		$sets .= <<<EOF
-		<option value="{$id}">{$name}</option>
-EOF;
+		if(in_array($id, $arrAttendee)){
+				$sets .= ' <option value="'.$id.'" selected="selected">'.$name.'</option>';
+		}else{
+				$sets .= '<option value="'.$id.'">'.$name.'</option>';
+		}
 	}
+	catch (Exception $e){
+   		
+	}
+}
 
 $cpd = $trainingController->getCPD();
 $cpdList = "";
@@ -103,23 +172,54 @@ EOF;
 				<div class="row justify-content-md-center">
 					<div class="col-3">
 						<label class="font-weight-normal text-center">Training Date</label>
-						<input type="datetime-local" class="form-control" name="training_date"/>
+						<div class="form-group form-inline" id="datePicker" <?php 
+								if($newDateTime != ""){
+									echo "style=display:none;";
+								}
 
+								?>>  
+     						<input type="datetime-local" class="form-control" name="training_date" id="training_date" value="" / 
+								><a href="javascript:;" onclick="cancel()" title="Cancel"><i class="material-icons ml-2 block" style="font-size: 17px; color:red;">block</i></a>
+   						</div>
+						<p id="dateText" style="font-size: 17px;"><?= $newDateTime ?><a href="javascript:;" onclick="showDate()" title="Change Date"><i class="material-icons ml-2 edit-icon" id="edit-icon" style="font-size: 17px;">edit</i></a></p>
+					
 					</div>
 				</div>
-				<br>
 				<div class="row justify-content-md-center">
 					<div class="col-3">
 						<label class="font-weight-normal text-center">Venue</label>
-						<input type="text" placeholder="Venue" class="form-control mb-1" name="training_venue" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						<input type="text" placeholder="Venue" class="form-control mb-1" name="training_venue" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $venue ?>">
 					</div>
 				</div>
 				<br>
 				<div class="row justify-content-md-center">
 					<div class="col-3 mb-1">
+						
+						<?php if($topics_title != ""){ ?>
+							<label class="font-weight-normal text-center">Topics that will discuss</label>
+							<div id="topicTag"><?php 
+
+							$arr = explode(",",$topics_title);
+
+							for($i = 0; $i < count($arr); $i++){
+								echo '
+								<div class="row">
+								   <div class="col-lg-12">
+								    <div class="input-group input-group-md">
+								      <input type="hidden" value="'.count($arr).'" id="numberChk">
+										<input type="text" placeholder="Topic 1" class="form-control mb-1"name="trainig_topic[]" id="topic'.$i.'" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="'.$arr[$i].'">
+								      <span class="input-group-btn">
+								        <a href="javascript:;" class="topic'.$i.'" id="topic'.$i.'" onclick="removeTopic(this)" title="Remove Topic"><i class="material-icons ml-2 block" style="font-size: 17px; color:red;">delete</i></a>
+								      </span>
+								    </div>
+								  </div>
+								</div>';}?>
+							</div>
+							<button type="button" onclick="addTopic()" class="btn btn-info width mt-1">Add Topic</button>
+						<?php }else{ ?>
+
 						<label class="font-weight-normal text-center">Nature Of Training / Meeting</label>
 						<select class="form-control mb-1" id="natureTraining" onchange="show()" name="topic_type">
-
 						   <option value="0" disabled selected>Select Option</option>
 						   <option value="1">Continuing Professional Development (CPD)</option>
 						   <option value="2">Team Training</option>
@@ -142,7 +242,7 @@ EOF;
 							  <?= $cpdList; ?>
 							</div>
 						</div>
-
+						<?php } ?>
 					</div>
 				</div>
 				<br>
@@ -157,7 +257,13 @@ EOF;
 					</div>
 				</div>
 				<br>
-				<div class="row justify-content-md-center">
+				
+				<div class="row justify-content-md-center"
+				<?php if ( $topics_title != ""){
+					echo "style='display:none'";
+					}
+				?>
+				>
 					<div class="col-3">
 						<label class="font-weight-normal text-center">Add Signature</label>
 						<div class="wrapper" style="margin-bottom: 5px;">
@@ -166,7 +272,6 @@ EOF;
 						<button type="button" id="clear">Clear</button>
 					</div>
 				</div>
-
 				<br>
 				<div class="row justify-content-md-center">
 					<div class="col-3">
@@ -254,6 +359,26 @@ EOF;
 					$(".cpdTraining").hide();
 				}
 			}
+
+			function showDate(){
+				$('#datePicker').show();
+				$('#dateText').hide();
+			}
+
+			function cancel(){
+				$('#training_date').val('');
+				$('#datePicker').hide();
+				$('#dateText').show();	
+			}
+			function removeTopic(id){
+
+				var id_count = $('[id='+id.id+']');
+		            if (id_count .length > 0){
+		                $('[id='+id.id+']').remove();
+		            }
+
+				
+			}
 		</script>
 		<style type="text/css">
 			.wrapper {
@@ -277,7 +402,31 @@ EOF;
 			.chkbox{
 				font-size: 15px;
 			}
+			<?php
+				if($newDateTime == ""){
+					echo "
+					.block{
+						display: none;
+					}
+					.edit-icon{
+						display: none;
+						}
+					}
+					";
+				}
+
+			?>
 		</style>
+
+
+
+
+
+
+
+
+
+
 
 
 

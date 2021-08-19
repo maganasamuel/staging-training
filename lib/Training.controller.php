@@ -578,4 +578,25 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
     }
+    public function getTrainingSpecific($id){
+        $query = "SELECT * FROM ta_training where training_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        return $dataset;   
+    }
+    public function updateTraining(
+        $trainer_id = '',
+        $training_topic = '',
+        $training_attendee,
+        $training_date = '',
+        $training_venue = '',
+        $attendee_id = '',
+        $topic_type = '',
+        $tId = ''
+    ){
+        $query = "UPDATE ta_training SET training_topic = '{$training_topic}', training_attendee = '{$training_attendee}' ,
+                    training_date = '{$training_date}' , training_venue = '{$training_venue}' where training_id = '{$tId}'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);   
+    }
 }
