@@ -111,7 +111,7 @@ class TrainingController extends DB
 
     public function getAdviser()
     {
-        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" GROUP BY email_address) AND a.status = "1"  AND a.id_user_type in (2,7,8)';
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" GROUP BY email_address) AND a.status = "1"  AND a.id_user_type in (2,7,8) ORDER BY a.first_name';
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
