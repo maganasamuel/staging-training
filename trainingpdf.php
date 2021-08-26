@@ -15,24 +15,31 @@ $trainingController = new TrainingController();
 $idTrain = $app->param($_GET, "id", 0);
 $dataset = $trainingController->getTrainingDetail($idTrain);
 
-$topiclist = '';
+$topics_title = "";
+$uLevel = "";
 
+$uTopic = $trainingController->getTopic($idTrain);
+  foreach($uTopic as $row) {
+    $topics_title .= $row["topic_title"].',';
+    $uLevel .= $row["topic_level"].',';
+  }
+  $topics_title = substr($topics_title, 0, -1);
+  $uLevel = substr($uLevel, 0, -1);
+
+$topiclist = '';
+$hostName = '';
   while ($row = $dataset->fetch_assoc()) {
     $trainingTopic = $row["training_topic"];
-
- 
     $trainingDate = $row["training_date"];
-
     $newDateTime = date('Y-m-d h:i A', strtotime($trainingDate));
-
     $trainingVenue = $row["training_venue"];
-
     $attendee = $row["training_attendee"];
-
     $trainerSignature = $row["trainer_signiture"];
-
     $trainerID = $row["trainer_id"];
+    $hostName = $row["host_name"];
+    $compName = $row["comp_name"];
   }
+
 $fullnameTrainer = "";
 $emailTrainer = "";
 $trainerName = $trainingController->getAttendee($trainerID);
@@ -42,7 +49,8 @@ $trainerName = $trainingController->getAttendee($trainerID);
   }
 
 
-$arrTrainig = explode(',',$trainingTopic);
+$arrTrainig = explode(',',$topics_title);
+$arrLevel = explode(',',$uLevel);
 
 $arrAttendee =  explode(',',$attendee);
 
@@ -78,33 +86,103 @@ for($i = 0; $i< count($arrAttendee); $i++) {
   }
 
 }
-
-
-// $to = '<table><tr>';
-
-// $ctr=0;
-// $number = 1;
-// foreach($arrTrainig as $topic){
-//     $to .= '<td><div>'.$number.'. '.$topic.'</div></td>'; 
-//     $ctr++; 
-//     $number++; 
-
-//     if ($ctr % 2 == 0 && $ctr !== 0) {
-//         $to .= '</tr><tr>';
-//     }   
-// }
-
-// $la = $to . '</tr></table>';
-
 for($i = 0; $i< count($arrTrainig); $i++) {
-
+        if($arrLevel[$i] == "0"){
+          $levelText = ' (Marketing)';
+        }elseif($arrLevel[$i] == "1"){
+         $levelText = ' (Product)';
+        }elseif($arrLevel[$i] == "2"){
+          $levelText = ' (Compliance)';
+        }
     $ctr = $ctr +1;
     $div .= '<div class="column">
                   <div style="margin-left: 72px;border-bottom: 1px solid #000; bottom:23px;"> <span style="font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;"> '.$ctr.'. </span> <span style="width: 200px; border-width: thin;font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;">
-                    '.$arrTrainig[$i].'
+                    '.$arrTrainig[$i] . $levelText .'
                   </span></div> 
               </div>'; 
           }
+
+$attestText = '';
+$compText ='';
+if($hostName != ''){
+  $attestText = 'This is to attest that';
+  $compText = $compName;
+  $textbuild = '<div class="trainer" style="position:absolute;top:2.23in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$attestText.'
+</div> 
+
+<div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:2.66in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$hostName.'</span>
+</div> 
+
+<div class="trainer" width="220" style="text-align:center;position:absolute;top:2.23in;left:3.95in;line-height:0.17in;">
+<span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">of</span>
+</span>
+</div> 
+
+<div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:5.2in;line-height:0.17in;">
+<span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$compText.'</span>
+</span>
+</div> 
+
+
+<div style="position:absolute;top:2.53in;left:1.36in;width:6.90in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"></span>
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"> has conducted a training/meeting on </span>
+  </div>
+
+<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:3.53in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$newDateTime.'</span>
+</div>
+
+<div class="trainer" width="150" style="position:absolute;top:2.52in;left:5.15in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">at</span>
+</div>
+
+<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:5.33in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$trainingVenue.'</span>
+</div> ';
+
+$textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training 
+ that was conducted on '.$newDateTime.' 
+</div> ';
+
+}else{
+
+  $textbuild = '<div class="trainer" style="position:absolute;top:2.23in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to attest that I,
+</div> 
+
+<div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:2.66in;line-height:0.17in;">
+<span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$fullnameTrainer.'</span>
+</div> 
+
+<div style="position:absolute;top:2.23in;left:4.9in;width:8.86in;line-height:0.17in;">
+<span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"> an ADR/SADR of Eliteinsure Limited has conducted</span>
+</span>
+</div> 
+
+
+<div style="position:absolute;top:2.53in;left:1.36in;width:6.90in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">a</span>
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">training/meeting on </span>
+  </div>
+
+<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:2.63in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$newDateTime.'</span>
+</div>
+
+<div class="trainer" width="150" style="position:absolute;top:2.52in;left:4.25in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">at</span>
+</div>
+
+<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:4.43in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$trainingVenue.'</span>
+</div>';
+
+$textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training 
+ that I have conducted on '.$newDateTime.' 
+</div> ';
+
+}
 
 $html = <<<EOF
 <!DOCTYPE">
@@ -170,35 +248,7 @@ td{
   <br/>
 </div>
 
-<div class="trainer" style="position:absolute;top:2.23in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to attest that I,
-</div> 
-
-<div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:2.66in;line-height:0.17in;">
-<span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">{$fullnameTrainer}</span>
-</div> 
-
-<div style="position:absolute;top:2.23in;left:4.9in;width:8.86in;line-height:0.17in;">
-<span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"> an ADR/SADR of Eliteinsure Limited has conducted</span>
-</span>
-</div> 
-
-
-<div style="position:absolute;top:2.53in;left:1.36in;width:6.90in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">a</span>
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">training/meeting on </span>
-  </div>
-
-<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:2.63in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">{$newDateTime}</span>
-</div>
-
-<div class="trainer" width="150" style="position:absolute;top:2.52in;left:4.25in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">at</span>
-</div>
-
-<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:4.43in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000"> {$trainingVenue}</span>
-</div> 
+{$textbuild}
 
 <div style="position:absolute;top:2.96in;left:1.36in;">
   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">The topics that were discussed/trained to the attendee/s were:  </span><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"></span>
@@ -393,9 +443,7 @@ for($i = 0; $i< count($arrAttendee); $i++){
   <br/>
 </div>
 
-<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training 
- that I have conducted on {$newDateTime}
-</div> 
+{$textbuildAdivser}
 
 <div class="trainer" style="position:absolute;top:2.73in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">
    at {$trainingVenue} 

@@ -25,6 +25,8 @@ if($access != "yes"){
 
 $trainingController = new TrainingController();
 $action = $app->param($_POST, "action");
+$delete = $app->param($_POST, "delete");
+
 $message = "";
 
 $currentSessionFirstName = $app->param($_SESSION, "first_name", "User");
@@ -37,19 +39,39 @@ $trainDate = "";
 $venue = "";
 $topics_title = "";
 $attendeeUID = "";
-
+$topic_id = "";
+$uLevel = "";
+$uType = "";
+$host_name = '';
+$comp_name = '';
 if($tID != ""){
 	$uTraining = $trainingController->getTrainingSpecific($tID);
 	foreach($uTraining as $row) {
 
 		$trainDate = $row["training_date"];
-		
+		$uType = $row["training_type"];
 		$newDateTime = date('d/m/Y h:i A', strtotime($trainDate));
-		
 		$venue = $row["training_venue"];
-		$topics_title = $row["training_topic"];
 		$attendeeUID = $row["training_attendee"];
+		$host_name = $row["host_name"];
+		$comp_name = $row["comp_name"];
 	}
+
+	$uTopic = $trainingController->getTopic($tID);
+	foreach($uTopic as $row) {
+		$topics_title .= $row["topic_title"].',';
+		$uLevel .= $row["topic_level"].',';
+		$topic_id .= $row["id"].',';
+	}
+	$topics_title = substr($topics_title, 0, -1);
+	$uLevel = substr($uLevel, 0, -1);
+	$topic_id = substr($topic_id, 0, -1);
+}
+
+if($delete == "delete"){
+	$id = $app->param($_POST, "id");	
+	$status = $trainingController->deletetopic($id);
+
 }
 
 if ($action == "save_training") {
@@ -75,22 +97,26 @@ if ($action == "save_training") {
 	$attendee_id = $app->param($_POST, "traning_attendee");
 	$trainer_id = $currentSessionID;
 	$trainer_signature = $app->param($_POST, "signature");
+	$topic_level = $app->param($_POST, "level_topic");
+	$host_name = $app->param($_POST, "host_name");
+	$comp_name = $app->param($_POST, "comp_name");
+
 
 	if($app->param($_POST, "traning_attendee") == ""){
 		$message = "<div class=\"alert alert-danger\" role=\"alert\">Please select attendee's</div>";
 	}else{
 		if($tID != ""){
-
+			$topic_id_save = $app->param($_POST, "topic_id");
 		$dataset = $trainingController->updateTraining($trainer_id,
-						implode(',',$topic),
+						$topic,
 						implode(',',$attendee),
-						$date,$venue,implode(',',$attendee_id),$topic_type,$tID
+						$date,$venue,implode(',',$attendee_id),$uType,$tID,$topic_id_save,$topic_level,$host_name,$comp_name
 					);   
 	}else{
 		$dataset = $trainingController->addTraining($trainer_id,
-						implode(',',$topic),
+						$topic,
 						implode(',',$attendee),
-						$date,$venue,implode(',',$attendee_id),$trainer_signature,$topic_type
+						$date,$venue,implode(',',$attendee_id),$trainer_signature,$topic_type,$topic_level,$host_name,$comp_name
 					);   
 
 	}
@@ -191,7 +217,23 @@ EOF;
 						<input type="text" placeholder="Venue" class="form-control mb-1" name="training_venue" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $venue ?>">
 					</div>
 				</div>
+				<br>	
+				<?php if($idUserType == 1){ ?>
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<label class="font-weight-normal text-center">Host Name</label>
+						<input type="text" placeholder="Host name" class="form-control mb-1" name="host_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $host_name ?>">
+					</div>
+				</div>
 				<br>
+				<div class="row justify-content-md-center">
+					<div class="col-3">
+						<label class="font-weight-normal text-center">Company Name</label>
+						<input type="text" placeholder="Company name" class="form-control mb-1" name="comp_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $comp_name ?>">
+					</div>
+				</div>
+				<br>
+				<?php } ?>
 				<div class="row justify-content-md-center">
 					<div class="col-3 mb-1">
 						
@@ -200,22 +242,50 @@ EOF;
 							<div id="topicTag"><?php 
 
 							$arr = explode(",",$topics_title);
+							$arr2 = explode(",",$topic_id);
+							$arr3 = explode(",",$uLevel);
+
+							$option1 = "";
+							$option2 = "";
+							$option3 = "";
+							$level = "";
 
 							for($i = 0; $i < count($arr); $i++){
+								$selected = "";
+								if($arr3[$i] == "0"){
+									$option1 = 'selected';
+								}elseif($arr3[$i] == "1"){
+									$option2 = 'selected';
+								}elseif($arr3[$i] == "2"){
+									$option3 = 'selected';
+								}
+								if($uType != "1"){
+									$level = '<select class="form-control mb-1" id="'.$arr2[$i].'"  name="level_topic[]">
+											   <option value="0"'.$option1.'>Marketing</option>
+											   <option value="1"'.$option2.'>Product</option>
+											   <option value="2"'.$option3.'>Compliance</option>
+										</select>';
+								}else{
+									$level = "";
+								}
 								echo '
 								<div class="row">
 								   <div class="col-lg-12">
 								    <div class="input-group input-group-md">
 								      <input type="hidden" value="'.count($arr).'" id="numberChk">
-										<input type="text" placeholder="Topic 1" class="form-control mb-1"name="trainig_topic[]" id="topic'.$i.'" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="'.$arr[$i].'">
+								   	  <input type="hidden" value="'.$arr2[$i].'" name="topic_id[]">
+										<input type="text" placeholder="Topic 1" class="form-control mb-1"name="trainig_topic[]" id="'.$arr2[$i].'" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="'.$arr[$i].'">'.$level.'
 								      <span class="input-group-btn">
-								        <a href="javascript:;" class="topic'.$i.'" id="topic'.$i.'" onclick="removeTopic(this)" title="Remove Topic"><i class="material-icons ml-2 block" style="font-size: 17px; color:red;">delete</i></a>
+								        <a href="javascript:;" class="topic'.$i.'" id="'.$arr2[$i].'" onclick="removeTopic(this)" title="Remove Topic"><i class="material-icons ml-2 block" style="font-size: 17px; color:red;">delete</i></a>
 								      </span>
 								    </div>
 								  </div>
 								</div>';}?>
 							</div>
-							<button type="button" onclick="addTopic()" class="btn btn-info width mt-1">Add Topic</button>
+							<button type="button" onclick="addTopic()" class="btn btn-info width mt-1" <?php if($uType == 1){
+								echo "style='display:none;'";
+							} ?>
+							>Add Topic</button>
 						<?php }else{ ?>
 
 						<label class="font-weight-normal text-center">Nature Of Training / Meeting</label>
@@ -231,6 +301,11 @@ EOF;
 						<div id="topicTag">
 							<label class="font-weight-normal text-center">Topics that will discuss</label>
 							<input type="text" placeholder="Topic 1" class="form-control mb-1"name="trainig_topic[]" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+							<select class="form-control mb-1" id="level_topic" name="level_topic[]">
+							   <option value="0">Marketing</option>
+							   <option value="1">Product</option>
+							   <option value="2">Compliance</option>
+							</select>							
 						</div>
 						<button type="button" onclick="addTopic()" class="btn btn-info width mt-1">Add Topic</button>
 						</div>
@@ -323,7 +398,7 @@ EOF;
 
 			function addTopic(){
 				var newID = parseInt($('#numberChk').val()) + 1;
-				var new_input = "<input type='text' placeholder='Topic "+newID+"' id='topic" + newID + "' name='trainig_topic[]' class='form-control mb-1' aria-label='Large' aria-describedby='inputGroup-sizing-sm'>";
+				var new_input = "<input type='text' placeholder='Topic "+newID+"' id='topic" + newID + "' name='trainig_topic[]' class='form-control mb-1' aria-label='Large' aria-describedby='inputGroup-sizing-sm'><input type='hidden' value='0' name='topic_id[]'><select class='form-control mb-1' id='level_topic' name='level_topic[]''><option value='0'>Marketing</option><option value='1'>Product</option><option value='2'>Compliance</option></select>";
 
 				$('#topicTag').append(new_input);
 				$('#numberChk').val(newID);
@@ -371,13 +446,23 @@ EOF;
 				$('#dateText').show();	
 			}
 			function removeTopic(id){
-
 				var id_count = $('[id='+id.id+']');
-		            if (id_count .length > 0){
-		                $('[id='+id.id+']').remove();
-		            }
+			            if (id_count .length > 0){
+			                $('[id='+id.id+']').remove();
+			            }
+				$.ajax({
+                    url: 'training?page=training_add',
+                    type: 'post',
+                    data: {
+                       id: id.id,
+                       delete:'delete'
+                    },
+                    success: function(data) {
+						//console.log(data);	
+                    }
+                });
 
-				
+
 			}
 		</script>
 		<style type="text/css">
