@@ -39,40 +39,70 @@ class TrainingController extends DB
         $training_venue = '',
         $attendee_id = '',
         $trainer_signature = '',
-        $topic_type = ''
+        $topic_type = '',
+        $topic_level = '',
+        $host_name = '',
+        $comp_name = ''
     )
     {
         $date = date('Y-m-d');
 
         $query = "INSERT INTO ta_training (
                     trainer_id,
-                    training_topic,
                     training_attendee,
                     training_date,
                     attendee_signiture,
                     trainer_signiture,
                     training_venue,
                     attendee_id,
-                    training_type
+                    training_type,
+                    host_name,
+                    comp_name
                 )
                 VALUES (
                     '$trainer_id',
-                    '$training_topic',
                     '$training_attendee',
                     '$training_date',
                     '',
                     '$trainer_signature',
                     '$training_venue',
                     '$attendee_id',
-                    '$topic_type'
+                    '$topic_type',
+                    '$host_name',
+                    '$comp_name'
                 )";
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
         $insert_id = $this->mysqli->insert_id;
 
-        return $insert_id;
+        $training_id =  $insert_id;
+
+        for($i = 0; $i < count($training_topic); $i++){
+            
+            if ($topic_type == 1){
+             $topicLevel = '';
+            }else{
+                $topicLevel = $topic_level[$i];
+            }
+             $query = "INSERT INTO ta_training_topic (
+                        training_id,
+                        topic_title,
+                        topic_level
+                    )
+                    VALUES (
+                        '$training_id',
+                        '$training_topic[$i]',
+                        '$topicLevel'
+                    )";
+                $statement = $this->prepare($query);
+                $dataset = $this->execute($statement);
+          
+            }
+       return $insert_id;
     }
+
+
 
     public function getTraining($id, $idUserType)
     {
@@ -81,26 +111,57 @@ class TrainingController extends DB
         $statement = $this->prepare($query);
         $this->execute($statement);
 
-
-
         $query = 'SELECT 
+                    ta_training.trainer_id,
                     ta_user.id_user,
                     ta_training.training_id,
                     ta_training.training_topic,
                     ta_training.training_attendee,
-                    CONCAT(ta_user.first_name,"     ",ta_user.last_name) as fullname,
+                    CONCAT(ta_user.first_name," ",ta_user.last_name) as fullname,
                     ta_training.training_date
                 FROM
                     ta_training
                     LEFT JOIN ta_user
-                    ON ta_user.id_user = ta_training.trainer_id
-                    ';
+                    ON ta_user.id_user = ta_training.trainer_id ';
 
         if($idUserType == 1  || $idUserType == 3){
             //do nothing
         }else{
-             $query .= "WHERE ta_training.trainer_id = '$id' OR 
+             $query .= " WHERE ta_training.trainer_id = '$id' OR 
                     ta_training.training_attendee LIKE '%$id%'";
+        }
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+    public function getTrainingTopic($id,$idUserType,$trainingID){
+        //prepare/execute
+        $query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+        $query = 'SELECT  ta_training.training_id,
+                    ta_training.training_topic,
+                    ta_training.training_attendee,
+                    CONCAT(ta_user.first_name,"     ",ta_user.last_name) as fullname,
+                    ta_training.training_date,
+                    ta_training_topic.topic_level,
+                    ta_training_topic.topic_title
+                FROM
+                    ta_training
+                    LEFT JOIN ta_user
+                    ON ta_user.id_user = ta_training.trainer_id
+                    LEFT JOIN ta_training_topic 
+                    ON ta_training.training_id = ta_training_topic.training_id
+                    where ta_training.training_id = "'.$trainingID.'"';
+
+        if($idUserType == 1  || $idUserType == 3){
+            //do nothing
+        }else{
+             $query .= " and ta_training.trainer_id = '$id' OR 
+                    ta_training.training_attendee LIKE '%$id%' and ta_training.training_id = '$trainingID' ";
         }
 
         $statement = $this->prepare($query);
@@ -280,7 +341,24 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
 
     public function attendedTraining($id)
     {
-        $query = "SELECT * FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee) and training_type = '2'";
+        $query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+        $query = 'SELECT 
+                    ta_training.trainer_id,
+                    ta_user.id_user,
+                    ta_training.training_id,
+                    ta_training.training_topic,
+                    ta_training.training_attendee,
+                    CONCAT(ta_user.first_name," ",ta_user.last_name) as fullname,
+                    ta_training.training_date,
+                    ta_training.training_type
+                FROM
+                    ta_training
+                    LEFT JOIN ta_user
+                    ON ta_user.id_user = ta_training.trainer_id WHERE FIND_IN_SET ("'.$id.'",ta_training.training_attendee) and ta_training.training_type = "2"';
+
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -289,7 +367,24 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
 
     public function cpdTraining($id)
     {
-        $query = "SELECT * FROM ta_training WHERE FIND_IN_SET ('$id',training_attendee) and training_type = '1'";
+        $query = "SET time_zone = '+13:00'";
+        $statement = $this->prepare($query);
+        $this->execute($statement);
+
+        $query = 'SELECT 
+                    ta_training.trainer_id,
+                    ta_user.id_user,
+                    ta_training.training_id,
+                    ta_training.training_topic,
+                    ta_training.training_attendee,
+                    CONCAT(ta_user.first_name," ",ta_user.last_name) as fullname,
+                    ta_training.training_date,
+                    ta_training.training_type
+                FROM
+                    ta_training
+                    LEFT JOIN ta_user
+                    ON ta_user.id_user = ta_training.trainer_id WHERE FIND_IN_SET ("'.$id.'",ta_training.training_attendee) and ta_training.training_type = "1"';
+
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -592,11 +687,62 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $training_venue = '',
         $attendee_id = '',
         $topic_type = '',
-        $tId = ''
+        $tId = '',
+        $topic_id = '',
+        $topic_level = '',
+        $host_name = '',
+        $comp_name = ''
+
     ){
-        $query = "UPDATE ta_training SET training_topic = '{$training_topic}', training_attendee = '{$training_attendee}' ,
-                    training_date = '{$training_date}' , training_venue = '{$training_venue}' where training_id = '{$tId}'";
+
+        $query = "UPDATE ta_training SET training_attendee = '{$training_attendee}' ,
+                    training_date = '{$training_date}' , training_venue = '{$training_venue}' , host_name = '{$host_name}' , comp_name = '{$comp_name}' where training_id = '{$tId}'";
         $statement = $this->prepare($query);
-        $dataset = $this->execute($statement);   
+        $dataset = $this->execute($statement); 
+
+
+        for($i = 0; $i < count($training_topic); $i++){
+                if($topic_type == "1"){
+                    $query = "UPDATE ta_training_topic SET topic_title = '{$training_topic[$i]}',topic_level = '' where id = '{$topic_id[0]}'";
+                       
+                }else{
+                   if($topic_id[$i] != 0){
+                        $query = "UPDATE ta_training_topic SET topic_title = '{$training_topic[$i]}',topic_level = '{$topic_level[$i]}' where id = '{$topic_id[$i]}'";
+                   }else{
+                        $query = "INSERT INTO ta_training_topic (
+                        topic_title,
+                        topic_level,
+                        training_id
+                    )
+                    VALUES (
+                        '$training_topic[$i]',
+                        '$topic_level[$i]',
+                        '$tId'
+                    )";
+                   }
+                
+                $statement = $this->prepare($query);
+                $dataset = $this->execute($statement);
+            } 
     }
 }
+    public function getTopic($id){
+        $query = "SELECT * FROM ta_training_topic where training_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;   
+    }
+    public function deletetopic($id){
+        $query = "DELETE FROM ta_training_topic where id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        return $dataset; 
+    }
+}
+
+
+
+
+
+
