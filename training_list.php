@@ -37,73 +37,60 @@ $trAttended = "";
 $totalConcducted = $trainingController->gettotalContducted($id_user);
 $totalAttended = $trainingController->gettotalAttended($id_user);
 
-
-
-
-while ($row = $conductedTraining->fetch_assoc()) {
-
-		$topic = str_replace(',','<br>', $row["training_topic"]);
-		$date = substr($row["training_date"], 0, -3);
-
-		$trConducted .= <<<EOF
-		<tr>
-			<td>{$date}</td>
-			<td class="capitalize">{$topic}</td>
-		</tr>
-
-EOF;
-}
-
-while ($row = $attendedTraining->fetch_assoc()) {
-		$topic = str_replace(',','<br>', $row["training_topic"]);
-		$date = substr($row["training_date"], 0, -3);
-
-		$trAttended .= <<<EOF
-		<tr>
-			<td>{$date}</td>
-			<td class="capitalize">{$topic}</td>
-			
-		</tr>
-
-EOF;
-}
-
-
 $dataset = $trainingController->getTraining($id_user,$idUserType);
 $rows = "";
 $action = $app->param($_POST, "action");
 $message = "";
 
 if ($dataset->num_rows <= 0) {
-}
-else {
+}else {
 	while ($row = $dataset->fetch_assoc()) {
-		
 		$topic = str_replace(',','<br>', $row["training_topic"]);
 		$date = $row["training_date"];
-
+		$trainerID = $row['trainer_id'];
     	$newDateTime = date('Y-m-d h:i A', strtotime($date));
 		$trainer = $row["fullname"];
 		$trainingID = $row["training_id"];
 		$today = new DateTime();
 		$status = "";
 		
+		$datasetRow = $trainingController->getTrainingTopic($id_user,$idUserType,$trainingID);
+		$trow = "";
+		$topicTitle = "";
+		while ($trow = $datasetRow->fetch_assoc()) {
+			$level = "";
+			if($trow['topic_level'] == "0"){
+				$level = '(Marketing)';
+			}elseif($trow['topic_level'] == "1"){
+				$level = '(Product)';
+			}elseif($trow['topic_level'] == ""){
+				$level = '';
+			}else{
+				$level = '(Compliance)';
+			}
+			$topicTitle .= $trow['topic_title'] .' '. $level . '<br>'; 
+		}
+
+
 		if( strtotime($row["training_date"]) < strtotime('now') ) {
 			$status = "<span class='badge bg-success' style='color:white;'>Completed</span>";
 		}else{
 			$status = "<span class='badge bg-info' style='color:white;'>Not Completed</span>";
 		}
-
-
+		$edit = '<a href="training?page=training_add&id='.$trainingID.'" class="sendEmail" title="Edit Training" data-toggle="tooltip" data-placement="bottom"><i class="material-icons">edit</i></a>';
+		if($idUserType != 1){
+				if($trainerID != $id_user){
+					$edit = '';
+				}
+		}
         $rows .= <<<EOF
 		<tr>
 			<td>{$newDateTime}</td>
-			<td class="capitalize">{$topic}</td>
+			<td class="capitalize">{$topicTitle}</td>
 			<td>{$trainer}</td>
 			<td>{$status}</td>
-			<td><a href="training?page=training_add&id={$trainingID}" class="sendEmail" title="Edit Training" data-toggle="tooltip" data-placement="bottom">
-					<i class="material-icons">edit</i>
-				</a>
+			<td>
+				{$edit}
 				<a href="training?page=trainingpdf&id={$trainingID}" class="sendEmail" target="_blank" title="View Certificates" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">insert_drive_file</i>
 				</a>
