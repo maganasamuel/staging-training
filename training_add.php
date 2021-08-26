@@ -221,8 +221,8 @@ EOF;
 				<?php if($idUserType == 1){ ?>
 				<div class="row justify-content-md-center">
 					<div class="col-3">
-						<label class="font-weight-normal text-center">Host Name</label>
-						<input type="text" placeholder="Host name" class="form-control mb-1" name="host_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $host_name ?>">
+						<label class="font-weight-normal text-center">Trainer Name</label>
+						<input type="text" placeholder="Trainer name" class="form-control mb-1" name="host_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $host_name ?>">
 					</div>
 				</div>
 				<br>
