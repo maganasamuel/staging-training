@@ -245,8 +245,8 @@ while ($row = $modTraining->fetch_assoc()) {
              <table class="table table-responsive-md table-hoverable cpd">
                 <thead style="background-color:#e9ecef;">
                   <tr>
-                    <th>Topic Trained On</th>
                     <th>Training Date</th>
+                    <th>Topic Trained</th>
                     <th>Trainer</th>
                   </tr>
                 </thead>
@@ -262,8 +262,8 @@ while ($row = $modTraining->fetch_assoc()) {
              <table class="table table-responsive-md table-hoverable team">
                 <thead style="background-color:#e9ecef;">
                   <tr>
-                    <th>Topic Trained On </th>
                     <th>Training Date</th>
+                    <th>Topic Trained</th>
                     <th>Trainer</th>
                   </tr>
                 </thead>
