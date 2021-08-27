@@ -507,10 +507,10 @@ EOF;
     if(isset($_GET['mail'])) { 
 
           $content = $mpdf->Output('', 'S');
-          $attachment = (new Swift_Attachment($content,'Certificate', 'application/pdf'));
+          $attachment = (new Swift_Attachment($content,'Training Record', 'application/pdf'));
 
           $message = new Swift_Message();
-          $message->setSubject('Training Certificate');
+          $message->setSubject('Training Record');
           //$message->setFrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
           //Remove the venue at the certificate.
           //Move date to footer.
