@@ -537,11 +537,11 @@ EOF;
   }
   
 if($download == 1){
-     $mpdf->Output('Training.pdf', "D");
+     $mpdf->Output('Training Record.pdf', "D");
   }elseif (isset($_GET['mail'])) {
     header("location: training?page=training_list&sent=1");
   }else{
-   $mpdf->Output('Training.pdf', "I");  
+   $mpdf->Output('Training Record.pdf', "I");  
   //print_r(' <table> ' .$trv. '</table>');
 }
 ob_end_flush();
