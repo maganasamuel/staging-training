@@ -146,7 +146,7 @@ $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;le
 </div> ';
 
 $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$hostName.'</span>
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$fullnameTrainer.'</span>
   <br/> 
 </div>';
 
@@ -537,11 +537,11 @@ EOF;
   }
   
 if($download == 1){
-     $mpdf->Output('Training.pdf', "D");
+     $mpdf->Output('Training Record.pdf', "D");
   }elseif (isset($_GET['mail'])) {
     header("location: training?page=training_list&sent=1");
   }else{
-   $mpdf->Output('Training.pdf', "I");  
+   $mpdf->Output('Training Record.pdf', "I");  
   //print_r(' <table> ' .$trv. '</table>');
 }
 ob_end_flush();
