@@ -146,7 +146,7 @@ $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;le
 </div> ';
 
 $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$hostName.'</span>
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$fullnameTrainer.'</span>
   <br/> 
 </div>';
 
