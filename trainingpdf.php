@@ -142,9 +142,13 @@ if($hostName != ''){
   <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$trainingVenue.'</span>
 </div> ';
 
-$textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training 
- that was conducted on '.$newDateTime.' 
+$textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training that was conducted by '.$hostName.'<br>on '.$newDateTime.' at '.$trainingVenue.'.
 </div> ';
+
+$divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$hostName.'</span>
+  <br/> 
+</div>';
 
 }else{
 
@@ -179,8 +183,17 @@ $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;le
 </div>';
 
 $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training 
- that I have conducted on '.$newDateTime.' 
+ that I have conducted on '.$newDateTime.' <div class="trainer" style="position:absolute;top:in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">
+   at '.$trainingVenue.'.
+</div> 
+
 </div> ';
+
+$divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">ADR/SADR Signature</span>
+  <br/> 
+</div>';
+
 
 }
 
@@ -298,10 +311,7 @@ td{
   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">_______________________________________________</span>
 </div>
 
-<div style="margin-left: 480px;left:5.36in;width:7.93in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">ADR/SADR Signature</span>
-  <br/> 
-</div>
+{$divsig}
 
 <div class="footer" style="font-size:6pt;>
     <img src="img/logo.png" alt="eliteinsure" class="logo" width="200"/>
@@ -331,10 +341,10 @@ $mpdf->SetHTMLFooter($htmlFooter);
 if(isset($_GET['mail'])) { 
 
       $content = $mpdf->Output('', 'S');
-      $attachment = (new Swift_Attachment($content,'Certificate', 'application/pdf'));
+      $attachment = (new Swift_Attachment($content,'Training Record', 'application/pdf'));
 
       $message = new Swift_Message();
-      $message->setSubject('Training Certificate');
+      $message->setSubject('Training Record');
       //$message->setFrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
       //Remove the venue at the certificate.
       //Move date to footer.
@@ -445,10 +455,6 @@ for($i = 0; $i< count($arrAttendee); $i++){
 
 {$textbuildAdivser}
 
-<div class="trainer" style="position:absolute;top:2.73in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">
-   at {$trainingVenue} 
-</div> 
-
 
 <div style="position:absolute;top:3.16in;left:1.36in;">
   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">The topics that were discussed/trained to you were:  </span><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"></span>
@@ -482,10 +488,9 @@ for($i = 0; $i< count($arrAttendee); $i++){
   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">_______________________________________________</span>
 </div>
 
-<div style="margin-left: 480px;left:5.36in;width:7.93in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">ADR/SADR Signature</span>
-  <br/> 
-</div>
+
+{$divsig}
+
 
 <div class="footer" style="font-size:6pt;>
     <img src="img/logo.png" alt="eliteinsure" class="logo" width="200"/>
