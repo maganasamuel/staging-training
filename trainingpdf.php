@@ -31,7 +31,7 @@ $hostName = '';
   while ($row = $dataset->fetch_assoc()) {
     $trainingTopic = $row["training_topic"];
     $trainingDate = $row["training_date"];
-    $newDateTime = date('Y-m-d h:i A', strtotime($trainingDate));
+    $newDateTime = date('d-m-Y h:i A', strtotime($trainingDate));
     $trainingVenue = $row["training_venue"];
     $attendee = $row["training_attendee"];
     $trainerSignature = $row["trainer_signiture"];
@@ -54,7 +54,7 @@ $arrLevel = explode(',',$uLevel);
 
 $arrAttendee =  explode(',',$attendee);
 
-$date = date("Y-m-d");
+$date = date("d-m-Y");
 
 $divAttendee = "";
 $crtAttendee = 0;
