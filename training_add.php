@@ -57,7 +57,16 @@ if($tID != ""){
 		$comp_name = $row["comp_name"];
 	}
 
+	$dataTopicTitle = array();
+	$dataTopicLevel = array();
+	$dataTopicID = array();
+
 	$uTopic = $trainingController->getTopic($tID);
+	foreach($uTopic as $row) {
+	    array_push($dataTopicTitle,$row["topic_title"]);
+	    array_push($dataTopicLevel,$row["topic_level"]);
+	    array_push($dataTopicID,$row["id"]);
+	}
 	foreach($uTopic as $row) {
 		$topics_title .= $row["topic_title"].',';
 		$uLevel .= $row["topic_level"].',';
@@ -196,7 +205,7 @@ EOF;
 				</div>
 			<form method="post">
 				<div class="row justify-content-md-center">
-					<div class="col-3">
+					<div class="col-sm-12 col-lg-3">
 						<label class="font-weight-normal text-center">Training Date</label>
 						<div class="form-group form-inline" id="datePicker" <?php 
 								if($newDateTime != ""){
@@ -212,7 +221,7 @@ EOF;
 					</div>
 				</div>
 				<div class="row justify-content-md-center">
-					<div class="col-3">
+					<div class="col-sm-12 col-lg-3">
 						<label class="font-weight-normal text-center">Venue</label>
 						<input type="text" placeholder="Venue" class="form-control mb-1" name="training_venue" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $venue ?>">
 					</div>
@@ -220,14 +229,14 @@ EOF;
 				<br>	
 				<?php if($idUserType == 1){ ?>
 				<div class="row justify-content-md-center">
-					<div class="col-3">
+					<div class="col-sm-12 col-lg-3">
 						<label class="font-weight-normal text-center">Trainer Name</label>
 						<input type="text" placeholder="Trainer name" class="form-control mb-1" name="host_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $host_name ?>">
 					</div>
 				</div>
 				<br>
 				<div class="row justify-content-md-center">
-					<div class="col-3">
+					<div class="col-sm-12 col-lg-3">
 						<label class="font-weight-normal text-center">Company Name</label>
 						<input type="text" placeholder="Company name" class="form-control mb-1" name="comp_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?= $comp_name ?>">
 					</div>
@@ -235,7 +244,7 @@ EOF;
 				<br>
 				<?php } ?>
 				<div class="row justify-content-md-center">
-					<div class="col-3 mb-1">
+					<div class="col-sm-12 col-lg-3">
 						
 						<?php if($topics_title != ""){ ?>
 							<label class="font-weight-normal text-center">Topics that will discuss</label>
@@ -250,17 +259,17 @@ EOF;
 							$option3 = "";
 							$level = "";
 
-							for($i = 0; $i < count($arr); $i++){
+							for($i = 0; $i < count($dataTopicTitle); $i++){
 								$selected = "";
-								if($arr3[$i] == "0"){
+								if($dataTopicLevel[$i] == "0"){
 									$option1 = 'selected';
-								}elseif($arr3[$i] == "1"){
+								}elseif($dataTopicLevel[$i] == "1"){
 									$option2 = 'selected';
-								}elseif($arr3[$i] == "2"){
+								}elseif($dataTopicLevel[$i] == "2"){
 									$option3 = 'selected';
 								}
 								if($uType != "1"){
-									$level = '<select class="form-control mb-1" id="'.$arr2[$i].'"  name="level_topic[]">
+									$level = '<select class="form-control mb-1" id="'.$dataTopicID[$i].'"  name="level_topic[]">
 											   <option value="0"'.$option1.'>Marketing</option>
 											   <option value="1"'.$option2.'>Product</option>
 											   <option value="2"'.$option3.'>Compliance</option>
@@ -272,11 +281,11 @@ EOF;
 								<div class="row">
 								   <div class="col-lg-12">
 								    <div class="input-group input-group-md">
-								      <input type="hidden" value="'.count($arr).'" id="numberChk">
-								   	  <input type="hidden" value="'.$arr2[$i].'" name="topic_id[]">
-										<input type="text" placeholder="Topic 1" class="form-control mb-1"name="trainig_topic[]" id="'.$arr2[$i].'" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="'.$arr[$i].'">'.$level.'
+								      <input type="hidden" value="'.count($dataTopicTitle).'" id="numberChk">
+								   	  <input type="hidden" value="'.$dataTopicID[$i].'" name="topic_id[]">
+										<input type="text" placeholder="Topic 1" class="form-control mb-1"name="trainig_topic[]" id="'.$dataTopicID[$i].'" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="'.$dataTopicTitle[$i].'">'.$level.'
 								      <span class="input-group-btn">
-								        <a href="javascript:;" class="topic'.$i.'" id="'.$arr2[$i].'" onclick="removeTopic(this)" title="Remove Topic"><i class="material-icons ml-2 block" style="font-size: 17px; color:red;">delete</i></a>
+								        <a href="javascript:;" class="topic'.$i.'" id="'.$dataTopicID[$i].'" onclick="removeTopic(this)" title="Remove Topic"><i class="material-icons ml-2 block" style="font-size: 17px; color:red;">delete</i></a>
 								      </span>
 								    </div>
 								  </div>
@@ -322,7 +331,7 @@ EOF;
 				</div>
 				<br>
 				<div class="row justify-content-md-center">
-					<div class="col-3">
+					<div class="col-sm-12 col-lg-3">
 						<label class="font-weight-normal text-center">Attendee on the training</label>
 						<select class="adviser js-states form-control" multiple="multiple" name="traning_attendee[]">
 								<?php
@@ -352,7 +361,7 @@ EOF;
 					<div class="col-3">
 						<input type="hidden" name="signature" id="imageUrl">
 						<input type="hidden" name="action" value="save_training"/>
-						<input id="generate" type="submit" value="Save" class="btn btn-info width100" />
+						<input id="generate" type="submit" value="Save" o class="btn btn-info width100" />
 						<br/>
 						<br/>
 					</div>

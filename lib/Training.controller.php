@@ -47,11 +47,29 @@ class TrainingController extends DB
     {
         $date = date('Y-m-d');
 
+        $query = "INSERT INTO ta_test (
+                id_user_tested,
+                id_user_checked,
+                id_set,
+                venue
+            )
+            VALUES (
+                ?,
+                0,
+                ?,
+                ?
+            )";
+            $statement = $this->prepare($query);
+            $statement->bind_param("iis", 
+                        $idUser,
+                        $idSet
+                        ,$venue);
+            $this->execute($statement);
+
         $query = "INSERT INTO ta_training (
                     trainer_id,
                     training_attendee,
                     training_date,
-                    attendee_signiture,
                     trainer_signiture,
                     training_venue,
                     attendee_id,
@@ -60,22 +78,33 @@ class TrainingController extends DB
                     comp_name
                 )
                 VALUES (
-                    '$trainer_id',
-                    '$training_attendee',
-                    '$training_date',
-                    '',
-                    '$trainer_signature',
-                    '$training_venue',
-                    '$attendee_id',
-                    '$topic_type',
-                    '$host_name',
-                    '$comp_name'
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?,
+                    ?
                 )";
 
-        $statement = $this->prepare($query);
-        $dataset = $this->execute($statement);
-        $insert_id = $this->mysqli->insert_id;
 
+        $statement = $this->prepare($query);
+        $statement->bind_param("isssssiss", 
+                        $trainer_id,
+                        $training_attendee,
+                        $training_date,
+                        $trainer_signature,
+                        $training_venue,
+                        $attendee_id,
+                        $topic_type,
+                        $host_name,
+                        $comp_name);
+
+        $dataset = $this->execute($statement);
+
+        $insert_id = $this->mysqli->insert_id;
         $training_id =  $insert_id;
 
         for($i = 0; $i < count($training_topic); $i++){
@@ -91,11 +120,16 @@ class TrainingController extends DB
                         topic_level
                     )
                     VALUES (
-                        '$training_id',
-                        '$training_topic[$i]',
-                        '$topicLevel'
+                        ?,
+                        ?,
+                        ?
                     )";
                 $statement = $this->prepare($query);
+                $statement->bind_param("iss", 
+                        $training_id,
+                        $training_topic[$i],
+                        $topicLevel);
+
                 $dataset = $this->execute($statement);
           
             }
@@ -116,6 +150,7 @@ class TrainingController extends DB
                     ta_user.id_user,
                     ta_training.training_id,
                     ta_training.training_topic,
+                    ta_training.host_name,
                     ta_training.training_attendee,
                     CONCAT(ta_user.first_name," ",ta_user.last_name) as fullname,
                     ta_training.training_date
@@ -351,6 +386,7 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
                     ta_training.training_id,
                     ta_training.training_topic,
                     ta_training.training_attendee,
+                    ta_training.host_name,
                     CONCAT(ta_user.first_name," ",ta_user.last_name) as fullname,
                     ta_training.training_date,
                     ta_training.training_type
@@ -695,19 +731,36 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
 
     ){
 
-        $query = "UPDATE ta_training SET training_attendee = '{$training_attendee}' ,
-                    training_date = '{$training_date}' , training_venue = '{$training_venue}' , host_name = '{$host_name}' , comp_name = '{$comp_name}' where training_id = '{$tId}'";
+        $query = "UPDATE ta_training SET training_attendee = ? ,
+                    training_date = ? , training_venue = ? , host_name = ? , comp_name = ? where training_id = ?";
         $statement = $this->prepare($query);
+
+        $statement->bind_param("sssssi", 
+                        $training_attendee,
+                        $training_date,
+                        $training_venue,
+                        $host_name,
+                        $comp_name,
+                        $tId);
+
         $dataset = $this->execute($statement); 
 
 
         for($i = 0; $i < count($training_topic); $i++){
                 if($topic_type == "1"){
-                    $query = "UPDATE ta_training_topic SET topic_title = '{$training_topic[$i]}',topic_level = '' where id = '{$topic_id[0]}'";
-                       
+                    $query = "UPDATE ta_training_topic SET topic_title = ?,topic_level = '' where id = ?";
+                    $statement = $this->prepare($query);
+                    $statement->bind_param("si", 
+                        $training_topic[$i],
+                        $topic_id[0]);                       
                 }else{
                    if($topic_id[$i] != 0){
-                        $query = "UPDATE ta_training_topic SET topic_title = '{$training_topic[$i]}',topic_level = '{$topic_level[$i]}' where id = '{$topic_id[$i]}'";
+                        $query = "UPDATE ta_training_topic SET topic_title =? , topic_level = ? where id = ?";
+                        $statement = $this->prepare($query);
+                        $statement->bind_param("ssi", 
+                        $training_topic[$i],
+                        $topic_level[$i],
+                        $topic_id[$i]);    
                    }else{
                         $query = "INSERT INTO ta_training_topic (
                         topic_title,
@@ -715,13 +768,16 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
                         training_id
                     )
                     VALUES (
-                        '$training_topic[$i]',
-                        '$topic_level[$i]',
-                        '$tId'
+                        ?,
+                        ?,
+                        ?
                     )";
+                    $statement = $this->prepare($query);
+                    $statement->bind_param("ssi", 
+                        $training_topic[$i],
+                        $topic_level[$i],
+                        $tId);
                    }
-                
-                $statement = $this->prepare($query);
                 $dataset = $this->execute($statement);
             } 
     }
