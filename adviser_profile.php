@@ -185,39 +185,39 @@ EOF;
 }
 
 
-// $modTraining = $trainingController->getModularTraining($emailID);
-// $modList = "";
+$modTraining = $trainingController->getModularTraining($emailID);
+$modList = "";
 
-// $topic = '';
-// $module_taken = '';
-// $score = '';
-// $result = '';
+$topic = '';
+$module_taken = '';
+$score = '';
+$result = '';
 
-// while ($row = $modTraining->fetch_assoc()) {
-//   $topic = $row["set_name"];
-//   $module_taken = $row["date_took"];
-//   $score = $row["score"];
-//   $maxScore = $row["max_score"];
-//   $result = "<span style='color: red'>FAILED</span>";
-//   $attempts = $row["attempts"];
+while ($row = $modTraining->fetch_assoc()) {
+  $topic = $row["set_name"];
+  $module_taken = $row["date_took"];
+  $score = $row["score"];
+  $maxScore = $row["max_score"];
+  $result = "<span style='color: red'>FAILED</span>";
+  $attempts = $row["attempts"];
 
-//   //score
-//   $score = (($score / $maxScore) * 100);
-//   $score = number_format((float) $score, 2, '.', '');
+  //score
+  $score = (($score / $maxScore) * 100);
+  $score = number_format((float) $score, 2, '.', '');
 
-//   if($score >= 80)
-//     $result = "<span style='color: green'>PASSED</span>";
+  if($score >= 80)
+    $result = "<span style='color: green'>PASSED</span>";
 
-//   $modList .= '
-//     <tr>
-//       <td>'.$topic.'</td>
-//       <td>'.$module_taken.'</td>
-//       <td>'.$score.'%</td>
-//       <td>'.$result.'</td>
-//       <td>'.$attempts.'</td>
-//     </tr>';
+  $modList .= '
+    <tr>
+      <td>'.$topic.'</td>
+      <td>'.$module_taken.'</td>
+      <td>'.$score.'%</td>
+      <td>'.$result.'</td>
+      <td>'.$attempts.'</td>
+    </tr>';
   
-// }
+}
 
 ?>
 
