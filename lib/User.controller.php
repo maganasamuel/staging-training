@@ -344,4 +344,12 @@ class UserController extends DB
 
         return $dataset;
     }
+
+    public function createToken($id){
+        $token = md5($id . time());
+
+        $this->execute($this->prepare('UPDATE ta_user SET access_token = "' . $token . '" WHERE id_user = ' . $id));
+
+        return $token;
+    }    
 }
