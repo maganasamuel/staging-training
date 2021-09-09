@@ -9,11 +9,7 @@
 	JSON
 */
 
-if($_SERVER['SERVER_NAME'] == 'onlineinsure.co.nz'){
-	$autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging/staging-training/package/vendor/autoload.php';
-}else{
-	$autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/staging/staging-training/package/vendor/autoload.php';
-};
+$autoloadPath = realpath(__DIR__ . '/../package/vendor/autoload.php');
 
 require_once $autoloadPath;
 
@@ -107,7 +103,7 @@ class TestController extends DB {
 				ta_user.id_user_type = $idUserType";
 			$statement = $this->prepare($query);
 			$dataset = $this->execute($statement);
-		} else {
+		}/*  else {
 			$status = 1;
 			if($idUserType == 2) $status = 0;
 
@@ -133,7 +129,7 @@ class TestController extends DB {
 			$insert_id = $this->mysqli->insert_id;
 			
 			$dataset = $this->getUserSpecific($insert_id);
-		}
+		} */
 
 		return $dataset;
 	}

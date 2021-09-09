@@ -135,6 +135,15 @@ $page = $app->param($_GET, "page", "test_set");
 						}
 					?>
 					</li>
+					<?php
+					if(in_array($idUserType, [1, 7, 8])){
+						?>
+						<li>
+							<a class="nav-link" style="color: #ffffff" href="training?page=login_to_clients_feedback" target="_blank">Clients Feedback</a>
+						</li>
+						<?php
+					}
+					?>
 					<li class="nav-item">
 					<?php 
 						
