@@ -69,7 +69,7 @@ while ($row = $userList->fetch_assoc()) {
 		}
 
 		$roles = [ 
-			1 => 'Admin',
+			1 => 'Admin (Master)',
 			2 => 'Adviser',
 			3 => 'Trainer',
 			4 => 'Admin',
