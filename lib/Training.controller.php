@@ -435,11 +435,11 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
 
     public function getUser()
     {
-        // $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" GROUP BY email_address) ';
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" GROUP BY email_address) ';
 
-        $mailDomain = '@eliteinsure.co.nz';
+        /* $mailDomain = '@eliteinsure.co.nz';
 
-        $query = 'SELECT * FROM ta_user WHERE id_user != 1 AND RIGHT(email_address, ' . strlen($mailDomain) . ') = "' . $mailDomain . '"';
+        $query = 'SELECT * FROM ta_user WHERE id_user != 1 AND RIGHT(email_address, ' . strlen($mailDomain) . ') = "' . $mailDomain . '"'; */
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -672,9 +672,9 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
 
     public function getAdrMember($id)
     {
-        // $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE adr_id = '$id' GROUP BY email_address)  ";
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE adr_id = '$id' GROUP BY email_address)  ";
 
-        $query = 'SELECT * FROM ta_user WHERE adr_id != ' . $id;
+        // $query = 'SELECT * FROM ta_user WHERE adr_id != ' . $id;
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 
@@ -683,9 +683,9 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
 
     public function getSadrMember($id)
     {
-        // $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE sadr_id = '$id'  GROUP BY email_address)  ";
+        $query = "SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE sadr_id = '$id'  GROUP BY email_address)  ";
 
-        $query = 'SELECT * FROM ta_user WHERE sadr_id != ' . $id;
+        // $query = 'SELECT * FROM ta_user WHERE sadr_id != ' . $id;
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
 

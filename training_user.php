@@ -68,7 +68,19 @@ while ($row = $userList->fetch_assoc()) {
 			$chck = "checked";
 		}
 
-		$roles = [ 
+		if($usNumber == "1"){
+			$ustype = "Admin";
+		}elseif ($usNumber == "7") {
+			$ustype = "ADR";
+		}elseif ($usNumber == "8") {
+			$ustype = "SADR";
+		}elseif ($usNumber == "3") {
+			$ustype = "Checker";
+		}else{
+			$ustype = "Adviser";
+		}
+
+		/* $roles = [ 
 			1 => 'Admin (Master)',
 			2 => 'Adviser',
 			3 => 'Trainer',
@@ -77,7 +89,7 @@ while ($row = $userList->fetch_assoc()) {
 			6 => 'Telemarketer',
 			7 => 'ADR',
 			8 => 'SADR',
-		];
+		]; */
 
 		$ustype = $roles[$usNumber];
 
