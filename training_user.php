@@ -89,9 +89,9 @@ while ($row = $userList->fetch_assoc()) {
 			6 => 'Telemarketer',
 			7 => 'ADR',
 			8 => 'SADR',
-		]; */
+		];
 
-		$ustype = $roles[$usNumber];
+		$ustype = $roles[$usNumber]; */
 
 		$usList .= <<<EOF
 		<tr>
