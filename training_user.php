@@ -80,6 +80,19 @@ while ($row = $userList->fetch_assoc()) {
 			$ustype = "Adviser";
 		}
 
+		/* $roles = [ 
+			1 => 'Admin (Master)',
+			2 => 'Adviser',
+			3 => 'Trainer',
+			4 => 'Admin',
+			5 => 'BDM',
+			6 => 'Telemarketer',
+			7 => 'ADR',
+			8 => 'SADR',
+		];
+
+		$ustype = $roles[$usNumber]; */
+
 		$usList .= <<<EOF
 		<tr>
 			<td>
