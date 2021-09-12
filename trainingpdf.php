@@ -15,16 +15,15 @@ $trainingController = new TrainingController();
 $idTrain = $app->param($_GET, "id", 0);
 $dataset = $trainingController->getTrainingDetail($idTrain);
 
-$topics_title = "";
-$uLevel = "";
-
 $uTopic = $trainingController->getTopic($idTrain);
-  foreach($uTopic as $row) {
-    $topics_title .= $row["topic_title"].',';
-    $uLevel .= $row["topic_level"].',';
-  }
-  $topics_title = substr($topics_title, 0, -1);
-  $uLevel = substr($uLevel, 0, -1);
+
+$dataTopicTitle = array();
+$dataTopicLevel = array();
+
+foreach($uTopic as $row) {
+    array_push($dataTopicTitle,$row["topic_title"]);
+    array_push($dataTopicLevel,$row["topic_level"]);
+}
 
 $topiclist = '';
 $hostName = '';
@@ -48,9 +47,6 @@ $trainerName = $trainingController->getAttendee($trainerID);
         $emailTrainer = $row["email_address"];
   }
 
-
-$arrTrainig = explode(',',$topics_title);
-$arrLevel = explode(',',$uLevel);
 
 $arrAttendee =  explode(',',$attendee);
 
@@ -86,18 +82,20 @@ for($i = 0; $i< count($arrAttendee); $i++) {
   }
 
 }
-for($i = 0; $i< count($arrTrainig); $i++) {
-        if($arrLevel[$i] == "0"){
+
+
+for($i = 0; $i< count($dataTopicTitle); $i++) {
+        if($dataTopicLevel[$i] == "0"){
           $levelText = ' (Marketing)';
-        }elseif($arrLevel[$i] == "1"){
+        }elseif($dataTopicLevel[$i] == "1"){
          $levelText = ' (Product)';
-        }elseif($arrLevel[$i] == "2"){
+        }elseif($dataTopicLevel[$i] == "2"){
           $levelText = ' (Compliance)';
         }
     $ctr = $ctr +1;
     $div .= '<div class="column">
                   <div style="margin-left: 72px;border-bottom: 1px solid #000; bottom:23px;"> <span style="font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;"> '.$ctr.'. </span> <span style="width: 200px; border-width: thin;font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;">
-                    '.$arrTrainig[$i] . $levelText .'
+                    '.$dataTopicTitle[$i] . $levelText .'
                   </span></div> 
               </div>'; 
           }

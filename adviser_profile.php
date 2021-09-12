@@ -51,7 +51,14 @@ while ($row = $usProfile->fetch_assoc()) {
     $date = $row["training_date"];
     $trainerID = $row['trainer_id'];
     $newDateTime = date('d-m-Y h:i A', strtotime($date));
-    $trainer = $row["fullname"];
+    
+    if($row['host_name'] == ""){
+        $trainer = $row["fullname"];
+      }else{
+        $trainer = $row["host_name"];
+      }
+
+
     $trainingID = $row["training_id"];
     $today = new DateTime();
     $status = "";
@@ -91,7 +98,13 @@ $cpdList = "";
     $date = $row["training_date"];
     $trainerID = $row['trainer_id'];
     $newDateTime = date('d-m-Y h:i A', strtotime($date));
-    $trainer = $row["fullname"];
+   
+    if($row['host_name'] == ""){
+        $trainer = $row["fullname"];
+      }else{
+        $trainer = $row["host_name"];
+      }
+   
     $trainingID = $row["training_id"];
     $today = new DateTime();
     $status = "";
@@ -223,8 +236,8 @@ while ($row = $modTraining->fetch_assoc()) {
         <br>
         <div class="row text-center">
         </div>
-        <div class="row  ml-5">
-          <div class="col-3">
+        <div class="row ml-5">
+          <div class="col-sm-12 col-lg-3">
             <div class="card">
               <h5 class="card-header"></h5>
               <div class="card-body">
@@ -240,7 +253,7 @@ while ($row = $modTraining->fetch_assoc()) {
               </div>
             </div>
           </div>
-           <div class="col-4">
+           <div class="col-sm-12 col-lg-4">
            <h6>Continuing Professional Development Course</h6>
              <table class="table table-responsive-md table-hoverable cpd">
                 <thead style="background-color:#e9ecef;">
@@ -257,7 +270,7 @@ while ($row = $modTraining->fetch_assoc()) {
                 </tbody>
             </table>
           </div>
-          <div class="col-4">
+          <div class="col-sm-12 col-lg-4">
            <h6>Team Training Course</h6>
              <table class="table table-responsive-md table-hoverable team">
                 <thead style="background-color:#e9ecef;">
@@ -277,7 +290,7 @@ while ($row = $modTraining->fetch_assoc()) {
         </div>
         <div class="row  ml-5">
           
-          <div class="col-3" >
+          <div class="col-sm-12 col-lg-3" >
             <br>
             <div <?php if($usType == "2" || $usType == "7" ){echo "style='display:none;'"; }?>>
             <table class="table table-responsive-md table-hoverable modular" >

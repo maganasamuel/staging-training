@@ -49,7 +49,12 @@ if ($dataset->num_rows <= 0) {
 		$date = $row["training_date"];
 		$trainerID = $row['trainer_id'];
     	$newDateTime = date('d-m-Y h:i A', strtotime($date));
-		$trainer = $row["fullname"];
+
+    	if($row['host_name'] == ""){
+    		$trainer = $row["fullname"];
+    	}else{
+    		$trainer = $row["host_name"];
+    	}
 		$trainingID = $row["training_id"];
 		$today = new DateTime();
 		$status = "";

@@ -17,6 +17,7 @@ $trAttended = "";
 
 $cpdTraining = $trainingController->cpdTraining($idProfile);
 $trAttended = "";
+$rows = '';
 
 $usProfile = $trainingController->getSpecificUser($idProfile);
 
@@ -27,48 +28,104 @@ while ($row = $usProfile->fetch_assoc()) {
 	$password = $row["password"];
 }
 
-while ($row = $attendedTraining->fetch_assoc()) {
+while ($row = $usProfile->fetch_assoc()) {
+  $usName = $row["first_name"] .' '.$row["last_name"];
+  $email = $row["email_address"];
+  $fsp = $row["ssf_number"];
+  $password = $row["password"];
+}
+
+    while ($row = $attendedTraining->fetch_assoc()) {
     $topic = str_replace(',','<br>', $row["training_topic"]);
     $date = $row["training_date"];
-    $newDateTime = date('d M Y h:i A', strtotime($date));
-
-    $trainer = $row["trainer_id"];
+    $trainerID = $row['trainer_id'];
+    $newDateTime = date('d-m-Y h:i A', strtotime($date));
    
-    $trianerList = $trainingController->getAttendee($trainer);
-    while ($row = $trianerList->fetch_assoc()) {
-      $trainer_name = $row["first_name"].' '.$row["last_name"];
+    if($row['host_name'] == ""){
+    		$trainer = $row["fullname"];
+    	}else{
+    		$trainer = $row["host_name"];
+    	}
+
+    $trainingID = $row["training_id"];
+    $today = new DateTime();
+    $status = "";
+    
+    $datasetRow = $trainingController->getTrainingTopic($id_user,$idUserType,$trainingID);
+    $trow = "";
+    $topicTitle = "";
+    while ($trow = $datasetRow->fetch_assoc()) {
+      $level = "";
+      if($trow['topic_level'] == "0"){
+        $level = '(Marketing)';
+      }elseif($trow['topic_level'] == "1"){
+        $level = '(Product)';
+      }elseif($trow['topic_level'] == ""){
+        $level = '';
+      }else{
+        $level = '(Compliance)';
+      }
+      $topicTitle .= $trow['topic_title'] .' '. $level . '<br>'; 
     }
 
-    $trAttended .= <<<EOF
+
+    
+        $rows .= <<<EOF
     <tr>
-      <td>{$topic}</td>
+      <td class="capitalize">{$topicTitle}</td>
       <td>{$newDateTime}</td>
-      <td>{$trainer_name}</td>
+      <td>{$trainer}</td>
     </tr>
+
 EOF;
 }
 
 $cpdList = "";
-while ($row = $cpdTraining->fetch_assoc()) {
+    while ($row = $cpdTraining->fetch_assoc()) {
     $topic = str_replace(',','<br>', $row["training_topic"]);
     $date = $row["training_date"];
-    $newDateTime = date('d M Y h:i A', strtotime($date));
-
-    $trainer = $row["trainer_id"];
+    $trainerID = $row['trainer_id'];
+    $newDateTime = date('d-m-Y h:i A', strtotime($date));
    
-    $trianerList = $trainingController->getAttendee($trainer);
-    while ($row = $trianerList->fetch_assoc()) {
-      $trainer_name = $row["first_name"].' '.$row["last_name"];
+    if($row['host_name'] == ""){
+    		$trainer = $row["fullname"];
+    	}else{
+    		$trainer = $row["host_name"];
+    	}
+   
+    $trainingID = $row["training_id"];
+    $today = new DateTime();
+    $status = "";
+    
+    $datasetRow = $trainingController->getTrainingTopic($id_user,$idUserType,$trainingID);
+    $trow = "";
+    $topicTitle = "";
+    while ($trow = $datasetRow->fetch_assoc()) {
+      $level = "";
+      if($trow['topic_level'] == "0"){
+        $level = '(Marketing)';
+      }elseif($trow['topic_level'] == "1"){
+        $level = '(Product)';
+      }elseif($trow['topic_level'] == ""){
+        $level = '';
+      }else{
+        $level = '(Compliance)';
+      }
+      $topicTitle .= $trow['topic_title'] .' '. $level . '<br>'; 
     }
 
-    $cpdList .= <<<EOF
+
+    
+        $cpdList .= <<<EOF
     <tr>
-      <td>{$topic}</td>
+      <td class="capitalize">{$topicTitle}</td>
       <td>{$newDateTime}</td>
-      <td>{$trainer_name}</td>
+      <td>{$trainer}</td>
     </tr>
+
 EOF;
 }
+
 
 
 $modTraining = $trainingController->getModularTraining($emailID);
@@ -206,7 +263,7 @@ $html =
 		<tr>
 			<th colspan="4">Team Training Course</th>
 		</tr>
-		'.$trAttended.'
+		'.$rows.'
 	</table>
 </div>';
 
