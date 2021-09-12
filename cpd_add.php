@@ -58,7 +58,7 @@ if ($action == "save_cpd") {
     <div align="container">
       <div class="row justify-content-md-center mt-4">
 
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             
             <?php echo $message; ?>
 
@@ -69,14 +69,14 @@ if ($action == "save_cpd") {
         <div class="row text-center">
         </div>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">Topic</label>
             <input type="text" class="form-control mb-1" placeholder="Topic Title" value="<?= (empty($cpd_name)) ? '' : $cpd_name ?>" name="cpd_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <br>
           <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <div class="form-group">
             <label class="font-weight-normal text-center">Topic Description</label>
               <textarea class="form-control" rows="5" placeholder="Describe yourself here..." name="cpd_description"><?= (empty($cpd_description)) ? '' : $cpd_description ?></textarea>
@@ -85,7 +85,7 @@ if ($action == "save_cpd") {
         </div>
         <br>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <input type="hidden" name="signature" id="imageUrl">
             <input type="hidden" name="action" value="save_cpd"/>
             <input id="generate" type="submit" value="Save" class="btn btn-info width100" />

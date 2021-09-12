@@ -145,7 +145,7 @@ foreach($adr as $row) {
     <div align="container">
       <div class="row justify-content-md-center mt-4">
 
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             
             <?php echo $message; ?>
 
@@ -153,37 +153,37 @@ foreach($adr as $row) {
         </div>
       <form method="post">
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">First Name<span style="color:red;">*</span></label>
             <input type="text" placeholder="Fist Name" class="form-control mb-2" value="<?= (empty($usFirstName)) ? '' : $usFirstName ?>" name="first_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">Last Name<span style="color:red;">*</span></label>
             <input type="text" placeholder="Last Name" class="form-control mb-2" value="<?= (empty($usLastName)) ? '' : $usLastName ?>" name="last_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">Email Address<span style="color:red;">*</span></label>
             <input type="text" placeholder="Email Address" class="form-control mb-2" value="<?= (empty($usEmail)) ? '' : $usEmail ?>" name="email_address" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">Password<span style="color:red;">*</span></label>
             <input type="password" placeholder="Password" class="form-control mb-2" value="<?=(empty($usPassword)) ? '' : $usPassword ?>" name="password" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">FSP Number</label>
             <input type="text" placeholder="FSP Number" class="form-control mb-2" value="<?=(empty($usFSP)) ? '' : $usFSP?>" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">    
           </div>
         </div>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">User Type<span style="color:red;">*</span></label>
            <div class="form-group">
             <select class="form-control" id="userType" name="user_type" onchange="changeProp(this)">
@@ -197,7 +197,7 @@ foreach($adr as $row) {
           </div>
         </div>
         <div class="row justify-content-md-center adrMember">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">ADR Team<span style="color:red;">*</span></label>
            <div class="form-group">
             <select class="adr form-control" name="adr">
@@ -210,7 +210,7 @@ foreach($adr as $row) {
           </div>
         </div>
         <div class="row justify-content-md-center sadrMember">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">SADR Team<span style="color:red;">*</span></label>
            <div class="form-group">
             <select class="sadr js-states form-control" name="sadr">
@@ -224,7 +224,7 @@ foreach($adr as $row) {
         </div>
         <br>
         <div class="row justify-content-md-center">
-          <div class="col-3">
+          <div class="col-sm-12 col-lg-3">
             <input type="hidden" name="action" value="save_profile"/>
              <input id="generate" type="submit" value="Save" class="btn btn-info width100" />
           </div>

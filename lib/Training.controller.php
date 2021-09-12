@@ -28,7 +28,7 @@ class TrainingController extends DB
 
     public function addTraining(
         $trainer_id = '',
-        $training_topic = '',
+        $training_topic = [],
         $training_attendee,
         $training_date = '',
         $training_venue = '',
