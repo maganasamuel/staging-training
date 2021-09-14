@@ -365,7 +365,6 @@ if(isset($_GET['mail'])) {
 
       // Send the created message
       $isSent = $mailer->send($message);
-      sleep(10);
 }
 
 
@@ -516,7 +515,23 @@ EOF;
           $message->setFrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
           $message->setTo($email);
 
-          $message->setBody('Please see attached file');
+          $link = '<a href="https://'. $_SERVER['SERVER_NAME'].'/staging-training/feedback?id='.$idTrain.'">Feedback Form Link</a>';
+          $message->setBody('
+Dear Attendee/Trainee,<br><br>
+
+
+Good day.<br><br>
+
+Please see attached signed attestation re meeting/training.<br><br> 
+
+Also, we would appreciate if you can give us some feedback with regards for the same by clicking the link below. Your feedback will be sent to us anonymously.<br><br>
+
+'.$link.'<br><br><br>
+
+
+Regards,<br><br>
+
+Eliteinsure Admin Team','text/html');
 
           $message->attach($attachment);
 
@@ -529,7 +544,6 @@ EOF;
 
           // Send the created message
           $isSent = $mailer->send($message);
-          sleep(10);
         }
     }     
   }

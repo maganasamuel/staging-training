@@ -102,6 +102,9 @@ if ($dataset->num_rows <= 0) {
 				<a href="training?page=trainingpdf&id={$trainingID}&mail=1" class="sendEmail" title="Send Attendee Certificates" data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">email</i>
 				</a>
+				<a href="training?page=feedbackpdf&id={$trainingID}" class="feedback" title="View Feedback" data-toggle="tooltip" data-placement="bottom">
+					<i class="material-icons">comment</i>
+				</a>
 				<a href="training?page=training_list&id={$trainingID}&action=del" title="Delete" class="delete" data-toggle="tooltip" data-placement="bottom" onclick="return confirm('Are you sure that you want to delete this training?')">
 					<i class="material-icons">delete</i>
 				</a>
@@ -206,8 +209,18 @@ EOF;
              .trainConducted{
              	display:none;
              }
+
 			";
 		}
+
+		if(	$idUserType == "2" || $idUserType == "8" || $idUsertype == "7"){
+			echo "
+			.feedback{
+             	display:none;
+             }
+			";
+		}
+
 		?>
 	</style>
 	<script type="text/javascript">
