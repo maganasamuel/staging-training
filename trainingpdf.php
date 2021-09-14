@@ -515,7 +515,7 @@ EOF;
           $message->setFrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
           $message->setTo($email);
 
-          $link = '<a href="https://'. $_SERVER['SERVER_NAME'].'/staging-training/feedback?id='.$idTrain.'">Feedback Form Link</a>';
+          $link = '<a href="https://'. $_SERVER['SERVER_NAME'].'/staging/staging-training/feedback?id='.$idTrain.'">Feedback Form Link</a>';
           $message->setBody('
 Dear Attendee/Trainee,<br><br>
 

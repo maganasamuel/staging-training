@@ -73,7 +73,7 @@ $div1 = "";
 $ctr1 = 0;
 for($i = 0; $i< count($implist); $i++) {
     $ctr1 = $ctr1 +1;
-    $div1 .= '<tr><td style="font-size:12x; text-align:justify">'.$ctr1.'. '.$implist[$i].'</td></tr>';
+    $div1 .= '<tr><td style="font-size:12x; text-align:justify;vertical-align:top">'.$ctr1.'.</td><td style="font-size:12x; text-align:justify">'.$implist[$i].'</td></tr>';
 }
 
 if($hostName != ''){

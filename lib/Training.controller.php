@@ -155,11 +155,11 @@ class TrainingController extends DB
                     LEFT JOIN ta_user
                     ON ta_user.id_user = ta_training.trainer_id ';
 
-        if (1 == $idUserType || 3 == $idUserType) {
-            //do nothing
-        } else {
-            $query .= " WHERE ta_training.trainer_id = '$id' OR 
-                    ta_training.training_attendee LIKE '%$id%'";
+        if($idUserType == 1  || $idUserType == 3){
+             $query .= "ORDER BY ta_training.training_date desc ";
+        }else{
+             $query .= " WHERE ta_training.trainer_id = '$id' OR 
+                    ta_training.training_attendee LIKE '%$id%'  ORDER BY ta_training.training_date desc ";
         }
 
         $statement = $this->prepare($query);
