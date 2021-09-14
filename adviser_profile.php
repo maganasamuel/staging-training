@@ -229,11 +229,9 @@ while ($row = $modTraining->fetch_assoc()) {
   </div>
 </div>
 
-<div align="container">
-  <br>
-
-  <div class="row ml-5">
-    <div class="col-sm-12 col-lg-3">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3">
       <div class="card">
         <h5 class="card-header"></h5>
         <div class="card-body">
@@ -254,47 +252,8 @@ while ($row = $modTraining->fetch_assoc()) {
           </a>
         </div>
       </div>
-    </div>
 
-    <div class="col-sm-12 col-lg-4">
-      <h6>Continuing Professional Development Course</h6>
-      <table class="table table-responsive-md table-hoverable cpd">
-        <thead style="background-color:#e9ecef;">
-          <tr>
-            <th>Training Date</th>
-            <th>Topic Trained</th>
-            <th>Trainer</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php echo $cpdList; ?>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="col-sm-12 col-lg-4">
-      <h6>Team Training Course</h6>
-        <table class="table table-responsive-md table-hoverable team">
-          <thead style="background-color:#e9ecef;">
-            <tr>
-              <th>Training Date</th>
-              <th>Topic Trained</th>
-              <th>Trainer</th>
-            </tr>
-          </thead>
-          <tbody>
-          <?php
-                echo $rows;
-          ?>
-          </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="row  ml-5">
-    <div class="col-sm-12 col-lg-3" >
-      <br>
-      <div <?php echo in_array($usType, ['2', '7']) ? 'style="display: none;"' : null;  ?> >
+      <div class="<?php echo in_array($usType, ['2', '7']) ? 'd-none' : null;  ?> mt-4">
         <table class="table table-responsive-md table-hoverable modular" >
           <thead style="background-color:#e9ecef;">
             <tr>
@@ -307,7 +266,7 @@ while ($row = $modTraining->fetch_assoc()) {
         </table>
       </div>
 
-      <div <?php echo in_array($usType, ['2', '8']) ? 'style="display: none;"' : null; ?> >
+      <div class="<?php echo in_array($usType, ['2', '8']) ? 'd-none' : null; ?> mt-4">
         <table class="table table-responsive-md table-hoverable modular">
           <thead style="background-color:#e9ecef;">
             <tr>
@@ -320,26 +279,75 @@ while ($row = $modTraining->fetch_assoc()) {
         </table>
       </div>
     </div>
-
-    <div class="<?php echo '2' == $usType ? 'offset-md-3' : null; ?> col-md-8">
-      <br><br>
-      <h6>Modular Training</h6>
-      <table class="table table-responsive-md table-hoverable modular">
-          <thead style="background-color:#e9ecef;">
-            <tr>
-              <th>Topics Trained On</th>
-              <th>Module Take</th>
-              <th>Score</th>
-              <th>Results</th>
-              <th>No. of Attempts</th>
-            </tr>
-          </thead>
-          <tbody>
-          <?php
-                echo $modList;
-          ?>
-          </tbody>
-      </table>
+    <div class="col-lg-9">
+      <ul class="nav nav-tabs mt-4 mt-lg-0" id="adviserProfileTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="dealTrackerTab" data-toggle="tab" href="#dealTrackerTabPanel" role="tab" aria-controls="home" aria-selected="true">Deal Tracker</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="trainDevTab" data-toggle="tab" href="#trainDevTabPanel" role="tab" aria-controls="profile" aria-selected="false">Training and Development</a>
+        </li>
+      </ul>
+      <div class="tab-content p-3 border border-top-0" id="adviserProfileTabContent">
+        <div class="tab-pane fade show active" id="dealTrackerTabPanel" role="tabpanel" aria-labelledby="deal-tracker-tab">
+          deal tracker content
+        </div>
+        <div class="tab-pane fade" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
+          <div class="row">
+            <div class="col-lg-6">
+              <h6>Continuing Professional Development Course</h6>
+              <table class="table table-responsive-md table-hoverable cpd">
+                <thead style="background-color:#e9ecef;">
+                  <tr>
+                    <th>Training Date</th>
+                    <th>Topic Trained</th>
+                    <th>Trainer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php echo $cpdList; ?>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+              <h6>Team Training Course</h6>
+              <table class="table table-responsive-md table-hoverable team">
+                <thead style="background-color:#e9ecef;">
+                  <tr>
+                    <th>Training Date</th>
+                    <th>Topic Trained</th>
+                    <th>Trainer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php echo $rows; ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-lg-12">
+              <h6>Modular Training</h6>
+              <table class="table table-responsive-md table-hoverable modular">
+                  <thead style="background-color:#e9ecef;">
+                    <tr>
+                      <th>Topics Trained On</th>
+                      <th>Module Take</th>
+                      <th>Score</th>
+                      <th>Results</th>
+                      <th>No. of Attempts</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <?php
+                        echo $modList;
+                  ?>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -350,5 +358,4 @@ while ($row = $modTraining->fetch_assoc()) {
       $('.cpd').DataTable();
       $('.team').DataTable();
   });
-
 </script>
