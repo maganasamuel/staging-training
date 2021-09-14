@@ -213,7 +213,7 @@ EOF;
 			";
 		}
 
-		if(	$idUserType == "2" || $idUserType == "8" || $idUsertype == "7"){
+		if(	$idUserType == "2" || $idUserType == "8" || $idUserType == "7"){
 			echo "
 			.feedback{
              	display:none;
@@ -226,7 +226,9 @@ EOF;
 	<script type="text/javascript">
 		$(document).ready( function () {
           	$('.training').dataTable( {
- 				 "pageLength": 25
+ 				 "pageLength": 25,
+ 				 "bSort" : false
+
 			});
       	});
       	function create(){

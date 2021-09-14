@@ -256,7 +256,7 @@ if($hostName != ''){
                 showConfirmButton: false,
                 timer: 2500
               }).then(function() {
-                 window.location.href = '/staging-training/login_trainee?type=trainer';
+                 window.location.href = '/staging/staging-training/login_trainee?type=trainer';
             });
           }
   });
