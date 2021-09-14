@@ -854,4 +854,44 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
 
         return $dataset;
     }
+    public function getFeedback($id){
+        $query = "SELECT * FROM ta_feedback where training_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        return $dataset;   
+    }
+    public function participants($id){
+        $query = "SELECT count(id) as participants FROM ta_feedback where training_id = '$id'";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        
+        $totalAttended = $dataset->fetch_assoc();
+
+        return $totalAttended['participants'];  
+    }
+    public function addFeedback($idTrain,$first_question,$second_question,$third_question,$fourth_question,$fifth_question,$improvement){
+
+        $query = "INSERT INTO ta_feedback (
+                    training_id,
+                    first_question,
+                    second_question,
+                    third_question,
+                    fourth_question,
+                    fifth_question,
+                    improvement
+                )
+                VALUES (
+                    '$idTrain',
+                    '$first_question',
+                    '$second_question',
+                    '$third_question',
+                    '$fourth_question',
+                    '$fifth_question',
+                    '$improvement'
+                )";
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $insert_id = $this->mysqli->insert_id;
+    }
 }
