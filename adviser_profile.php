@@ -13,10 +13,14 @@ ob_start();
 include_once('lib/Session.helper.php');
 include_once('lib/General.helper.php');
 include_once('lib/Training.controller.php');
+include_once('lib/IndetHelper.php');
 
 $session = new SessionHelper();
 $app = new GeneralHelper();
 $trainingController = new TrainingController();
+$indet = new IndetHelper();
+
+use Carbon\Carbon;
 
 $idProfile = $app->param($_GET, 'id', 0);
 $emailID = $app->param($_GET, 'email', 0);
@@ -220,6 +224,8 @@ while ($row = $modTraining->fetch_assoc()) {
         <td>' . $attempts . '</td>
       </tr>';
 }
+
+$deals = $indet->listDeals($emailID);
 ?>
 <div class="subHeader">
   <div class="row">
@@ -229,7 +235,7 @@ while ($row = $modTraining->fetch_assoc()) {
   </div>
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid mb-4">
   <div class="row">
     <div class="col-lg-3">
       <div class="card">
@@ -254,29 +260,33 @@ while ($row = $modTraining->fetch_assoc()) {
       </div>
 
       <div class="<?php echo in_array($usType, ['2', '7']) ? 'd-none' : null;  ?> mt-4">
-        <table class="table table-responsive-md table-hoverable modular" >
-          <thead style="background-color:#e9ecef;">
-            <tr>
-              <th>ADR Team Member</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php echo $adminadrList; ?>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-hoverable member">
+            <thead style="background-color:#e9ecef;">
+              <tr>
+                <th>ADR Team Member</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php echo $adminadrList; ?>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="<?php echo in_array($usType, ['2', '8']) ? 'd-none' : null; ?> mt-4">
-        <table class="table table-responsive-md table-hoverable modular">
-          <thead style="background-color:#e9ecef;">
-            <tr>
-              <th>Adviser Team Member</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php echo '7' == $usType ? $adrList : $adviserList; ?>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-hoverable member">
+            <thead style="background-color:#e9ecef;">
+              <tr>
+                <th>Adviser Team Member</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php echo '7' == $usType ? $adrList : $adviserList; ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="col-lg-9">
@@ -290,60 +300,181 @@ while ($row = $modTraining->fetch_assoc()) {
       </ul>
       <div class="tab-content p-3 border border-top-0" id="adviserProfileTabContent">
         <div class="tab-pane fade show active" id="dealTrackerTabPanel" role="tabpanel" aria-labelledby="deal-tracker-tab">
-          deal tracker content
+          <div class="row">
+            <div class="col-lg-12">
+              <h6>
+                Production - <?php echo $deals['previousPeriod']['fromDate']->ordinal('day') . $deals['previousPeriod']['fromDate']->format(' F Y') . ' to ' . $deals['previousPeriod']['toDate']->ordinal('day') . $deals['previousPeriod']['toDate']->format(' F Y'); ?>
+              </h6>
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead><tr class="bg-light">
+                    <th>Life Insured</th>
+                    <th>Policy #</th>
+                    <th>Co.</th>
+                    <th>Issue Date</th>
+                    <th>API</th>
+                    <th>Record Keeping</th>
+                    <th>Comp. Admin</th>
+                    <th>Comp. CO</th>
+                    <th>Notes</th>
+                  </tr></thead>
+                  <tbody>
+                    <?php
+                    if ($deals['previousDeals']->count()) {
+                        foreach ($deals['previousDeals'] as $deal) {
+                            ?>
+                            <tr>
+                              <td><?php echo $deal['client_name_life_insured']; ?></td>
+                              <td><?php echo $deal['policy_number']; ?></td>
+                              <td><?php echo $deal['company']; ?></td>
+                              <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
+                              <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
+                              <td><?php echo $deal['record_keeping']; ?></td>
+                              <td><?php echo $deal['compliance_status']; ?></td>
+                              <td><?php echo $deal['audit_status']; ?></td>
+                              <td><?php echo $deal['notes']; ?></td>
+                            </tr>
+                            <?php
+                        } ?>
+                        </tbody>
+                        <tfoot>
+                          <tr class="bg-light">
+                            <th colspan="4" class="text-right">Total API:</th>
+                            <th class="text-right">$<?php echo number_format($deals['previousDeals']->sum('issued_api'), 2); ?></th>
+                            <th colspan="4"></th>
+                          </tr>
+                        </tfoot>
+                        <?php
+                    } else {
+                        ?>
+                          <tr>
+                            <td colspan="9">No available deals.</td>
+                          </tr>
+                        </tbody>
+                        <?php
+                    }
+                    ?>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-lg-12">
+              <h6>
+                Production - <?php echo $deals['currentPeriod']['fromDate']->ordinal('day') . $deals['currentPeriod']['fromDate']->format(' F Y') . ' to ' . $deals['currentPeriod']['toDate']->ordinal('day') . $deals['currentPeriod']['toDate']->format(' F Y'); ?>
+              </h6>
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead><tr class="bg-light">
+                    <th>Life Insured</th>
+                    <th>Policy #</th>
+                    <th>Co.</th>
+                    <th>Issue Date</th>
+                    <th>API</th>
+                    <th>Record Keeping</th>
+                    <th>Comp. Admin</th>
+                    <th>Comp. CO</th>
+                    <th>Notes</th>
+                  </tr></thead>
+                  <tbody>
+                    <?php
+                    if ($deals['currentDeals']->count()) {
+                        foreach ($deals['currentDeals'] as $deal) {
+                            ?>
+                            <tr>
+                              <td><?php echo $deal['client_name_life_insured']; ?></td>
+                              <td><?php echo $deal['policy_number']; ?></td>
+                              <td><?php echo $deal['company']; ?></td>
+                              <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
+                              <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
+                              <td><?php echo $deal['record_keeping']; ?></td>
+                              <td><?php echo $deal['compliance_status']; ?></td>
+                              <td><?php echo $deal['audit_status']; ?></td>
+                              <td><?php echo $deal['notes']; ?></td>
+                            </tr>
+                            <?php
+                        } ?>
+                        </tbody>
+                        <tfoot>
+                          <tr class="bg-light">
+                            <th colspan="4" class="text-right">Total API:</th>
+                            <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
+                            <th colspan="4"></th>
+                          </tr>
+                        </tfoot>
+                        <?php
+                    } else {
+                        ?>
+                          <tr>
+                            <td colspan="9">No available deals.</td>
+                          </tr>
+                        </tbody>
+                        <?php
+                    }
+                    ?>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="tab-pane fade" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
           <div class="row">
             <div class="col-lg-6">
               <h6>Continuing Professional Development Course</h6>
-              <table class="table table-responsive-md table-hoverable cpd">
-                <thead style="background-color:#e9ecef;">
-                  <tr>
-                    <th>Training Date</th>
-                    <th>Topic Trained</th>
-                    <th>Trainer</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php echo $cpdList; ?>
-                </tbody>
-              </table>
-            </div>
-            <div class="col-lg-6 mt-4 mt-lg-0">
-              <h6>Team Training Course</h6>
-              <table class="table table-responsive-md table-hoverable team">
-                <thead style="background-color:#e9ecef;">
-                  <tr>
-                    <th>Training Date</th>
-                    <th>Topic Trained</th>
-                    <th>Trainer</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php echo $rows; ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-lg-12">
-              <h6>Modular Training</h6>
-              <table class="table table-responsive-md table-hoverable modular">
+              <div class="table-responsive">
+                <table class="table table-hoverable cpd">
                   <thead style="background-color:#e9ecef;">
                     <tr>
-                      <th>Topics Trained On</th>
-                      <th>Module Take</th>
-                      <th>Score</th>
-                      <th>Results</th>
-                      <th>No. of Attempts</th>
+                      <th>Training Date</th>
+                      <th>Topic Trained</th>
+                      <th>Trainer</th>
                     </tr>
                   </thead>
                   <tbody>
-                  <?php
-                        echo $modList;
-                  ?>
+                    <?php echo $cpdList; ?>
                   </tbody>
-              </table>
+                </table>
+              </div>
+            </div>
+            <div class="col-lg-6 mt-4 mt-lg-0">
+              <h6>Team Training Course</h6>
+              <div class="table-responsive">
+                <table class="table table-hoverable team">
+                  <thead style="background-color:#e9ecef;">
+                    <tr>
+                      <th>Training Date</th>
+                      <th>Topic Trained</th>
+                      <th>Trainer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php echo $rows; ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="table-responsive">
+              <div class="col-lg-12">
+                <h6>Modular Training</h6>
+                <table class="table table-hoverable modular">
+                    <thead style="background-color:#e9ecef;">
+                      <tr>
+                        <th>Topics Trained On</th>
+                        <th>Module Take</th>
+                        <th>Score</th>
+                        <th>Results</th>
+                        <th>No. of Attempts</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                          echo $modList;
+                    ?>
+                    </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -354,6 +485,7 @@ while ($row = $modTraining->fetch_assoc()) {
 
 <script type="text/javascript">
   $(document).ready( function () {
+      $('.member').DataTable();
       $('.modular').DataTable();
       $('.cpd').DataTable();
       $('.team').DataTable();
