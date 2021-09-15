@@ -73,7 +73,7 @@ $div1 = "";
 $ctr1 = 0;
 for($i = 0; $i< count($implist); $i++) {
     $ctr1 = $ctr1 +1;
-    $div1 .= '<tr><td style="font-size:12x; text-align:justify;vertical-align:top">'.$ctr1.'.</td><td style="font-size:12x; text-align:justify">'.$implist[$i].'</td></tr>';
+    $div1 .= '<tr><td width="1%" style="text-align:justify;vertical-align:top">'.$ctr1.'.</td><td width="100%" style="font-size:12x; text-align:justify">'.$implist[$i].'</td></tr>';
 }
 
 if($hostName != ''){
@@ -209,8 +209,8 @@ $html = <<<EOF
     }
     table {
        width:100%;
-    }totalscore
-    body {
+    }
+   body {
       font-family: Trebuchet MS, sans-serif
     }
   
@@ -348,7 +348,7 @@ $html = <<<EOF
 <div class="points" style="margin-top: 20px">
   <span style="font-size:12px;">Points for improvements:</span>
 </div>
-<table style="margin-left: 10px; position: absolute;" cellspacing="6">
+<table class="improvement" style="margin-left: 10px; position: absolute;" cellspacing="6">
   {$div1}
 </table>
 </div>
@@ -359,24 +359,20 @@ EOF;
 
 $htmlFooter = <<<EOF
 <div class="footer" style="font-size:6pt; margin-top:50px;"> 
-  <p style="font-size:11px;; text-align: justify; font-family: calibri;">Disclaimer: Eliteinsure has used reasonable endeavours to ensure the accuracy and completeness of the information provided but makes no warranties as to the accuracy or completeness of such information. The information should not be taken as advice. Eliteinsure accepts no responsibility for the results of any omissions or actions taken on basis of this information. This report includes commercially sensitive information. Accordingly, it may be used for the purpose provided; may not be disclosed to any third party; and will be subject to any obligation of confidence owed by the recipient under contract or otherwise.</p>  
+  <p style="font-size:9px;; text-align: justify; font-family: calibri;">Disclaimer: Eliteinsure has used reasonable endeavours to ensure the accuracy and completeness of the information provided but makes no warranties as to the accuracy or completeness of such information. The information should not be taken as advice. Eliteinsure accepts no responsibility for the results of any omissions or actions taken on basis of this information. This report includes commercially sensitive information. Accordingly, it may be used for the purpose provided; may not be disclosed to any third party; and will be subject to any obligation of confidence owed by the recipient under contract or otherwise.</p><br>
     <img src="img/logo.png" alt="eliteinsure" class="logo" width="200"/>
   </div>
 EOF;
 
 $mpdf = new \Mpdf\Mpdf();
 ob_clean();
-
+$mpdf->setAutoBottomMargin = 'stretch';
 $mpdf->SetHTMLFooter($htmlFooter);
 $mpdf->WriteHTML($html);
 $mpdf->Output('Training Record.pdf', "I");
 
 
 ?>
-
-
-
-
 
 
 

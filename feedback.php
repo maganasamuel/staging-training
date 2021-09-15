@@ -120,6 +120,11 @@ if($hostName != ''){
     .feedback>tbody>tr>td{
       text-align: center;
     }
+    .container{
+      padding-left: 10px!important;
+      padding-right: 10px!important;
+      margin: auto!important;
+    }
   </style>
 </head>
 <body>
@@ -155,7 +160,7 @@ if($hostName != ''){
      <div class="panel panel-default" style="border: 0px!important;">
       <div class="panel-heading" style="padding: 10px; font-size: 18px; border: 0px!important; background-color: #f2f3f8!important;">
         <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;&nbsp;Feedback </div>
-      <div class="panel-body">
+      <div class="container">
         <table class="table feedback">
           <thead class="text-center">
             <tr>
