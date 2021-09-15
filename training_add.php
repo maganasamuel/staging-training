@@ -83,9 +83,14 @@ if($delete == "delete"){
 
 }
 
+
+
 if ($action == "save_training") {
 
-	$topic_type = $app->param($_POST, "topic_type");
+	if ($currentSessionID < 0){
+	   header("location: login_trainee?type=trainer");
+	}else{
+		$topic_type = $app->param($_POST, "topic_type");
 
 	if($topic_type == "1"){
 		$topic =  $app->param($_POST, "cpd_topic");
@@ -145,6 +150,9 @@ if ($action == "save_training") {
 		$message = "<div class=\"alert alert-success\" role=\"alert\">Training session saved.</div>";
 	}
 	}
+	}
+
+	
 }
 
 $adviser = $trainingController->getAdviser();
