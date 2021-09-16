@@ -7,6 +7,7 @@ require_once $autoloadPath;
 include_once('class/DB.class.php');
 
 use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 
 class IndetHelper extends DB
 {
@@ -77,40 +78,37 @@ class IndetHelper extends DB
             })->sortBy('date_issued')
             ->values();
 
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
+
+        $now->setTimezone('Pacific/Auckland');
 
         if (in_array($now->format('j'), range(1, 15))) {
             $currentPeriod = [
-                'from' => $now->startOfMonth()->format('Ymd'),
-                'to' => $now->format('Ym15'),
+                'from' => $now->copy()->startOfMonth(),
+                'to' => $now->copy()->startOfMonth()->addDays(14),
             ];
 
-            $previous = $now->subMonths(1);
+            $previous = $now->copy()->subMonths(1);
 
             $previousPeriod = [
-                'from' => $previous->format('Ym16'),
-                'to' => $previous->endOfMonth()->format('Ymd'),
+                'from' => $previous->copy()->startOfMonth()->addDays(15),
+                'to' => $previous->copy()->endOfMonth(),
             ];
         } else {
             $currentPeriod = [
-                'from' => $now->format('Ym16'),
-                'to' => $now->endOfMonth()->format('Ym15'),
+                'from' => $now->copy()->startOfMonth()->addDays(15),
+                'to' => $now->copy()->endOfMonth(),
             ];
 
             $previousPeriod = [
-                'from' => $now->startOfMonth()->format('Ymd'),
-                'to' => $now->format('Ym15'),
+                'from' => $now->copy()->startOfMonth(),
+                'to' => $now->copy()->startOfMonth()->addDays(14),
             ];
         }
 
-        $currentPeriod['fromDate'] = Carbon::createFromFormat('Ymd', $currentPeriod['from']);
-        $currentPeriod['toDate'] = Carbon::createFromFormat('Ymd', $currentPeriod['to']);
-        $previousPeriod['fromDate'] = Carbon::createFromFormat('Ymd', $previousPeriod['from']);
-        $previousPeriod['toDate'] = Carbon::createFromFormat('Ymd', $previousPeriod['to']);
+        $currentDeals = $deals->where('date_issued', '<=', $currentPeriod['to']->format('Ymd'))->values();
 
-        $currentDeals = $deals->where('date_issued', '<=', $currentPeriod['to'])->values();
-
-        $previousDeals = $deals->where('date_issued', '<=', $previousPeriod['to'])->values();
+        $previousDeals = $deals->where('date_issued', '<=', $previousPeriod['to']->format('Ymd'))->values();
 
         return [
             'currentPeriod' => $currentPeriod,
