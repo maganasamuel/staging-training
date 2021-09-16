@@ -303,7 +303,7 @@ $deals = $indet->listDeals($emailID);
           <div class="row">
             <div class="col-lg-12">
               <h6>
-                Production - <?php echo $deals['previousPeriod']['fromDate']->ordinal('day') . $deals['previousPeriod']['fromDate']->format(' F Y') . ' to ' . $deals['previousPeriod']['toDate']->ordinal('day') . $deals['previousPeriod']['toDate']->format(' F Y'); ?>
+                Production - <?php echo $deals['previousPeriod']['from']->ordinal('day') . $deals['previousPeriod']['from']->format(' F Y') . ' to ' . $deals['previousPeriod']['to']->ordinal('day') . $deals['previousPeriod']['to']->format(' F Y'); ?>
               </h6>
               <div class="table-responsive">
                 <table class="table table-bordered table-hover">
@@ -361,7 +361,7 @@ $deals = $indet->listDeals($emailID);
           <div class="row mt-4">
             <div class="col-lg-12">
               <h6>
-                Production - <?php echo $deals['currentPeriod']['fromDate']->ordinal('day') . $deals['currentPeriod']['fromDate']->format(' F Y') . ' to ' . $deals['currentPeriod']['toDate']->ordinal('day') . $deals['currentPeriod']['toDate']->format(' F Y'); ?>
+                Production - <?php echo $deals['currentPeriod']['from']->ordinal('day') . $deals['currentPeriod']['from']->format(' F Y') . ' to ' . $deals['currentPeriod']['to']->ordinal('day') . $deals['currentPeriod']['to']->format(' F Y'); ?>
               </h6>
               <div class="table-responsive">
                 <table class="table table-bordered table-hover">
