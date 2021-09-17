@@ -339,7 +339,7 @@ $html = <<<EOF
                     <td>{$total5}</td>
                 </tr>
                 <tr>
-                  <td colspan="6" style="background-color:#8a8a8a; color:white;">Total Score</td>
+                  <td colspan="6" style="background-color:#8a8a8a; color:white; font-weight:bold;">Total Score</td>
                   <td style="background-color:#36465c; color:white; font-weight:bold;">{$totalscore}<br>{$percent}%</td>
                 </tr>
             </tbody>
