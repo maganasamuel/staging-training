@@ -225,6 +225,8 @@ while ($row = $modTraining->fetch_assoc()) {
       </tr>';
 }
 
+$authIsAdviser = in_array($usType, [2, 7, 8]) ? true : false;
+
 $deals = $indet->listDeals($emailID);
 ?>
 <div class="subHeader">
@@ -291,133 +293,139 @@ $deals = $indet->listDeals($emailID);
     </div>
     <div class="col-lg-9">
       <ul class="nav nav-tabs mt-4 mt-lg-0" id="adviserProfileTab" role="tablist">
+        <?php if ($authIsAdviser) { ?>
+          <li class="nav-item">
+            <a class="nav-link active" id="dealTrackerTab" data-toggle="tab" href="#dealTrackerTabPanel" role="tab" aria-controls="home" aria-selected="true">Policy Tracker</a>
+          </li>
+        <?php } ?>
         <li class="nav-item">
-          <a class="nav-link active" id="dealTrackerTab" data-toggle="tab" href="#dealTrackerTabPanel" role="tab" aria-controls="home" aria-selected="true">Deal Tracker</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="trainDevTab" data-toggle="tab" href="#trainDevTabPanel" role="tab" aria-controls="profile" aria-selected="false">Training and Development</a>
+          <a class="nav-link <?php echo $authIsAdviser ? null : 'active'; ?>" id="trainDevTab" data-toggle="tab" href="#trainDevTabPanel" role="tab" aria-controls="profile" aria-selected="false">Training and Development</a>
         </li>
       </ul>
       <div class="tab-content p-3 border border-top-0" id="adviserProfileTabContent">
-        <div class="tab-pane fade show active" id="dealTrackerTabPanel" role="tabpanel" aria-labelledby="deal-tracker-tab">
-          <div class="row">
-            <div class="col-lg-12">
-              <h6>
-                Previous Production - <?php echo $deals['previousPeriod']['from']->ordinal('day') . $deals['previousPeriod']['from']->format(' F Y') . ' to ' . $deals['previousPeriod']['to']->ordinal('day') . $deals['previousPeriod']['to']->format(' F Y'); ?>
-              </h6>
-              <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                  <thead><tr class="bg-light">
-                    <th>Life Insured</th>
-                    <th>Policy #</th>
-                    <th>Co.</th>
-                    <th>Issue Date</th>
-                    <th>API</th>
-                    <th>Record Keeping</th>
-                    <th>Comp. Admin</th>
-                    <th>Comp. CO</th>
-                    <th>Notes</th>
-                  </tr></thead>
-                  <tbody>
-                    <?php
-                    if ($deals['previousDeals']->count()) {
-                        foreach ($deals['previousDeals'] as $deal) {
+        <?php
+        if ($authIsAdviser) {
+            ?>
+            <div class="tab-pane fade show active" id="dealTrackerTabPanel" role="tabpanel" aria-labelledby="deal-tracker-tab">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h6>
+                    Previous Production - <?php echo $deals['previousPeriod']['from']->ordinal('day') . $deals['previousPeriod']['from']->format(' F Y') . ' to ' . $deals['previousPeriod']['to']->ordinal('day') . $deals['previousPeriod']['to']->format(' F Y'); ?>
+                  </h6>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead><tr class="bg-light">
+                        <th>Life Insured</th>
+                        <th>Policy #</th>
+                        <th>Co.</th>
+                        <th>Issue Date</th>
+                        <th>API</th>
+                        <th>Record Keeping</th>
+                        <th>Comp. Admin</th>
+                        <th>Comp. CO</th>
+                        <th>Notes</th>
+                      </tr></thead>
+                      <tbody>
+                        <?php
+                        if ($deals['previousDeals']->count()) {
+                            foreach ($deals['previousDeals'] as $deal) {
+                                ?>
+                                <tr>
+                                  <td><?php echo $deal['client_name_life_insured']; ?></td>
+                                  <td><?php echo $deal['policy_number']; ?></td>
+                                  <td><?php echo $deal['company']; ?></td>
+                                  <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
+                                  <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
+                                  <td><?php echo $deal['record_keeping']; ?></td>
+                                  <td><?php echo $deal['compliance_status']; ?></td>
+                                  <td><?php echo $deal['audit_status']; ?></td>
+                                  <td><?php echo $deal['notes']; ?></td>
+                                </tr>
+                                <?php
+                            } ?>
+                            </tbody>
+                            <tfoot>
+                              <tr class="bg-light">
+                                <th colspan="4" class="text-right">Total API:</th>
+                                <th class="text-right">$<?php echo number_format($deals['previousDeals']->sum('issued_api'), 2); ?></th>
+                                <th colspan="4"></th>
+                              </tr>
+                            </tfoot>
+                            <?php
+                        } else {
                             ?>
-                            <tr>
-                              <td><?php echo $deal['client_name_life_insured']; ?></td>
-                              <td><?php echo $deal['policy_number']; ?></td>
-                              <td><?php echo $deal['company']; ?></td>
-                              <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
-                              <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
-                              <td><?php echo $deal['record_keeping']; ?></td>
-                              <td><?php echo $deal['compliance_status']; ?></td>
-                              <td><?php echo $deal['audit_status']; ?></td>
-                              <td><?php echo $deal['notes']; ?></td>
-                            </tr>
+                              <tr>
+                                <td colspan="9">No available deals.</td>
+                              </tr>
+                            </tbody>
                             <?php
                         } ?>
-                        </tbody>
-                        <tfoot>
-                          <tr class="bg-light">
-                            <th colspan="4" class="text-right">Total API:</th>
-                            <th class="text-right">$<?php echo number_format($deals['previousDeals']->sum('issued_api'), 2); ?></th>
-                            <th colspan="4"></th>
-                          </tr>
-                        </tfoot>
-                        <?php
-                    } else {
-                        ?>
-                          <tr>
-                            <td colspan="9">No available deals.</td>
-                          </tr>
-                        </tbody>
-                        <?php
-                    }
-                    ?>
-                </table>
+                    </table>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-lg-12">
-              <h6>
-                Current Production - <?php echo $deals['currentPeriod']['from']->ordinal('day') . $deals['currentPeriod']['from']->format(' F Y') . ' to ' . $deals['currentPeriod']['to']->ordinal('day') . $deals['currentPeriod']['to']->format(' F Y'); ?>
-              </h6>
-              <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                  <thead><tr class="bg-light">
-                    <th>Life Insured</th>
-                    <th>Policy #</th>
-                    <th>Co.</th>
-                    <th>Issue Date</th>
-                    <th>API</th>
-                    <th>Record Keeping</th>
-                    <th>Comp. Admin</th>
-                    <th>Comp. CO</th>
-                    <th>Notes</th>
-                  </tr></thead>
-                  <tbody>
-                    <?php
-                    if ($deals['currentDeals']->count()) {
-                        foreach ($deals['currentDeals'] as $deal) {
+              <div class="row mt-4">
+                <div class="col-lg-12">
+                  <h6>
+                    Current Production - <?php echo $deals['currentPeriod']['from']->ordinal('day') . $deals['currentPeriod']['from']->format(' F Y') . ' to ' . $deals['currentPeriod']['to']->ordinal('day') . $deals['currentPeriod']['to']->format(' F Y'); ?>
+                  </h6>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead><tr class="bg-light">
+                        <th>Life Insured</th>
+                        <th>Policy #</th>
+                        <th>Co.</th>
+                        <th>Issue Date</th>
+                        <th>API</th>
+                        <th>Record Keeping</th>
+                        <th>Comp. Admin</th>
+                        <th>Comp. CO</th>
+                        <th>Notes</th>
+                      </tr></thead>
+                      <tbody>
+                        <?php
+                        if ($deals['currentDeals']->count()) {
+                            foreach ($deals['currentDeals'] as $deal) {
+                                ?>
+                                <tr>
+                                  <td><?php echo $deal['client_name_life_insured']; ?></td>
+                                  <td><?php echo $deal['policy_number']; ?></td>
+                                  <td><?php echo $deal['company']; ?></td>
+                                  <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
+                                  <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
+                                  <td><?php echo $deal['record_keeping']; ?></td>
+                                  <td><?php echo $deal['compliance_status']; ?></td>
+                                  <td><?php echo $deal['audit_status']; ?></td>
+                                  <td><?php echo $deal['notes']; ?></td>
+                                </tr>
+                                <?php
+                            } ?>
+                            </tbody>
+                            <tfoot>
+                              <tr class="bg-light">
+                                <th colspan="4" class="text-right">Total API:</th>
+                                <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
+                                <th colspan="4"></th>
+                              </tr>
+                            </tfoot>
+                            <?php
+                        } else {
                             ?>
-                            <tr>
-                              <td><?php echo $deal['client_name_life_insured']; ?></td>
-                              <td><?php echo $deal['policy_number']; ?></td>
-                              <td><?php echo $deal['company']; ?></td>
-                              <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
-                              <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
-                              <td><?php echo $deal['record_keeping']; ?></td>
-                              <td><?php echo $deal['compliance_status']; ?></td>
-                              <td><?php echo $deal['audit_status']; ?></td>
-                              <td><?php echo $deal['notes']; ?></td>
-                            </tr>
+                              <tr>
+                                <td colspan="9">No available deals.</td>
+                              </tr>
+                            </tbody>
                             <?php
                         } ?>
-                        </tbody>
-                        <tfoot>
-                          <tr class="bg-light">
-                            <th colspan="4" class="text-right">Total API:</th>
-                            <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
-                            <th colspan="4"></th>
-                          </tr>
-                        </tfoot>
-                        <?php
-                    } else {
-                        ?>
-                          <tr>
-                            <td colspan="9">No available deals.</td>
-                          </tr>
-                        </tbody>
-                        <?php
-                    }
-                    ?>
-                </table>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="tab-pane fade" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
+            <?php
+        }
+        ?>
+        <div class="tab-pane fade <?php echo $authIsAdviser ? null : 'show active'; ?>" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
           <div class="row">
             <div class="col-lg-6">
               <h6>Continuing Professional Development Course</h6>
