@@ -255,7 +255,7 @@ $html = <<<EOF
 <table style="position: absolute; margin-top: 200px" cellspacing="13">
   <tr>
     <td style="font-size:25px; text-align:right;">Trainer:</td>
-    <td width="250px" style="font-size: 25px; text-align:center; border-bottom: 1px solid black;">{$fullnameTrainer}</td>
+    <td width="250px" style="font-size: 25px; text-align:left;">{$fullnameTrainer}</td>
     <td width="150px"></td>
     <td width="150px"></td>
     <td width="150px"></td>
@@ -264,7 +264,7 @@ $html = <<<EOF
   </tr>
   <tr>
     <td style="font-size: 25px;"> Venue:</td>
-    <td width="250px" colspan="3" style="font-size: 25px; text-align:center; border-bottom: 1px solid black;">{$trainingVenue}</td>
+    <td width="250px" colspan="3" style="font-size: 25px; text-align:left;">{$trainingVenue}</td>
     <td width="150px"></td>
     <td style="font-size: 25px;" colspan="5">Date:&nbsp;<span style="font-size: 25px;" >{$newDateTime}</span></td>
     <td width="250px"></td>
@@ -294,7 +294,7 @@ $html = <<<EOF
           </thead>
             <tbody>
                 <tr>
-                    <td style="width: 400px">Am I able to achieve learning outcomes.</td>
+                    <td style="width: 400px">I am able to achieve learning outcomes.</td>
                     <td>{$strongly1}</td>
                     <td>{$disagree1}</td>
                     <td>{$neutral1}</td>
@@ -339,8 +339,8 @@ $html = <<<EOF
                     <td>{$total5}</td>
                 </tr>
                 <tr>
-                  <td colspan="6" style="background-color:#8a8a8a; color:white;">Total Score</td>
-                  <td style="background-color:#36465c; color:white;">{$totalscore}<br>{$percent}%</td>
+                  <td colspan="6" style="background-color:#8a8a8a; color:white; font-weight:bold;">Total Score</td>
+                  <td style="background-color:#36465c; color:white; font-weight:bold;">{$totalscore}<br>{$percent}%</td>
                 </tr>
             </tbody>
         </table>

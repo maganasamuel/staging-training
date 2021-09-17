@@ -125,6 +125,9 @@ if($hostName != ''){
       padding-right: 10px!important;
       margin: auto!important;
     }
+    .feedback tbody td:nth-child(1) {
+      text-align:left;
+    }
   </style>
 </head>
 <body>
@@ -174,7 +177,7 @@ if($hostName != ''){
           </thead>
             <tbody>
                 <tr>
-                    <td style="width: 400px">Am I able to achieve learning outcomes.</td>
+                    <td style="width: 400px">I am able to achieve learning outcomes.</td>
                     <td><input class="form-check-input" type="radio" name="1question[]"></td>
                     <td><input class="form-check-input" type="radio" name="1question[]"></td>
                     <td><input class="form-check-input" type="radio" name="1question[]"></td>
