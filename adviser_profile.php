@@ -241,12 +241,20 @@ $deals = $indet->listDeals($emailID);
   .text-dsgreen { color: #0C4664 }
 
   #adviserProfileTab .nav-link{
+    background-color: lightgray;
     text-transform: uppercase;
     letter-spacing: 0.125em;
     color: #2B3036;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
   }
 
-  .nav-link.active{
+  #adviserProfileTab .nav-link:first-child{
+    margin-right: 0.25rem;
+  }
+
+  #adviserProfileTab .nav-link.active{
+    background-color: white;
     font-weight: bold;
     color: #0081B8 !important;
   }
