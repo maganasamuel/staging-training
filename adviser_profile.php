@@ -293,8 +293,8 @@ $deals = $indet->listDeals($emailID);
 
       <div class="<?php echo in_array($usType, ['2', '7']) ? 'd-none' : null;  ?> mt-4">
         <div class="table-responsive">
-          <table class="table table-hoverable member">
-            <thead style="background-color:#e9ecef;">
+          <table class="table table-striped table-hover member">
+            <thead class="bg-dsgreen text-white">
               <tr>
                 <th>ADR Team Member</th>
               </tr>
@@ -308,8 +308,8 @@ $deals = $indet->listDeals($emailID);
 
       <div class="<?php echo in_array($usType, ['2', '8']) ? 'd-none' : null; ?> mt-4">
         <div class="table-responsive">
-          <table class="table table-hoverable member">
-            <thead style="background-color:#e9ecef;">
+          <table class="table table-striped table-hover member">
+            <thead class="bg-dsgreen text-white">
               <tr>
                 <th>Adviser Team Member</th>
               </tr>
