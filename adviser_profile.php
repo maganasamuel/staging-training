@@ -450,7 +450,7 @@ $deals = $indet->listDeals($emailID);
         <div class="tab-pane fade <?php echo $authIsAdviser ? null : 'show active'; ?>" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
           <div class="row">
             <div class="col-lg-12">
-              <h6 class="text-tblue">Continuing Professional Development Course</h6>
+              <h6 class="text-tblue">Continuing Professional Development</h6>
               <div class="table-responsive">
                 <table class="table table-striped table-hover cpd" style="border: 1px solid lightgray;">
                   <thead class="bg-dsgreen text-white">
@@ -469,7 +469,7 @@ $deals = $indet->listDeals($emailID);
           </div>
           <div class="row mt-4">
             <div class="col-lg-12">
-              <h6 class="text-tblue">Team Training Course</h6>
+              <h6 class="text-tblue">Team Training</h6>
               <div class="table-responsive">
                 <table class="table table-striped table-hover team" style="border: 1px solid lightgray;">
                   <thead class="bg-dsgreen text-white">
