@@ -344,6 +344,7 @@ if (2 == $idUserType || 8 == $idUserType || 7 == $idUserType) {
 			<div class="row justify-content-md-center">
 				<div class="col-3 logo">
 					<img id="logo" src="img/logo.png">
+                    <h1 class="text-center font-weight-bold text-tblue" style="letter-spacing: 0.25rem;">PORTAL</h1>
 				</div>
 			</div>
 			<br />

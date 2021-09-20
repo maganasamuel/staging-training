@@ -52,6 +52,7 @@ $menu = $app->param($_GET, "menu");
 			<div class="row justify-content-md-center">
 				<div class="col-3 logo" style="padding-top:10px;">
 					<img id="logo" src="img/logo.png">
+					<h1 class="text-center font-weight-bold text-tblue" style="letter-spacing: 0.25rem;">PORTAL</h1>
 				</div>
 			</div>
 			<div class="row">
