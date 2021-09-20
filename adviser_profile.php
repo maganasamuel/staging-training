@@ -469,25 +469,6 @@ $deals = $indet->listDeals($emailID);
           </div>
           <div class="row mt-4">
             <div class="col-lg-12">
-              <h6 class="text-tblue">Team Training</h6>
-              <div class="table-responsive">
-                <table class="table table-striped table-hover team" style="border: 1px solid lightgray;">
-                  <thead class="bg-dsgreen text-white">
-                    <tr>
-                      <th>Training Date</th>
-                      <th>Topic Trained</th>
-                      <th>Trainer</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php echo $rows; ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-lg-12">
               <h6 class="text-tblue">Modular Training</h6>
               <div class="table-responsive">
                 <table class="table table-striped table-hover modular" style="border: 1px solid lightgray;">
@@ -509,6 +490,25 @@ $deals = $indet->listDeals($emailID);
               </div>
             </div>
           </div>
+          <div class="row mt-4">
+            <div class="col-lg-12">
+              <h6 class="text-tblue">Team Training</h6>
+              <div class="table-responsive">
+                <table class="table table-striped table-hover team" style="border: 1px solid lightgray;">
+                  <thead class="bg-dsgreen text-white">
+                    <tr>
+                      <th>Training Date</th>
+                      <th>Topic Trained</th>
+                      <th>Trainer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php echo $rows; ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>          
         </div>
       </div>
     </div>
