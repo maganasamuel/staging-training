@@ -12,6 +12,8 @@ include_once("lib/General.helper.php");
 include_once("lib/Test.controller.php");
 include_once("lib/Training.controller.php");
 
+$config = parse_ini_file('lib/class/conf/conf.ini');
+
 $app = new GeneralHelper();
 $testController = new TestController();
 $trainingController = new TrainingController();
@@ -25,7 +27,7 @@ $action = $app->param($_GET, "action");
 
 if($action == "del"){
 	$id = $app->param($_GET, "id");
-	$dataset = $trainingController->deleteMaterials($id);	
+	$dataset = $trainingController->deleteMaterials($id);
 }
 
 $dataset = $trainingController->getMaterials();
@@ -40,7 +42,7 @@ else {
 		$id_material = $row["id_material"];
 		$file_name = $row["file_name"];
 		$dir = "training_materials/".$file_name;
-		
+
         $rows .= <<<EOF
 		<tr>
 			<td>{$material_title}</td>
@@ -65,7 +67,7 @@ EOF;
 <style>
 	#material a { color:#FFFFFF; }
 
-		
+
 		 td:nth-child(3){
 			text-align: left;
 		}
@@ -127,9 +129,9 @@ EOF;
 </div>
 <script type="text/javascript">
 	function preview(id){
-		
+
 		$('.modal').modal('show');
-  		$("#videoSource").attr('src','/staging/staging-training/training_materials/' + id.text);
+  		$("#videoSource").attr('src','<?php echo $config['app_url'] ?>/training_materials/' + id.text);
   		$("#videoSource").play();
 	}
 	$(document).ready( function () {
