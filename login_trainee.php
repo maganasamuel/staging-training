@@ -319,7 +319,7 @@ if (2 == $idUserType || 8 == $idUserType || 7 == $idUserType) {
 	<meta name="author" content="Elite Insure">
 	<link rel="icon" href="img/favicon.ico">
 
-	<title><?php echo ucwords($type); ?>'s Login</title>
+	<title><?php echo ucwords($type == 'trainer' ? 'adviser' : $type); ?>'s Login</title>
 
 	<!-- CSS -->
 	<link href="css/bootstrap.css" rel="stylesheet">
