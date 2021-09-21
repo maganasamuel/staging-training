@@ -12,6 +12,8 @@ include_once("lib/General.helper.php");
 include_once("lib/Test.controller.php");
 include_once("lib/Training.controller.php");
 
+$config = parse_ini_file('lib/class/conf/conf.ini');
+
 $app = new GeneralHelper();
 $testController = new TestController();
 $trainingController = new TrainingController();
@@ -34,9 +36,9 @@ if($saveMat == "save_material"){
 			$file_name = $app->param($_POST, 'old_file', 1);
 		}
 
-		
+
 		$dataset = $trainingController->updateMaterial($topic_title,$file_name,$id);
-		$message = "<div class=\"alert alert-success\" role=\"alert\">Training material saved.</div>"; 
+		$message = "<div class=\"alert alert-success\" role=\"alert\">Training material saved.</div>";
 	}
 		else{
 			$errors= array();
@@ -52,9 +54,9 @@ if($saveMat == "save_material"){
 			}else{
 				if($id != ""){
 		   			//unlink($tp.$oldFile);
-		   			$dataset = $trainingController->updateMaterial($topic_title,$file_name,$id); 
+		   			$dataset = $trainingController->updateMaterial($topic_title,$file_name,$id);
 			   	}else{
-			    	$dataset = $trainingController->addMaterial($topic_title,$file_name,$path);   
+			    	$dataset = $trainingController->addMaterial($topic_title,$file_name,$path);
 			   	}
 			   		if(isset($_FILES['file'])){
 					      $upload = move_uploaded_file($file_tmp, $path.$file_name);
@@ -68,7 +70,7 @@ if($saveMat == "save_material"){
 
 
 if($action == "edit"){
-	$dataset = $trainingController->getMaterial($id);   
+	$dataset = $trainingController->getMaterial($id);
 	while ($row = $dataset->fetch_assoc()) {
 		  $title = $row["material_title"];
 		  $fileName = $row["file_name"];
@@ -85,7 +87,7 @@ li.active a { color:#FFFFFF; }
 		</div>
 		<div class="col-4">
 			<ul class="subHeader-controls">
-				
+
 			</ul>
 		</div>
 	</div>
@@ -101,7 +103,7 @@ li.active a { color:#FFFFFF; }
 			<label>Training Topic Title</label>
             <input type="text" class="form-control" id="topic_title" name="topic_title" value="<?= (empty($title)) ? '' : $title ?>">
             <?php (empty($title)) ? '' : '' ?>
-            	<label class="mt-1"><?= (empty($title)) ? '' : 'Uploaded File:<br><a class="mt-2" href="/staging/staging-training/training_materials/'.$fileName.'" download="'.$fileName.'">' .$fileName. '</a>' ?></label>
+            	<label class="mt-1"><?= (empty($title)) ? '' : 'Uploaded File:<br><a class="mt-2" href="' . $config['app_url'] . '//training_materials//'.$fileName.'" download="'.$fileName.'">' .$fileName. '</a>' ?></label>
             <?php ?>
             <div class="form-group">
                <input type="file" name="file" />
@@ -110,7 +112,7 @@ li.active a { color:#FFFFFF; }
              <div class="progress" id="progressDiv" style="display: none;">
   				<div class="progress-bar" role="progressbar" aria-valuemax="100"></div>
   			</div>
-             <input type="hidden" name="action" value="save_material">   
+             <input type="hidden" name="action" value="save_material">
             <input type="hidden" name="fileUploaded" id="fileUploaded">
             <div class="preview"></div>
             <input id="generate" type="submit" value="Save" class="btn btn-primary btn-md btn-block mt-4" onclick="upload_image()" />
@@ -120,7 +122,7 @@ li.active a { color:#FFFFFF; }
 	</div>
 </div>
 <script type="text/javascript">
-function upload_image() 
+function upload_image()
 {
   var bar = $('.progress-bar');
   var percent= "";
@@ -129,7 +131,7 @@ function upload_image()
     beforeSubmit: function() {
        $("#alert").css('display',"none");
        progDiv.css('display', "block");
-       bar.css('width',"0%"); 
+       bar.css('width',"0%");
     },
     uploadProgress: function(event, position, total, percentComplete) {
       bar.css('width', percentComplete + "%");
@@ -146,11 +148,11 @@ function upload_image()
       {
       	$("#alert").css('display',"block");
       	$("#topic_title").val('');
-      	bar.css('width',"0%"); 
+      	bar.css('width',"0%");
       	bar.html("0");
       	progDiv.css('display', "none");
       }
     }
-  }); 
+  });
 }
 </script>

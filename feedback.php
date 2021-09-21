@@ -9,6 +9,8 @@
 include_once("lib/General.helper.php");
 include_once("lib/Training.controller.php");
 
+$config = parse_ini_file('lib/class/conf/conf.ini');
+
 $app = new GeneralHelper();
 $trainingController = new TrainingController();
 
@@ -29,8 +31,8 @@ if($action === "savefeedback"){
   $fifth_question = $app->param($_POST, "fifth_question");
   $improvement = $app->param($_POST, "improvement");
   $training_id = $app->param($_POST, "training_id");
-  
-  $save = $trainingController->addFeedback($training_id,$first_question,$second_question,$third_question,$fourth_question,$fifth_question,$improvement);   
+
+  $save = $trainingController->addFeedback($training_id,$first_question,$second_question,$third_question,$fourth_question,$fifth_question,$improvement);
 
 }
 
@@ -226,7 +228,7 @@ if($hostName != ''){
       <div class="panel-body">
         <textarea class="form-control" placeholder="Enter your one point for improvement" cols="5" rows="5" id="improvement"></textarea>
         <br>
-        <button type="button" class="btn btn-primary" onclick="savefeedback()">Submit</button> 
+        <button type="button" class="btn btn-primary" onclick="savefeedback()">Submit</button>
         <input type="hidden" id="training_id" value="<?= $_GET['id']  ?>">
       </div>
     </div>
@@ -264,7 +266,7 @@ if($hostName != ''){
                 showConfirmButton: false,
                 timer: 2500
               }).then(function() {
-                 window.location.href = '/staging/staging-training/login_trainee?type=trainer';
+                 window.location.href = '<?php echo $config['app_url'] ?>/login_trainee?type=trainer';
             });
           }
   });

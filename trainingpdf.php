@@ -9,6 +9,8 @@
 include_once("lib/General.helper.php");
 include_once("lib/Training.controller.php");
 
+$config = parse_ini_file('lib/class/conf/conf.ini');
+
 $app = new GeneralHelper();
 $trainingController = new TrainingController();
 
@@ -59,7 +61,7 @@ for($i = 0; $i< count($arrAttendee); $i++) {
 
   $data = $trainingController->getAttendee($arrAttendee[$i]);
   while ($row = $data->fetch_assoc()) {
-  
+
 
     $firstName = $row["first_name"].' '.$row["last_name"];
     $emailAddress = $row["email_address"];
@@ -78,7 +80,7 @@ for($i = 0; $i< count($arrAttendee); $i++) {
                         '.$emailAddress.'
                           </span>
                           </div>
-                    </div>'; 
+                    </div>';
   }
 
 }
@@ -96,8 +98,8 @@ for($i = 0; $i< count($dataTopicTitle); $i++) {
     $div .= '<div class="column">
                   <div style="margin-left: 72px;border-bottom: 1px solid #000; bottom:23px;"> <span style="font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;"> '.$ctr.'. </span> <span style="width: 200px; border-width: thin;font-style:normal;font-weight:normal;font-size:10pt;font-family:Calibri;color:#000000;">
                     '.$dataTopicTitle[$i] . $levelText .'
-                  </span></div> 
-              </div>'; 
+                  </span></div>
+              </div>';
           }
 
 $attestText = '';
@@ -106,21 +108,21 @@ if($hostName != ''){
   $attestText = 'This is to attest that';
   $compText = $compName;
   $textbuild = '<div class="trainer" style="position:absolute;top:2.23in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$attestText.'
-</div> 
+</div>
 
 <div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:2.66in;line-height:0.17in;">
   <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$hostName.'</span>
-</div> 
+</div>
 
 <div class="trainer" width="220" style="text-align:center;position:absolute;top:2.23in;left:3.95in;line-height:0.17in;">
 <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">of</span>
 </span>
-</div> 
+</div>
 
 <div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:5.2in;line-height:0.17in;">
 <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$compText.'</span>
 </span>
-</div> 
+</div>
 
 
 <div style="position:absolute;top:2.53in;left:1.36in;width:6.90in;line-height:0.17in;">
@@ -145,22 +147,22 @@ $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;le
 
 $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$fullnameTrainer.'</span>
-  <br/> 
+  <br/>
 </div>';
 
 }else{
 
   $textbuild = '<div class="trainer" style="position:absolute;top:2.23in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to attest that I,
-</div> 
+</div>
 
 <div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:2.66in;line-height:0.17in;">
 <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$fullnameTrainer.'</span>
-</div> 
+</div>
 
 <div style="position:absolute;top:2.23in;left:4.9in;width:8.86in;line-height:0.17in;">
 <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"> an ADR/SADR of Eliteinsure Limited has conducted</span>
 </span>
-</div> 
+</div>
 
 
 <div style="position:absolute;top:2.53in;left:1.36in;width:6.90in;line-height:0.17in;">
@@ -180,16 +182,16 @@ $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
   <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$trainingVenue.'</span>
 </div>';
 
-$textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training 
+$textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training
  that I have conducted on '.$newDateTime.' <div class="trainer" style="position:absolute;top:in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">
    at '.$trainingVenue.'.
-</div> 
+</div>
 
 </div> ';
 
 $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">ADR/SADR Signature</span>
-  <br/> 
+  <br/>
 </div>';
 
 
@@ -206,7 +208,7 @@ $html = <<<EOF
   float: left;
   width: 45%;
   padding: 10px;
-  
+
   }
 
 /* Clear floats after the columns */
@@ -247,11 +249,11 @@ td{
     <span style="background-colro:red"></span>
 
 </div>
-  
+
 
 <div style="position:absolute;top:1.46in;left:1.36in;width:2.05in;line-height:0.17in;">
 <br/>
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">DATE: 
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">DATE:
   <div style="text-align:center; margin-top: -18px; margin-left:40px; border-bottom: 1px solid #000;">
       <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">{$date}</span>
   </div>
@@ -321,7 +323,7 @@ td{
 EOF;
 
 $htmlFooter = <<<EOF
-  <div class="footer" style="font-size:6pt;"> 
+  <div class="footer" style="font-size:6pt;">
     <img src="img/logo.png" alt="eliteinsure" class="logo" width="200"/>
   </div>
 EOF;
@@ -335,8 +337,8 @@ $mpdf = new \Mpdf\Mpdf();
 ob_clean();
 $mpdf->WriteHTML($html);
 $mpdf->SetHTMLFooter($htmlFooter);
-  
-if(isset($_GET['mail'])) { 
+
+if(isset($_GET['mail'])) {
 
       $content = $mpdf->Output('', 'S');
       $attachment = (new Swift_Attachment($content,'Training Record', 'application/pdf'));
@@ -369,12 +371,12 @@ if(isset($_GET['mail'])) {
 
 
 for($i = 0; $i< count($arrAttendee); $i++){
-      
-     
+
+
       $data = $trainingController->getAttendee($arrAttendee[$i]);
       while ($row = $data->fetch_assoc()) {
 
-      if(isset($_GET['mail'])) { 
+      if(isset($_GET['mail'])) {
            $mpdf = new \Mpdf\Mpdf();
       }
 
@@ -399,7 +401,7 @@ for($i = 0; $i< count($arrAttendee); $i++){
   float: left;
   width: 45%;
   padding: 10px;
-  
+
   }
 
 /* Clear floats after the columns */
@@ -432,10 +434,10 @@ for($i = 0; $i< count($arrAttendee); $i++){
     <span style="background-colro:red"></span>
 
 </div>
-  
+
 
 <div style="position:absolute;top:1.46in;left:1.36in;width:2.05in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">DATE: 
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">DATE:
   <div style="text-align:center; margin-top: -18px; margin-left:40px; border-bottom: 1px solid #000;">
       <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">{$date}</span>
   </div>
@@ -497,11 +499,11 @@ for($i = 0; $i< count($arrAttendee); $i++){
 
 
 EOF;
-  
+
     $mpdf->WriteHTML($html);
     $mpdf->SetHTMLFooter($htmlFooter);
-    
-    if(isset($_GET['mail'])) { 
+
+    if(isset($_GET['mail'])) {
 
           $content = $mpdf->Output('', 'S');
           $attachment = (new Swift_Attachment($content,'Training Record', 'application/pdf'));
@@ -515,14 +517,14 @@ EOF;
           $message->setFrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
           $message->setTo($email);
 
-          $link = '<a href="https://'. $_SERVER['SERVER_NAME'].'/staging/staging-training/feedback?id='.$idTrain.'">Feedback Form Link</a>';
+          $link = '<a href="' . $config['app_url'] . '/feedback?id='.$idTrain.'">Feedback Form Link</a>';
           $message->setBody('
 Dear Attendee/Trainee,<br><br>
 
 
 Good day.<br><br>
 
-Please see attached signed attestation re meeting/training.<br><br> 
+Please see attached signed attestation re meeting/training.<br><br>
 
 Also, we would appreciate if you can give us some feedback with regards for the same by clicking the link below. Your feedback will be sent to us anonymously.<br><br>
 
@@ -545,15 +547,15 @@ Eliteinsure Admin Team','text/html');
           // Send the created message
           $isSent = $mailer->send($message);
         }
-    }     
+    }
   }
-  
+
 if($download == 1){
      $mpdf->Output('Training Record.pdf', "D");
   }elseif (isset($_GET['mail'])) {
     header("location: training?page=training_list&sent=1");
   }else{
-   $mpdf->Output('Training Record.pdf', "I");  
+   $mpdf->Output('Training Record.pdf', "I");
   //print_r(' <table> ' .$trv. '</table>');
 }
 ob_end_flush();
