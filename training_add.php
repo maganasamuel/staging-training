@@ -59,13 +59,13 @@ function formValidated($app, $tID)
         return false;
     }
 
-    if (! $app->param($_POST, 'host_name')) {
+    if (1 == $_SESSION['id_user_type'] && ! $app->param($_POST, 'host_name')) {
         $_SESSION['errorMessage'] = 'Please provide a trainer name';
 
         return false;
     }
 
-    if (! $app->param($_POST, 'comp_name')) {
+    if (1 == $_SESSION['id_user_type'] && ! $app->param($_POST, 'comp_name')) {
         $_SESSION['errorMessage'] = 'Please provide a company name';
 
         return false;
