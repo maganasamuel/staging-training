@@ -17,6 +17,8 @@ include_once('lib/Session.helper.php');
 include_once('lib/Test.controller.php');
 include_once('lib/Training.controller.php');
 
+$config = parse_ini_file('lib/class/conf/conf.ini');
+
 $app = new GeneralHelper();
 $session = new SessionHelper();
 $test = new TestController();
@@ -34,11 +36,7 @@ $confirm = $app->param($_GET, 'confirm');
 $forgot_password = $app->param($_POST, 'forgot_password');
 $action = $app->param($_GET, 'action');
 
-if ('onlineinsure.co.nz' == $_SERVER['SERVER_NAME']) {
-    $verifyAddress = 'https://onlineinsure.co.nz/staging/staging-training/login_trainee?confirm=yes&email_address=' . $emailAddress;
-} else {
-    $verifyAddress = 'https://staging-training.test/login_trainee?confirm=yes&email_address=' . $emailAddress;
-}
+$verifyAddress = $config['app_url'] . '/login_trainee?confirm=yes&email_address=' . $emailAddress;
 
 //for adviser/tester
 $venue_for_adviser = $app->param($_POST, 'venue');
@@ -464,7 +462,7 @@ if (2 == $idUserType || 8 == $idUserType || 7 == $idUserType) {
 					</div>
 				</div>
 				<?php } ?>
-				
+
 				<div class="row justify-content-md-center">
 					<div class="col-3">
 						<?php
