@@ -96,88 +96,88 @@ while ($row = $total->fetch_assoc()) {
       $data = explode(",",$row['first_question']);
         if($data[0] === "true"){
            $strongly1 = (int)$strongly1 + 1;
-        } 
+        }
         if($data[1] === "true"){
            $disagree1 = (int)$disagree1 + 1;
-        } 
+        }
         if($data[2] === "true"){
            $neutral1 = (int)$neutral1 + 1;
-        } 
+        }
         if($data[3] === "true"){
            $agree1 = (int)$agree1 + 1;
-        } 
+        }
         if($data[4] === "true"){
            $sagree1 = (int)$sagree1 + 1;
-        } 
+        }
 
         $data = explode(",",$row['second_question']);
-     
+
         if($data[0] === "true"){
            $strongly2 = (int)$strongly2 + 1;
-        } 
+        }
         if($data[1] === "true"){
            $disagree2  = (int)$disagree2 + 1;
-        } 
+        }
         if($data[2] === "true"){
            $neutral2 = (int)$neutral2 + 1;
-        } 
+        }
         if($data[3] === "true"){
            $agree2 = (int)$agree2 + 1;
-        } 
+        }
         if($data[4] === "true"){
            $sagree2 = (int)$sagree2 + 1;
-        }  
+        }
 
-        $data = explode(",",$row['third_question']); 
+        $data = explode(",",$row['third_question']);
         if($data[0] === "true"){
            $strongly3 =(int)$strongly3 + 1;
-        } 
+        }
         if($data[1] === "true"){
            $disagree3 =(int)$disagree3 + 1;
-        } 
+        }
         if($data[2] === "true"){
            $neutral3 =(int)$neutral3 + 1;
-        } 
+        }
         if($data[3] === "true"){
            $agree3 =(int)$agree3 + 1;
-        } 
+        }
         if($data[4] === "true"){
            $sagree3 =(int)$sagree3 + 1;
         }
 
-        $data = explode(",",$row['fourth_question']); 
+        $data = explode(",",$row['fourth_question']);
         if($data[0] === "true"){
            $strongly4 =(int)$strongly4 + 1;
-        } 
+        }
         if($data[1] === "true"){
            $disagree4 =(int)$disagree4 + 1;
-        } 
+        }
         if($data[2] === "true"){
            $neutral4 =(int)$neutral4 + 1;
-        } 
+        }
         if($data[3] === "true"){
            $agree4 =(int)$agree4 + 1;
-        } 
+        }
         if($data[4] === "true"){
            $sagree4 =(int)$sagree4 + 1;
-        }  
+        }
 
-        $data = explode(",",$row['fifth_question']); 
+        $data = explode(",",$row['fifth_question']);
         if($data[0] === "true"){
            $strongly5 =(int)$strongly5 + 1;
-        } 
+        }
         if($data[1] === "true"){
            $disagree5 =(int)$disagree5 + 1;
-        } 
+        }
         if($data[2] === "true"){
            $neutral5 =(int)$neutral5 + 1;
-        } 
+        }
         if($data[3] === "true"){
            $agree5 =(int)$agree5 + 1;
-        } 
+        }
         if($data[4] === "true"){
            $sagree5 =(int)$sagree5 + 1;
-        }    
+        }
 };
 
 //$strongly1  = $disagree1 = $neutral1 = $agree1 = $sagree1 = "";
@@ -192,7 +192,7 @@ $total5 = ((int)$strongly5*1) + ((int)$disagree5*2) + ((int)$neutral5*3) + ((int
 $totalscore =  $total1 + $total2 + $total3 + $total4 + $total5;
 $scorep = ($participants*5)*5;
 
-$percentage = $totalscore/$scorep*100; 
+$percentage = $totalscore/$scorep*100;
 
 $percent = number_format((float)$percentage, 2, '.', '');
 
@@ -213,7 +213,7 @@ $html = <<<EOF
    body {
       font-family: Trebuchet MS, sans-serif
     }
-  
+
   .feedback{
     border:1px solid black;
       border-spacing: 0;
@@ -294,7 +294,7 @@ $html = <<<EOF
           </thead>
             <tbody>
                 <tr>
-                    <td style="width: 400px">I am able to achieve learning outcomes.</td>
+                    <td style="width: 400px; text-align: left;">I am able to achieve learning outcomes.</td>
                     <td>{$strongly1}</td>
                     <td>{$disagree1}</td>
                     <td>{$neutral1}</td>
@@ -303,7 +303,7 @@ $html = <<<EOF
                     <td>{$total1}</td>
                 </tr>
                 <tr>
-                    <td>The trainer is very effective in his/her delivery.</td>
+                    <td style="text-align: left;">The trainer is very effective in his/her delivery.</td>
                     <td>{$strongly2}</td>
                     <td>{$disagree2}</td>
                     <td>{$neutral2}</td>
@@ -312,7 +312,7 @@ $html = <<<EOF
                     <td>{$total2}</td>
                 </tr>
                 <tr>
-                    <td>The content is relevant to me.</td>
+                    <td style="text-align: left;">The content is relevant to me.</td>
                     <td>{$strongly3}</td>
                     <td>{$disagree3}</td>
                     <td>{$neutral3}</td>
@@ -321,7 +321,7 @@ $html = <<<EOF
                     <td>{$total3}</td>
                 </tr>
                 <tr>
-                    <td>The training was pitched in a level that I can understand.</td>
+                    <td style="text-align: left;">The training was pitched in a level that I can understand.</td>
                     <td>{$strongly4}</td>
                     <td>{$disagree4}</td>
                     <td>{$neutral4}</td>
@@ -330,7 +330,7 @@ $html = <<<EOF
                     <td>{$total4}</td>
                 </tr>
                  <tr>
-                    <td>The trainer is very efficient in using learning materials.</td>
+                    <td style="text-align: left;">The trainer is very efficient in using learning materials.</td>
                     <td>{$strongly5}</td>
                     <td>{$disagree5}</td>
                     <td>{$neutral5}</td>
@@ -354,11 +354,11 @@ $html = <<<EOF
 </div>
 </body>
 </html>
-  
+
 EOF;
 
 $htmlFooter = <<<EOF
-<div class="footer" style="font-size:6pt; margin-top:50px;"> 
+<div class="footer" style="font-size:6pt; margin-top:50px;">
   <p style="font-size:9px;; text-align: justify; font-family: calibri;">Disclaimer: Eliteinsure has used reasonable endeavours to ensure the accuracy and completeness of the information provided but makes no warranties as to the accuracy or completeness of such information. The information should not be taken as advice. Eliteinsure accepts no responsibility for the results of any omissions or actions taken on basis of this information. This report includes commercially sensitive information. Accordingly, it may be used for the purpose provided; may not be disclosed to any third party; and will be subject to any obligation of confidence owed by the recipient under contract or otherwise.</p><br>
     <img src="img/logo.png" alt="eliteinsure" class="logo" width="200"/>
   </div>
