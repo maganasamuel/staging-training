@@ -340,7 +340,7 @@ $deals = $indet->listDeals($emailID);
               <div class="row">
                 <div class="col-lg-12">
                   <h6 class="text-tblue">
-                    Pending Policies
+                    Pending Issued Policies
                   </h6>
                   <div class="table-responsive">
                     <table class="table table-bordered table-hover table-striped">
