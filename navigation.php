@@ -85,12 +85,12 @@ switch ($page) {
 				</li>
 				<li class="nav-item <?php echo $isPassword; ?>">
 					<a class="nav-link" href="index.php?page=password">Password</a>
-				</li>					
+				</li>
 				<?php
                     }
                 ?>
 			<li class="nav-item">
-				<a class="nav-link" href="login_master.php?action=logout">Log out</a>
+				<a class="nav-link" href="login.php?action=logout">Log out</a>
 			</li>
 		</ul>
 	</div>
