@@ -199,14 +199,15 @@ class login
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>EliteInsure Portal | Login</title>
 
+            <link rel="stylesheet" href="css/forms.min.css">
             <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-            <link href="https://cdn.jsdelivr.net/npm/tailwindcss-colors-css-variables@1.1.2-rc.2/css/tailwindcss-colors.min.css" rel="stylesheet">
 
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
             <link href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
             <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 
             <style>
                 .bg-shark {
