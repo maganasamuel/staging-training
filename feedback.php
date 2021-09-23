@@ -266,7 +266,7 @@ if($hostName != ''){
                 showConfirmButton: false,
                 timer: 2500
               }).then(function() {
-                 window.location.href = '<?php echo $config['app_url'] ?>/login_trainee?type=trainer';
+                 window.location.href = '<?php echo $config['app_url'] ?>/login?type=trainer';
             });
           }
   });

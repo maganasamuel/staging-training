@@ -37,7 +37,7 @@ $idUserType = $app->param($_SESSION, "id_user_type", 0);
 if ($emailAddress == "" ||
 	$firstName == "" ||
 	$lastName == "") {
-	//header("Location: login_trainee?type={$userType}&message=Please sign up here.");
+	//header("Location: login?type={$userType}&message=Please sign up here.");
 }
 
 //determine the page to be displayed
@@ -48,21 +48,21 @@ $page = $app->param($_GET, "page", "test_set");
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="robots" content="noindex, nofollow" /> 
+		<meta name="robots" content="noindex, nofollow" />
 		<meta name="description" content="">
 		<meta name="author" content="Elite Insure">
 		<link rel="icon" href="img/favicon.ico">
 
 		<title><?php echo ucwords($userType); ?>'s Test</title>
-		
+
 		<!-- CSS -->
 		<link href="css/bootstrap.css" rel="stylesheet">
 		<link href="css/styles.css" rel="stylesheet">
 		<link href="css/test_form.css" rel="stylesheet">
-	
+
 		<!-- Icon font -->
 		<link href="css/google-icons.css" rel="stylesheet">
-		
+
 		<!-- Script -->
 		<script src="js/jquery-3.2.1.slim.min.js"></script>
 		<script src="js/jquery-3.2.1.min.js"></script>
@@ -81,14 +81,14 @@ $page = $app->param($_GET, "page", "test_set");
 
 			<div class="collapse navbar-collapse" id="mainNav">
 				<ul class="navbar-nav mr-auto justify-content-end width100">
-					
+
 					<li class="nav-item dropdown">
-					<?php 
+					<?php
 
 						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Training</a>";
 					?>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<?php 
+							<?php
 								if ($idUserType != 1 && $idUserType != 3){
 									echo "<a class='dropdown-item' href=\"test?page=test_set\">Take Assessment</a>";
 								}
@@ -98,10 +98,10 @@ $page = $app->param($_GET, "page", "test_set");
 	        			</div>
 					</li>
 					<li class="nav-item">
-					
+
 					</li>
 					<li class="nav-item dropdown">
-					<?php 
+					<?php
 
 						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;'' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Resources</a>";
 					?>
@@ -114,29 +114,29 @@ $page = $app->param($_GET, "page", "test_set");
 						<a class='nav-link' target="_blank" href='https://onlineinsure.co.nz/adviceprocess/' style="color:white;">Advise Process</a>
 					</li>
 					<li class="nav-item">
-					<?php 
+					<?php
 						if ($idUserType == 1){
 							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=cpd_list\">CPD Topics</a>";
 						}
 					?>
 					</li>
 					<li class="nav-item">
-					<?php 
+					<?php
 						if ($idUserType == 1 || $idUserType == 7 || $idUserType == 8){
 							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=training_user\">Member List</a>";
 						}
 					?>
 					</li>
 					<li class="nav-item">
-					<?php 
-						
+					<?php
+
 							echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"training?page=adviser_profile&id={$id_user}&email={$email}&user_type={$idUserType}\">My Profile</a>";
-						
+
 					?>
 					</li>
 					<li class="nav-item">
-					<?php 
-						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login_trainee?type=trainer&action=logout\">Sign out</a>";
+					<?php
+						echo "<a class=\"nav-link\" style=\"color:#FFFFFF;\" href=\"login?type=trainer&action=logout\">Sign out</a>";
 					?>
 					</li>
 				</ul>
@@ -144,7 +144,7 @@ $page = $app->param($_GET, "page", "test_set");
 		</nav>
 
 		<main role="main">
-		<?php			
+		<?php
 			include_once("{$page}.php");
 		?>
 		</main><!-- /.container -->

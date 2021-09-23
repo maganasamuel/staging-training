@@ -26,7 +26,7 @@ $app = new GeneralHelper();
 $access = $app->param($_SESSION, "grant",-1);
 
 if($access != "yes"){
-  header("location: login_trainee?type=trainer");
+  header("location: login?type=trainer");
 }
 
 $trainingController = new TrainingController();
@@ -49,7 +49,7 @@ if ($action == "save_profile") {
 
 
  if($first_name != ""|| $last_name != "" || $email_address != ""|| $password != "" ){
-  
+
   if($usID){
       if($ssfnumber == '') $ssfnumber = 0;
       if($adr_id == '') $adr_id = 0;
@@ -59,27 +59,27 @@ if ($action == "save_profile") {
             $email_address,
             $password,
             $ssfnumber,$user_type,$usID,$adr_id,$sadr_id
-          ); 
+          );
 
   }else{
     $datasetuser = $trainingController->addUserTraining($email_address,
             $first_name,$last_name,
             $password,$user_type,$ssfnumber,$adr_id,$sadr_id
-          );   
+          );
   }
-  
+
   if($datasetuser == "existed"){
       $message = "<div class=\"alert alert-danger\" role=\"alert\">Email already registered.</div>";
-  
+
   }elseif($datasetuser == "fspexisted"){
       $message = "<div class=\"alert alert-danger\" role=\"alert\">FSP number already registered.</div>";
   }else{
       $message = "<div class=\"alert alert-success\" role=\"alert\">User profile saved.</div>";
-    }  
+    }
   }
   else{
       $message = "<div class=\"alert alert-danger\" role=\"alert\">Please fill out all required fields.</div>";
-     
+
   }
 }
 
@@ -93,9 +93,9 @@ while ($row = $usList->fetch_assoc()) {
   $usEmail = $row["email_address"];
   $usFSP = $row["ssf_number"];
   $usPassword = $row["password"];
-  $usType = $row["id_user_type"];  
-  $usAdr = $row["adr_id"];  
-  $usSadr = $row["sadr_id"];  
+  $usType = $row["id_user_type"];
+  $usAdr = $row["adr_id"];
+  $usSadr = $row["sadr_id"];
   }
 }
 
@@ -141,12 +141,12 @@ foreach($adr as $row) {
         </div>
       </div>
     </div>
-    
+
     <div align="container">
       <div class="row justify-content-md-center mt-4">
 
           <div class="col-sm-12 col-lg-3">
-            
+
             <?php echo $message; ?>
 
           </div>
@@ -179,7 +179,7 @@ foreach($adr as $row) {
         <div class="row justify-content-md-center">
           <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">FSP Number</label>
-            <input type="text" placeholder="FSP Number" class="form-control mb-2" value="<?=(empty($usFSP)) ? '' : $usFSP?>" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">    
+            <input type="text" placeholder="FSP Number" class="form-control mb-2" value="<?=(empty($usFSP)) ? '' : $usFSP?>" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
           </div>
         </div>
         <div class="row justify-content-md-center">
@@ -232,7 +232,7 @@ foreach($adr as $row) {
       </form>
     </div>
     <script type="text/javascript">
-      
+
       $( document ).ready(function() {
         if($("#userType").val() == "8" || $("#userType").val() == "1" || $("#userType").val() == "3"  ){
             $(".adrMember").hide();
@@ -247,7 +247,7 @@ foreach($adr as $row) {
        function changeProp(id){
           if(id.value == "2"){
               $(".adrMember").show();
-              $(".sadrMember").show();   
+              $(".sadrMember").show();
           }else if(id.value == "8" || id.value == "1" || id.value == "3"){
               $(".adrMember").hide();
               $(".sadrMember").hide();
