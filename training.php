@@ -15,7 +15,7 @@ $app = new GeneralHelper();
 $access = $app->param($_SESSION, 'grant', -1);
 
 if ('yes' != $access) {
-    header('location: login_trainee?type=trainer');
+    header('location: login?type=trainer');
 }
 
 $idUserType = $app->param($_SESSION, 'id_user_type', -1);
@@ -101,7 +101,7 @@ $page = $app->param($_GET, 'page', 'test_set');
                         }
                         ?>
 					</div>
-				</li>				
+				</li>
 				<li class="nav-item dropdown">
 					<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;'' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Resources</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -145,7 +145,7 @@ $page = $app->param($_GET, 'page', 'test_set');
 					<a class="nav-link" style="color:#FFFFFF;" href="<?php echo "training?page=adviser_profile&id={$id_user}&email={$email}&user_type={$idUserType}"; ?>">My Profile</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" style="color:#FFFFFF;" href="login_trainee?type=trainer&action=logout">Sign out</a>
+					<a class="nav-link" style="color:#FFFFFF;" href="login?type=trainer&action=logout">Sign out</a>
 				</li>
 			</ul>
 		</div>

@@ -20,7 +20,7 @@ $app = new GeneralHelper();
 $access = $app->param($_SESSION, 'grant', -1);
 
 if ('yes' != $access) {
-    header('location: login_trainee?type=trainer');
+    header('location: login?type=trainer');
 }
 
 $trainingController = new TrainingController();
@@ -134,7 +134,7 @@ if ('delete' == $delete) {
 
 if ('save_training' == $action) {
     if ($currentSessionID < 0) {
-        header('location: login_trainee?type=trainer');
+        header('location: login?type=trainer');
     } else {
         $topic_type = $app->param($_POST, 'topic_type');
 
