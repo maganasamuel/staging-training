@@ -250,7 +250,7 @@ class login
                 <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-12">
                     <div class="mx-auto w-full max-w-sm">
                         <div>
-                            <img class="h-12 w-auto" src="img/elitelogo.png" alt="EliteInsure">
+                            <!-- <img class="h-12 w-auto" src="img/elitelogo.png" alt="EliteInsure"> -->
                             <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
                                 Sign in to your account
                             </h2>
@@ -370,8 +370,8 @@ class login
                     </div>
                 </div>
                 <div class="hidden lg:block relative w-0 flex-1">
-                    <div class="absolute inset-0 bg-dsgreen">
-                        <img class="h-full w-full object-cover mix-blend-luminosity" src="img/login-background.jpg" alt="">
+                    <div class="absolute inset-0">
+                        <img class="h-full w-full object-cover" src="img/login-background.png" alt="">
                     </div>
                     <div class="absolute inset-x-0 bottom-0 text-white text-sm text-center mb-2">
                         Copyright &copy; <?php echo date('Y'); ?> EliteInsure Portal. All rights reserved
