@@ -372,7 +372,7 @@ class login
                     <div class="absolute inset-0 bg-dsgreen">
                         <img class="h-full w-full object-cover mix-blend-luminosity" src="img/login-background.jpg" alt="">
                     </div>
-                    <div class="absolute inset-x-0 bottom-0 text-white font-bold text-xs text-center mb-1">
+                    <div class="absolute inset-x-0 bottom-0 text-white text-sm text-center mb-2">
                         Copyright &copy; <?php echo date('Y'); ?> EliteInsure Portal. All rights reserved
                     </div>
                 </div>
