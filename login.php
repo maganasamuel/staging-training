@@ -246,8 +246,8 @@ class login
 
         <body style="font-family: 'Quattrocento Sans';">
             <div class="min-h-screen bg-white flex">
-                <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-                    <div class="mx-auto w-full max-w-sm lg:w-96">
+                <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-12">
+                    <div class="mx-auto w-full max-w-sm lg:w-72">
                         <div>
                             <img class="h-12 w-auto" src="img/elitelogo.png" alt="EliteInsure">
                             <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
@@ -368,8 +368,13 @@ class login
 
                     </div>
                 </div>
-                <div class="hidden lg:block relative w-0 flex-1 bg-dsgreen">
-                    <img class="absolute inset-0 h-full w-full object-cover mix-blend-luminosity" src="img/login-background.jpg" alt="">
+                <div class="hidden lg:block relative w-0 flex-1">
+                    <div class="absolute inset-0 bg-dsgreen">
+                        <img class="h-full w-full object-cover mix-blend-luminosity" src="img/login-background.jpg" alt="">
+                    </div>
+                    <div class="absolute inset-x-0 bottom-0 text-white font-bold text-xs text-center mb-1">
+                        Copyright &copy; <?php echo date('Y'); ?> EliteInsure Portal. All rights reserved
+                    </div>
                 </div>
             </div>
         </body>
