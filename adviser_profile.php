@@ -18,7 +18,6 @@ include_once('lib/IndetHelper.php');
 $session = new SessionHelper();
 $app = new GeneralHelper();
 $trainingController = new TrainingController();
-$indet = new IndetHelper();
 
 use Carbon\Carbon;
 
@@ -42,6 +41,8 @@ $usName = '';
 $email = '';
 $fsp = '';
 $rows = '';
+
+$indet = new IndetHelper($emailID);
 
 while ($row = $usProfile->fetch_assoc()) {
     $usName = $row['first_name'] . ' ' . $row['last_name'];
@@ -227,7 +228,9 @@ while ($row = $modTraining->fetch_assoc()) {
 
 $authIsAdviser = in_array($usType, [2, 7, 8]) ? true : false;
 
-$deals = $indet->listDeals($emailID);
+$pendingIssuedPolicies = $indet->listPendingIssuedPolicies();
+
+$clawbacks = $indet->listClawbacks();
 ?>
 <style>
   .bg-shark { background-color: #2B3036 }
@@ -268,202 +271,245 @@ $deals = $indet->listDeals($emailID);
 </div>
 
 <div class="container-fluid mb-4">
-  <div class="row">
-    <div class="col-lg-3">
-      <div class="card">
-        <h5 class="card-header"></h5>
-        <div class="card-body">
-          <p class="card-text">Adviser: <?php echo $usName; ?></p>
-          <p>FSP: <?php echo $fsp; ?></p>
-          <p>Email: <a href="mailto:<?php echo $email; ?>"> <?php echo $email; ?></a></p>
+    <div class="row">
+        <div class="col-lg-3">
+        <div class="card">
+            <h5 class="card-header"></h5>
+            <div class="card-body">
+            <p class="card-text">Adviser: <?php echo $usName; ?></p>
+            <p>FSP: <?php echo $fsp; ?></p>
+            <p>Email: <a href="mailto:<?php echo $email; ?>"> <?php echo $email; ?></a></p>
 
-          <?php
-          if (($sessID == $idProfile) || (1 == $sessUserType)) {
-              ?>
-              <p>Password: <?php echo $password; ?></p>
             <?php
-          }
-          ?>
-
-          <a href="<?php echo 'profilepdf?id=' . $idProfile . '&email=' . $emailID; ?>" class="sendEmail" target="_blank" title="Print Adviser Profile" data-toggle="tooltip" data-placement="bottom">
-            <button class="btn btn-primary btn-sm">Print to PDF</button>
-          </a>
-        </div>
-      </div>
-
-      <div class="<?php echo in_array($usType, ['2', '7']) ? 'd-none' : null;  ?> mt-4">
-        <div class="table-responsive">
-          <table class="table table-striped table-hover member">
-            <thead class="bg-dsgreen text-white">
-              <tr>
-                <th>ADR Team Member</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php echo $adminadrList; ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="<?php echo in_array($usType, ['2', '8']) ? 'd-none' : null; ?> mt-4">
-        <div class="table-responsive">
-          <table class="table table-striped table-hover member">
-            <thead class="bg-dsgreen text-white">
-              <tr>
-                <th>Adviser Team Member</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php echo '7' == $usType ? $adrList : $adviserList; ?>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-9">
-      <ul class="nav nav-tabs mt-4 mt-lg-0" id="adviserProfileTab" role="tablist">
-        <?php if ($authIsAdviser) { ?>
-          <li class="nav-item">
-            <a class="nav-link active" id="dealTrackerTab" data-toggle="tab" href="#dealTrackerTabPanel" role="tab" aria-controls="home" aria-selected="true">Policy Tracker</a>
-          </li>
-        <?php } ?>
-        <li class="nav-item">
-          <a class="nav-link <?php echo $authIsAdviser ? null : 'active'; ?>" id="trainDevTab" data-toggle="tab" href="#trainDevTabPanel" role="tab" aria-controls="profile" aria-selected="false">Training and Development</a>
-        </li>
-      </ul>
-      <div class="tab-content p-3 border border-top-0" id="adviserProfileTabContent">
-        <?php
-        if ($authIsAdviser) {
+            if (($sessID == $idProfile) || (1 == $sessUserType)) {
+                ?>
+                <p>Password: <?php echo $password; ?></p>
+                <?php
+            }
             ?>
-            <div class="tab-pane fade show active" id="dealTrackerTabPanel" role="tabpanel" aria-labelledby="deal-tracker-tab">
-              <div class="row">
-                <div class="col-lg-12">
-                  <h6 class="text-tblue">
-                    Pending Issued Policies
-                  </h6>
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-striped">
-                      <thead><tr class="bg-dsgreen text-white">
-                        <th>Life Insured</th>
-                        <th>Policy #</th>
-                        <th>Co.</th>
-                        <th>Issue Date</th>
-                        <th>API</th>
-                        <th>Record Keeping</th>
-                        <th>Comp. Admin</th>
-                        <th>Comp. CO</th>
-                        <th>Notes</th>
-                      </tr></thead>
-                      <tbody>
-                        <?php
-                        if ($deals['currentDeals']->count()) {
-                            foreach ($deals['currentDeals'] as $deal) {
+
+            <a href="<?php echo 'profilepdf?id=' . $idProfile . '&email=' . $emailID; ?>" class="sendEmail" target="_blank" title="Print Adviser Profile" data-toggle="tooltip" data-placement="bottom">
+                <button class="btn btn-primary btn-sm">Print to PDF</button>
+            </a>
+            </div>
+        </div>
+
+        <div class="<?php echo in_array($usType, ['2', '7']) ? 'd-none' : null;  ?> mt-4">
+            <div class="table-responsive">
+            <table class="table table-striped table-hover member">
+                <thead class="bg-dsgreen text-white">
+                <tr>
+                    <th>ADR Team Member</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php echo $adminadrList; ?>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="<?php echo in_array($usType, ['2', '8']) ? 'd-none' : null; ?> mt-4">
+            <div class="table-responsive">
+            <table class="table table-striped table-hover member">
+                <thead class="bg-dsgreen text-white">
+                <tr>
+                    <th>Adviser Team Member</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php echo '7' == $usType ? $adrList : $adviserList; ?>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        </div>
+        <div class="col-lg-9">
+        <ul class="nav nav-tabs mt-4 mt-lg-0" id="adviserProfileTab" role="tablist">
+            <?php if ($authIsAdviser) { ?>
+            <li class="nav-item">
+                <a class="nav-link active" id="dealTrackerTab" data-toggle="tab" href="#dealTrackerTabPanel" role="tab" aria-controls="home" aria-selected="true">Policy Tracker</a>
+            </li>
+            <?php } ?>
+            <li class="nav-item">
+            <a class="nav-link <?php echo $authIsAdviser ? null : 'active'; ?>" id="trainDevTab" data-toggle="tab" href="#trainDevTabPanel" role="tab" aria-controls="profile" aria-selected="false">Training and Development</a>
+            </li>
+        </ul>
+        <div class="tab-content p-3 border border-top-0" id="adviserProfileTabContent">
+            <?php
+            if ($authIsAdviser) {
+                ?>
+                <div class="tab-pane fade show active" id="dealTrackerTabPanel" role="tabpanel" aria-labelledby="deal-tracker-tab">
+                <div class="row">
+                    <div class="col-lg-12">
+                    <h6 class="text-tblue">
+                        Pending Issued Policies
+                    </h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped">
+                        <thead><tr class="bg-dsgreen text-white">
+                            <th>Life Insured</th>
+                            <th>Policy #</th>
+                            <th>Co.</th>
+                            <th>Issue Date</th>
+                            <th>API</th>
+                            <th>Record Keeping</th>
+                            <th>Comp. Admin</th>
+                            <th>Comp. CO</th>
+                            <th>Notes</th>
+                        </tr></thead>
+                        <tbody>
+                            <?php
+                            if ($pendingIssuedPolicies['currentDeals']->count()) {
+                                foreach ($pendingIssuedPolicies['currentDeals'] as $deal) {
+                                    ?>
+                                    <tr>
+                                    <td><?php echo $deal['client_name_life_insured']; ?></td>
+                                    <td><?php echo $deal['policy_number']; ?></td>
+                                    <td><?php echo $deal['company']; ?></td>
+                                    <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
+                                    <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
+                                    <td><?php echo $deal['record_keeping']; ?></td>
+                                    <td><?php echo $deal['compliance_status']; ?></td>
+                                    <td><?php echo $deal['audit_status']; ?></td>
+                                    <td><?php echo $deal['notes']; ?></td>
+                                    </tr>
+                                    <?php
+                                } ?>
+                                </tbody>
+                                <tfoot>
+                                <tr class="bg-lmara text-white">
+                                    <th colspan="4" class="text-right">Total API:</th>
+                                    <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
+                                    <th colspan="4"></th>
+                                </tr>
+                                </tfoot>
+                                <?php
+                            } else {
                                 ?>
                                 <tr>
-                                  <td><?php echo $deal['client_name_life_insured']; ?></td>
-                                  <td><?php echo $deal['policy_number']; ?></td>
-                                  <td><?php echo $deal['company']; ?></td>
-                                  <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
-                                  <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
-                                  <td><?php echo $deal['record_keeping']; ?></td>
-                                  <td><?php echo $deal['compliance_status']; ?></td>
-                                  <td><?php echo $deal['audit_status']; ?></td>
-                                  <td><?php echo $deal['notes']; ?></td>
+                                    <td colspan="9">No available deals.</td>
                                 </tr>
+                                </tbody>
                                 <?php
                             } ?>
-                            </tbody>
-                            <tfoot>
-                              <tr class="bg-lmara text-white">
-                                <th colspan="4" class="text-right">Total API:</th>
-                                <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
-                                <th colspan="4"></th>
-                              </tr>
-                            </tfoot>
-                            <?php
-                        } else {
-                            ?>
-                              <tr>
-                                <td colspan="9">No available deals.</td>
-                              </tr>
-                            </tbody>
-                            <?php
-                        } ?>
-                    </table>
-                  </div>
+                        </table>
+                    </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <?php
-        }
-        ?>
-        <div class="tab-pane fade <?php echo $authIsAdviser ? null : 'show active'; ?>" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
-          <div class="row">
-            <div class="col-lg-12">
-              <h6 class="text-tblue">Continuing Professional Development</h6>
-              <div class="table-responsive">
-                <table class="table table-striped table-hover cpd" style="border: 1px solid lightgray;">
-                  <thead class="bg-dsgreen text-white">
-                    <tr>
-                      <th>Training Date</th>
-                      <th>Topic Trained</th>
-                      <th>Trainer</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php echo $cpdList; ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-lg-12">
-              <h6 class="text-tblue">Modular Training</h6>
-              <div class="table-responsive">
-                <table class="table table-striped table-hover modular" style="border: 1px solid lightgray;">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h6 class="text-tblue">
+                            Clawbacks and Possible Clawbacks
+                        </h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr class="bg-dsgreen text-white">
+                                        <th>Client Name</th>
+                                        <th>Insurer</th>
+                                        <th>Policy Number</th>
+                                        <th>Status</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if ($clawbacks['currentDeals']->count()) {
+                                        foreach ($clawbacks['currentDeals'] as $deal) { ?>
+                                            <tr>
+                                                <td><?php echo $deal['client_name_life_insured']; ?></td>
+                                                <td><?php echo $deal['company']; ?></td>
+                                                <td><?php echo $deal['policy_number']; ?></td>
+                                                <td><?php echo $deal['clawback_status']; ?></td>
+                                                <td><?php echo $deal['clawback_notes'] ?? ''; ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                        </tbody>
+                                        <?php
+                                    } else { ?>
+                                        <tr>
+                                            <td colspan="5">No available deals.</td>
+                                        </tr>
+                                        </tbody>
+                                        <?php
+                                    } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <?php
+            }
+            ?>
+            <div class="tab-pane fade <?php echo $authIsAdviser ? null : 'show active'; ?>" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
+            <div class="row">
+                <div class="col-lg-12">
+                <h6 class="text-tblue">Continuing Professional Development</h6>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover cpd" style="border: 1px solid lightgray;">
                     <thead class="bg-dsgreen text-white">
-                      <tr>
-                        <th>Topics Trained On</th>
-                        <th>Module Take</th>
-                        <th>Score</th>
-                        <th>Results</th>
-                        <th>No. of Attempts</th>
-                      </tr>
+                        <tr>
+                        <th>Training Date</th>
+                        <th>Topic Trained</th>
+                        <th>Trainer</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <?php
-                          echo $modList;
-                    ?>
+                        <?php echo $cpdList; ?>
                     </tbody>
-                </table>
-              </div>
+                    </table>
+                </div>
+                </div>
             </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-lg-12">
-              <h6 class="text-tblue">Team Training</h6>
-              <div class="table-responsive">
-                <table class="table table-striped table-hover team" style="border: 1px solid lightgray;">
-                  <thead class="bg-dsgreen text-white">
-                    <tr>
-                      <th>Training Date</th>
-                      <th>Topic Trained</th>
-                      <th>Trainer</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php echo $rows; ?>
-                  </tbody>
-                </table>
-              </div>
+            <div class="row mt-4">
+                <div class="col-lg-12">
+                <h6 class="text-tblue">Modular Training</h6>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover modular" style="border: 1px solid lightgray;">
+                        <thead class="bg-dsgreen text-white">
+                        <tr>
+                            <th>Topics Trained On</th>
+                            <th>Module Take</th>
+                            <th>Score</th>
+                            <th>Results</th>
+                            <th>No. of Attempts</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                            echo $modList;
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
             </div>
-          </div>
+            <div class="row mt-4">
+                <div class="col-lg-12">
+                <h6 class="text-tblue">Team Training</h6>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover team" style="border: 1px solid lightgray;">
+                    <thead class="bg-dsgreen text-white">
+                        <tr>
+                        <th>Training Date</th>
+                        <th>Topic Trained</th>
+                        <th>Trainer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php echo $rows; ?>
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+            </div>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script type="text/javascript">
