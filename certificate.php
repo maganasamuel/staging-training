@@ -29,7 +29,7 @@ class MyCustomPDFWithWatermark extends TCPDF {
 
         // Disable auto-page-break
 		$this->SetAutoPageBreak(false, 0);
-		
+
 		// Render the image
 		$yPointer = 0;
 		$this->Image('img/Company Training Certificate BG.jpg', 0, $yPointer, 297, 210, '', '', '', false, 300, '', false, false, 0);
@@ -41,7 +41,7 @@ class MyCustomPDFWithWatermark extends TCPDF {
 		$this->Text(100,$yPointer,$this->date);
 		$Raleway = TCPDF_FONTS::addTTFfont('font/Raleway.ttf', 'TrueTypeUnicode', '', 32);
 		$this->SetFont($Raleway,"",12);
-		
+
         $this->SetY(195);
         $this->SetTextWhite();
 		$this->Cell(267, 5, "Address: 3G/39 Mackelvie Street Grey Lynn 1021 Auckland New Zealand | Contact: 0508 123 467", "", 1, 'C', 0, '', 0);
@@ -61,7 +61,7 @@ class MyCustomPDFWithWatermark extends TCPDF {
         // Set the starting point for the page content
         $this->setPageMark();
     }
-    
+
     public function SetTextDarkElite(){
         $this->SetTextColor(12,71,100);
     }
@@ -73,7 +73,7 @@ class MyCustomPDFWithWatermark extends TCPDF {
     public function SetTextGray(){
         $this->SetTextColor(51,51,51);
 	}
-	
+
     public function SetTextWhite(){
         $this->SetTextColor(255,255,255);
     }
@@ -81,7 +81,7 @@ class MyCustomPDFWithWatermark extends TCPDF {
 
 class Certificate {
 	var $pdf;
-	
+
 	function __construct($fullName, $rScore, $totalScore, $set_name, $dayTook, $monthTook, $yearTook, $venue){
 
 		$pdf = new MyCustomPDFWithWatermark();
@@ -102,23 +102,23 @@ class Certificate {
 		$pdf->Text(20, $yPointer, 'CERTIFICATE OF COMPLETION');
 		// set default header data
 		$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 021', PDF_HEADER_STRING);
-	
+
 		// set header and footer fonts
 		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-	
+
 		// set default monospaced font
 		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-	
+
 		// set margins
 		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-	
+
 		// set auto page breaks
 		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-	
+
 		// set image scale factor
 		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-	
+
 		// set some language-dependent strings (optional)
 		if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
 			require_once(dirname(__FILE__).'/lang/eng.php');
@@ -126,15 +126,15 @@ class Certificate {
 		}
 		// add a page
 		$pdf->AddPage("L");
-	
+
 		// create some HTML content
 		//$html = '<h1>Example of HTML text flow</h1>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. <em>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</em> <em>Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</em><br /><br /><b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i> -&gt; &nbsp;&nbsp; <b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i> -&gt; &nbsp;&nbsp; <b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i> -&gt; &nbsp;&nbsp; <b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i> -&gt; &nbsp;&nbsp; <b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i> -&gt; &nbsp;&nbsp; <b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i> -&gt; &nbsp;&nbsp; <b>A</b> + <b>B</b> = <b>C</b> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>B</i> = <i>A</i> &nbsp;&nbsp; -&gt; &nbsp;&nbsp; <i>C</i> - <i>A</i> = <i>B</i><br /><br /><b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u> <b>Bold</b><i>Italic</i><u>Underlined</u>';
-	
-	
+
+
 		// ---------------------------------------------------------
 		$darkelite = array(12, 71, 100);
 		$black = array(0,0,0);
-	
+
 		$yPointer += 35;
 		$pdf->SetY($yPointer);
 		$pdf->SetFont($Ralewaysemibb, "", 40);
@@ -145,7 +145,7 @@ class Certificate {
 		$pdf->SetTextGray();
 		$pdf->SetFont($Raleway, "", 12);
 		$pdf->Cell(267, 5, "This certificate is hereby bestowed upon", "", 1, 'C', 0, '', 0);
-	
+
 		$pdf->Ln(5);
 		$pdf->SetFont($Ralewaysemibb, "", 30);
 		// set font
@@ -158,22 +158,22 @@ class Certificate {
 		$pdf->SetTextGray();
 		$html = "<p style='text-align:center;'>for successfully completing the test with a score of {$rScore}</span>  ({$totalScore}%)<br>
 		therefore, reaching the required level of competency in <strong style='text-decoration:underline;'>{$set_name}</strong>  <br> conducted by <b>EliteInsure Limited</b>.</p>";
-	
+
 		$pdf->writeHTMLCell(267, 5, 15, $yPointer, $html,0 , 1,0, true, 'C');
 		$pdf->Ln(5);
 		$pdf->Cell(267, 5, "Awarded this {$dayTook} of {$monthTook}, {$yearTook}", "", 1, 'C', 0, '', 0);
-	
+
 		$pdf->Image('img/signature001.png', 135.8, 150, 25.4, 19.4, '', '', '', false, 300, '', false, false, 0);
 		$pdf->Line(120.8, 167, 176.2, 167);
-	
+
 		$pdf->Ln(33);
 		$pdf->Cell(267, 5, "Sumit Monga", "", 1, 'C', 0, '', 0);
 		$pdf->Cell(267, 5, "Trainer", "", 1, 'C', 0, '', 0);
 		// reset pointer to the last page
 		$pdf->lastPage();
-	
+
 		// ---------------------------------------------------------
-	
+
 		$this->pdf = $pdf;
 	}
 }
@@ -206,12 +206,12 @@ else {
 
 		$choices = $row["choices"];
 		$answerIndex = $row["answer_index"];
-		
+
 		$choicesArray = explode(";", $choices);
 		$options = "";
 		for ($i = 0; $i < count($choicesArray); $i++) {
 			$option = $choicesArray[$i];
-			
+
 			if (strpos($answerIndex, "". $i) !== false) {
 				if ($option != "") {
 					$options .= "<span >{$option}</span><br/>";
@@ -221,7 +221,7 @@ else {
 		if ($options != "") {
 			$options = "<b>Correct Answer:</b><br/>".$options;
 		}
-		
+
 		$rows .= <<<EOF
 		<tr>
 			<td>{$questionSetIndex}</td>
@@ -266,9 +266,9 @@ if ($dataset->num_rows > 0) {
 		$setName = $row["set_name"];
 		$timeTook = $row["time_took"];
         $dateNow = $row["date_now"];
-        
+
         $rScore = $totalScore;  //raw score
-		
+
 		$totalScore = (($totalScore / $maxScore) * 100);
         $tScore = number_format((float)$totalScore, 2, '.', '');
 		if ($tScore >= 80) {
@@ -279,7 +279,7 @@ if ($dataset->num_rows > 0) {
 			$totalScore = "<span style=\"color:#CA4A4A;font-weight:bold;\">$tScore</span>";
             $assessment = "failed";
         }
-        
+
         $dateTook = date_create_from_format("d/M/Y", $dateTook);
         $dayTook = $dateTook->format("dS");
         $monthTook = $dateTook->format("F");
@@ -301,7 +301,7 @@ $view = $app->param($_GET, "view", "");
 $isForMailing = $email != "" ? 1 : 0;
 if ($isForMailing == 1) {
 	$content = $certificate->pdf->Output("","S");
-	
+
 	// Create instance of Swift_Attachment with our PDF file
 	$attachment = (new Swift_Attachment($content, $pdfFilename, 'application/pdf'));
 
@@ -315,10 +315,10 @@ if ($isForMailing == 1) {
 	$message->setTo(array($email));
 	//$message->setTo(array("programmingwhilesleeping@gmail.com"));
 	//$message->setTo(array("jesse@eliteinsure.co.nz"));
-	
+
 	$message->setBcc(array('compliance@eliteinsure.co.nz' => 'Compliance'));
 	$message->setBcc(array('admin@eliteinsure.co.nz' => 'Admin'));
-	
+
 	$message->setBody('Dear ' . ucfirst($firstName) . ',
 
 Attached is your Certificate of Completion for reaching the required level of competency for the ' . $set_name . '
@@ -332,7 +332,7 @@ Leif');
 
 	$transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
 	->setUsername('wilfred@eliteinsure.co.nz')
-  	->setPassword('wilelite2021');
+  	->setPassword('Wilfred@2021@eliteinsure');
 
 	// Create the Mailer using your created Transport
     $mailer = new Swift_Mailer($transport);
