@@ -33,15 +33,15 @@ else {
 		$maxScore = $row["max_score"];
 		$answer = str_replace(";", "<br/>", $answer);
 		$questionSetIndex = $row["question_set_index"];
-		
+
 		$choices = $row["choices"];
 		$answerIndex = $row["answer_index"];
-		
+
 		$choicesArray = explode(";", $choices);
 		$options = "";
 		for ($i = 0; $i < count($choicesArray); $i++) {
 			$option = $choicesArray[$i];
-			
+
 			if (strpos($answerIndex, "". $i) !== false) {
 				if ($option != "") {
 					$options .= "<span >{$option}</span><br/>";
@@ -51,7 +51,7 @@ else {
 		if ($options != "") {
 			$options = "<b>Correct Answer:</b><br/>".$options;
 		}
-		
+
 		$rows .= <<<EOF
 		<tr>
 			<td>{$questionSetIndex}</td>
@@ -95,7 +95,7 @@ if ($dataset->num_rows > 0) {
 		$setName = $row["set_name"];
 		$timeTook = $row["time_took"];
 		$dateNow = $row["date_now"];
-		
+
 		$totalScore = (($totalScore / $maxScore) * 100);
 		$tScore = number_format((float)$totalScore, 2, '.', '');
 		if ($tScore >= 80) {
@@ -120,13 +120,13 @@ $pdfFilename = strtolower($pdfFilename);
 $htmlHeader = <<<EOF
 	<div class="header">
 		<div class="logo">
-			<img src="img/logo_vertical.svg" alt="eliteinsure" class="logo"/> 
+			<img src="img/logo_vertical.svg" alt="eliteinsure" class="logo"/>
 		</div>
 	</div>
 EOF;
 
 $html = <<<EOF
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>{$pdfFilename}</title>
@@ -232,7 +232,7 @@ $html = <<<EOF
 		<table class="table table-responsive-md table-hoverable">
 			{$rows}
 		</table>
-		
+
 		<br/>
 		<div style="border-top:1px solid #CCCCCC; width:100%; height:100px;">
 			<div class="signatureHolder">
@@ -249,7 +249,7 @@ $htmlFooter = <<<EOF
 	<div class="footer" style="font-size:6pt;">
 		<p>ELITEINSURE LIMITED</p>
 		<p>Address: 3G/39 Mackelvie Street Grey Lynn 1021 Auckland New Zealand | Contact: 0508 123 467</p>
-		<p>Email: admin@eliteinsure.co.nz | Website: www.eliteinsure.co.nz </p>           
+		<p>Email: admin@eliteinsure.co.nz | Website: www.eliteinsure.co.nz </p>
 	</div>
 EOF;
 
@@ -269,9 +269,9 @@ if ($isForMailing == 1) {
 	ob_end_clean();
 	$mpdf->WriteHTML(utf8_encode($html1));
 	$mpdf->SetHTMLFooter (utf8_encode($htmlFooter));
-	
+
 	$content = $mpdf->Output('', 'S');
-	
+
 	// Create instance of Swift_Attachment with our PDF file
 	$attachment = (new Swift_Attachment())
 	  ->setFilename($pdfFilename)
@@ -281,12 +281,12 @@ if ($isForMailing == 1) {
 	$message = new Swift_Message();
 	$message->setSubject('Assessment Result');
 
-	
+
 	$message->setFrom(array('executive.admin@eliteinsure.co.nz' => 'EliteInsure'));
-	$message->setTo(array($email));	
+	$message->setTo(array($email));
 	$message->setBcc(array('compliance@eliteinsure.co.nz' => 'Compliance'));
 	$message->setBcc(array('admin@eliteinsure.co.nz' => 'Admin'));
-	
+
 	$message->setBody('Dear ' . ucfirst($firstName) . ',
 
 Attached is your Assessment Result for the ' . $setName . '
@@ -300,7 +300,7 @@ Leif');
 
 	$transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
 	->setUsername('wilfred@eliteinsure.co.nz')
-  	->setPassword('wilelite2021');
+  	->setPassword('Wilfred@2021@eliteinsure');
 
 	// Create the Mailer using your created Transport
     $mailer = new Swift_Mailer($transport);

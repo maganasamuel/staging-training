@@ -360,7 +360,7 @@ if(isset($_GET['mail'])) {
       //$message->setBcc(array('admin@eliteinsure.co.nz' => 'Admin'));
       $transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
       ->setUsername('wilfred@eliteinsure.co.nz')
-      ->setPassword('wilelite2021');
+      ->setPassword('Wilfred@2021@eliteinsure');
 
       // Create the Mailer using your created Transport
       $mailer = new Swift_Mailer($transport);
@@ -539,7 +539,7 @@ Eliteinsure Admin Team','text/html');
 
           $transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
           ->setUsername('wilfred@eliteinsure.co.nz')
-          ->setPassword('wilelite2021');
+          ->setPassword('Wilfred@2021@eliteinsure');
 
           // Create the Mailer using your created Transport
           $mailer = new Swift_Mailer($transport);
