@@ -111,7 +111,7 @@ if ('yes' == $forgot_password) {
 
     $transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
         ->setusername('wilfred@eliteinsure.co.nz')
-        ->setPassword('wilelite2021');
+        ->setPassword('Wilfred@2021@eliteinsure');
 
     // Create the Mailer using your created Transport
     $mailer = new Swift_Mailer($transport);
@@ -238,7 +238,7 @@ if (2 == $idUserType || 8 == $idUserType || 7 == $idUserType) {
 
                     $transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
                     ->setusername('wilfred@eliteinsure.co.nz')
-                    ->setPassword('wilelite2021');
+                    ->setPassword('Wilfred@2021@eliteinsure');
 
                     // Create the Mailer using your created Transport
                     $mailer = new Swift_Mailer($transport);
