@@ -382,7 +382,7 @@ $arrears = $indet->listArrears();
                                     <tfoot>
                                     <tr class="bg-lmara text-white">
                                         <th colspan="4" class="text-right">Total API:</th>
-                                        <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
+                                        <th class="text-right">$<?php echo number_format($pendingIssuedPolicies['currentDeals']->sum('issued_api'), 2); ?></th>
                                         <th colspan="4"></th>
                                     </tr>
                                     </tfoot>
