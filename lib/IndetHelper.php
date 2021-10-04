@@ -155,6 +155,13 @@ class IndetHelper extends DB
         ];
     }
 
+    public function listArrears()
+    {
+        $collection = $this->listDeals();
+
+        return $collection->whereNotNull('arrear_status')->values();
+    }
+
     protected function listDeals()
     {
         $query = "SELECT id FROM $this->dbName.adviser_tbl WHERE email = '$this->email'";

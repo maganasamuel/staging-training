@@ -231,6 +231,8 @@ $authIsAdviser = in_array($usType, [2, 7, 8]) ? true : false;
 $pendingIssuedPolicies = $indet->listPendingIssuedPolicies();
 
 $clawbacks = $indet->listClawbacks();
+
+$arrears = $indet->listArrears();
 ?>
 <style>
   .bg-shark { background-color: #2B3036 }
@@ -340,106 +342,142 @@ $clawbacks = $indet->listClawbacks();
             if ($authIsAdviser) {
                 ?>
                 <div class="tab-pane fade show active" id="dealTrackerTabPanel" role="tabpanel" aria-labelledby="deal-tracker-tab">
-                <div class="row">
-                    <div class="col-lg-12">
-                    <h6 class="text-tblue">
-                        Pending Issued Policies
-                    </h6>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-striped">
-                        <thead><tr class="bg-dsgreen text-white">
-                            <th>Life Insured</th>
-                            <th>Policy #</th>
-                            <th>Co.</th>
-                            <th>Issue Date</th>
-                            <th>API</th>
-                            <th>Record Keeping</th>
-                            <th>Comp. Admin</th>
-                            <th>Comp. CO</th>
-                            <th>Notes</th>
-                        </tr></thead>
-                        <tbody>
-                            <?php
-                            if ($pendingIssuedPolicies['currentDeals']->count()) {
-                                foreach ($pendingIssuedPolicies['currentDeals'] as $deal) {
-                                    ?>
-                                    <tr>
-                                    <td><?php echo $deal['client_name_life_insured']; ?></td>
-                                    <td><?php echo $deal['policy_number']; ?></td>
-                                    <td><?php echo $deal['company']; ?></td>
-                                    <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
-                                    <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
-                                    <td><?php echo $deal['record_keeping']; ?></td>
-                                    <td><?php echo $deal['compliance_status']; ?></td>
-                                    <td><?php echo $deal['audit_status']; ?></td>
-                                    <td><?php echo $deal['notes']; ?></td>
-                                    </tr>
-                                    <?php
-                                } ?>
-                                </tbody>
-                                <tfoot>
-                                <tr class="bg-lmara text-white">
-                                    <th colspan="4" class="text-right">Total API:</th>
-                                    <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
-                                    <th colspan="4"></th>
-                                </tr>
-                                </tfoot>
-                                <?php
-                            } else {
-                                ?>
-                                <tr>
-                                    <td colspan="9">No available deals.</td>
-                                </tr>
-                                </tbody>
-                                <?php
-                            } ?>
-                        </table>
-                    </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-12">
                         <h6 class="text-tblue">
-                            Clawbacks and Possible Clawbacks
+                            Pending Issued Policies
                         </h6>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-striped">
-                                <thead>
-                                    <tr class="bg-dsgreen text-white">
-                                        <th>Client Name</th>
-                                        <th>Insurer</th>
-                                        <th>Policy Number</th>
-                                        <th>Status</th>
-                                        <th>Notes</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    if ($clawbacks['currentDeals']->count()) {
-                                        foreach ($clawbacks['currentDeals'] as $deal) { ?>
-                                            <tr>
-                                                <td><?php echo $deal['client_name_life_insured']; ?></td>
-                                                <td><?php echo $deal['company']; ?></td>
-                                                <td><?php echo $deal['policy_number']; ?></td>
-                                                <td><?php echo $deal['clawback_status']; ?></td>
-                                                <td><?php echo $deal['clawback_notes'] ?? ''; ?></td>
-                                            </tr>
-                                        <?php } ?>
-                                        </tbody>
-                                        <?php
-                                    } else { ?>
+                            <thead><tr class="bg-dsgreen text-white">
+                                <th>Life Insured</th>
+                                <th>Policy #</th>
+                                <th>Co.</th>
+                                <th>Issue Date</th>
+                                <th>API</th>
+                                <th>Record Keeping</th>
+                                <th>Comp. Admin</th>
+                                <th>Comp. CO</th>
+                                <th>Notes</th>
+                            </tr></thead>
+                            <tbody>
+                                <?php
+                                if ($pendingIssuedPolicies['currentDeals']->count()) {
+                                    foreach ($pendingIssuedPolicies['currentDeals'] as $deal) {
+                                        ?>
                                         <tr>
-                                            <td colspan="5">No available deals.</td>
+                                        <td><?php echo $deal['client_name_life_insured']; ?></td>
+                                        <td><?php echo $deal['policy_number']; ?></td>
+                                        <td><?php echo $deal['company']; ?></td>
+                                        <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal['date_issued'])->format('d/m/Y'); ?></td>
+                                        <td class="text-right">$<?php echo number_format($deal['issued_api'], 2); ?></td>
+                                        <td><?php echo $deal['record_keeping']; ?></td>
+                                        <td><?php echo $deal['compliance_status']; ?></td>
+                                        <td><?php echo $deal['audit_status']; ?></td>
+                                        <td><?php echo $deal['notes']; ?></td>
                                         </tr>
-                                        </tbody>
                                         <?php
                                     } ?>
-                                </tbody>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr class="bg-lmara text-white">
+                                        <th colspan="4" class="text-right">Total API:</th>
+                                        <th class="text-right">$<?php echo number_format($deals['currentDeals']->sum('issued_api'), 2); ?></th>
+                                        <th colspan="4"></th>
+                                    </tr>
+                                    </tfoot>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <tr>
+                                        <td colspan="9">No available deals.</td>
+                                    </tr>
+                                    </tbody>
+                                    <?php
+                                } ?>
                             </table>
                         </div>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h6 class="text-tblue">
+                                Clawbacks and Possible Clawbacks
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr class="bg-dsgreen text-white">
+                                            <th>Client Name</th>
+                                            <th>Insurer</th>
+                                            <th>Policy Number</th>
+                                            <th>Status</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        if ($clawbacks['currentDeals']->count()) {
+                                            foreach ($clawbacks['currentDeals'] as $deal) { ?>
+                                                <tr>
+                                                    <td><?php echo $deal['client_name_life_insured']; ?></td>
+                                                    <td><?php echo $deal['company']; ?></td>
+                                                    <td><?php echo $deal['policy_number']; ?></td>
+                                                    <td><?php echo $deal['clawback_status']; ?></td>
+                                                    <td><?php echo $deal['clawback_notes'] ?? ''; ?></td>
+                                                </tr>
+                                            <?php }
+                                        } else { ?>
+                                            <tr>
+                                                <td colspan="5">No available deals.</td>
+                                            </tr>
+                                            <?php
+                                        } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h6 class="text-tblue">Arrears Tracker</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr class="bg-dsgreen text-white">
+                                            <th>Client Name</th>
+                                            <th>Insurer</th>
+                                            <th>Policy Number</th>
+                                            <th>Status</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        if ($arrears->count()) {
+                                            foreach ($arrears as $deal) {
+                                                ?>
+                                                <tr>
+                                                    <td><?php echo $deal->client_name_life_insured; ?></td>
+                                                    <td><?php echo $deal->company; ?></td>
+                                                    <td><?php echo $deal->policy_number; ?></td>
+                                                    <td><?php echo $deal->arrear_status; ?></td>
+                                                    <td><?php echo $deal->arrear_notes ?? ''; ?></td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        } else {
+                                            ?>
+                                            <td colspan="5">No available deals.</td>
+                                            <?php
+                                        } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <?php
             }
