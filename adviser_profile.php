@@ -461,10 +461,10 @@ $arrears = $indet->listArrears();
                                                 ?>
                                                 <tr>
                                                     <td><?php echo $deal->client_name_life_insured; ?></td>
-                                                    <td><?php echo $deal->company; ?></td>
-                                                    <td><?php echo $deal->policy_number; ?></td>
-                                                    <td><?php echo $deal->arrear_status; ?></td>
-                                                    <td><?php echo $deal->arrear_notes ?? ''; ?></td>
+                                                    <td class="text-nowrap"><?php echo $deal->company; ?></td>
+                                                    <td class="text-nowrap"><?php echo $deal->policy_number; ?></td>
+                                                    <td class="text-nowrap"><?php echo $deal->arrear_status; ?></td>
+                                                    <td class="text-center"><?php echo $deal->arrear_notes ?? ''; ?></td>
                                                 </tr>
                                                 <?php
                                             }
