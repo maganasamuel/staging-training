@@ -48,7 +48,7 @@ EOF;
 		<div class="subHeader">
 			<div class="row">
 				<div class="col title">
-					Member List
+					PDP List
 				</div>
 				<ul class="subHeader-controls">
 						<li>
@@ -57,7 +57,7 @@ EOF;
 										echo 'style="display:none;"';
 									}
 						?> >
-								<button type="button" class="btn btn-primary btn-sm" onclick="create()">Create CPD Course</button></a>
+								<button type="button" class="btn btn-primary btn-sm" onclick="create()">Create PDP Course</button></a>
 						</li>
 					</ul>
 			</div>
@@ -69,8 +69,8 @@ EOF;
 						  <table class="table table-responsive-md table-hoverable cpdList">
 							  <thead style="background-color:#e9ecef;">
 							    <tr>
-							      <th >CPD Topic</th>
-							      <th>CPD Description</th>
+							      <th>PDP Topic</th>
+							      <th>PDP Description</th>
 							      <th>Action</th>
 							    </tr>
 							  </thead>
