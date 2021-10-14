@@ -31,7 +31,7 @@ $sessUserType = $app->param($_SESSION, 'id_user_type', 0);
 $attendedTraining = $trainingController->attendedTraining($idProfile);
 $trAttended = '';
 
-$cpdTraining = $trainingController->cpdTraining($idProfile);
+$cpdTraining = $trainingController->cpdAttended($idProfile);
 $trAttended = '';
 
 $adviserTeam = $trainingController->adviserTeam($idProfile);
@@ -42,7 +42,7 @@ $email = '';
 $fsp = '';
 $rows = '';
 
-$indet = new IndetHelper($emailID);
+$indet = new IndetHelper($emailID);  
 
 while ($row = $usProfile->fetch_assoc()) {
     $usName = $row['first_name'] . ' ' . $row['last_name'];
@@ -141,6 +141,99 @@ while ($row = $cpdTraining->fetch_assoc()) {
 }
 
 $adviserList = '';
+
+$pdpRate = $trainingController->pdpRate($idProfile);
+
+
+$dataset = $trainingController->alltimehour($idProfile);
+
+//Eliteinsure Company Pointing Variable
+$alltimehour = 0;
+$minute = 0;
+
+//Year Eliteinsure Company Pointing Variable
+$yalltimehour = 0;
+$yminute = 0;
+
+
+
+//External Company Pointing
+$hourtime = 0;
+$minutetime = 0;
+
+//Year External Company Pointing
+$yhourtime = 0;
+$yminutetime = 0;
+
+//Final Computation
+$allminute = 0;
+$alltime = 0;
+$totalPoints  = 0;
+
+//Year Final Computation
+$yallminute = 0;
+$yalltime = 0;
+$ytotalPoints  = 0;
+foreach($dataset as $row) {
+      
+
+    if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited'){
+        $alltimehour += $row['hour'];
+        $minute += $row['minute'];
+
+        $getTotalMinutes = $alltimehour / 2;
+        $getMaxMinutes = $minute / 60;
+        $mul = $getMaxMinutes * .50;
+
+
+        $totalPoints = $getTotalMinutes + $mul;
+        $totalPoints = number_format((float)$totalPoints, 2, '.', '');
+
+        $alltime += $alltimehour;
+        $allminute += $minute;
+
+   }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited" && $row['comp_name'] != "") {
+        $hourtime  += $row['hour'];
+        $minutetime  += $row['minute'];
+
+        $getTotalMinutes = $hourtime * 60 + $minutetime;
+        $totalPoints += $getTotalMinutes / 60;
+        $alltime += $hourtime;
+        $allminute += $minutetime;
+   }
+   
+if($row['year_date'] == date("Y")){
+    if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited'){
+        
+        $yalltimehour += $row['hour'];
+        $yminute += $row['minute'];
+
+        $getTotalMinutes = $yalltimehour / 2;
+        $getMaxMinutes = $yminute / 60;
+        $mul = $getMaxMinutes * .50;
+
+        $ytotalPoints = $getTotalMinutes + $mul;
+        $ytotalPoints = number_format((float)$ytotalPoints, 2, '.', '');
+
+
+        $yalltime += $yalltimehour;
+        $yallminute += $yminute;
+
+    }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited") {
+        $yhourtime  += $row['hour'];
+        $yminutetime  += $row['minute'];
+
+        $getTotalMinutes = $yhourtime * 60 + $yminutetime;
+        $ytotalPoints += $getTotalMinutes / 60;
+        $yalltime += $yhourtime;
+        $yallminute += $yminutetime;
+
+    }
+ }
+}
+
+$alltime += $allminute/60;
+$yalltime += $yallminute/60;
 
 while ($row = $adviserTeam->fetch_assoc()) {
     $sadr_id = $row['id_user'];
@@ -485,7 +578,8 @@ $arrears = $indet->listArrears();
             <div class="tab-pane fade <?php echo $authIsAdviser ? null : 'show active'; ?>" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
             <div class="row">
                 <div class="col-lg-12">
-                <h6 class="text-tblue">Continuing Professional Development</h6>
+                <h6 class="text-tblue">Personal Development Program</h6>
+                <h6>Completion: <?= $pdpRate ?> </h6>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover cpd" style="border: 1px solid lightgray;">
                     <thead class="bg-dsgreen text-white">
@@ -502,9 +596,43 @@ $arrears = $indet->listArrears();
                 </div>
                 </div>
             </div>
+             <div class="row mt-4">
+                <div class="col-lg-12">
+                
+                <h6 class="text-tblue">Continuing Professional Development</h6>
+                <div class="row mb-1">
+                    <div class="col-lg-3">
+                        <h6>Hours(Total): <?= $alltime; ?> </h6>
+                    </div>
+                    <div class="col-lg-3">
+                        <h6>Points(Total): <?= $totalPoints; ?> </h6>
+                    </div>
+                    <div class="col-lg-3">
+                        <h6>Hours(Current Year): <?= $yalltime; ?></h6>
+                    </div>
+                    <div class="col-lg-3">
+                        <h6>Point(Current Year): <?= $ytotalPoints; ?></h6>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover team" style="border: 1px solid lightgray;">
+                    <thead class="bg-dsgreen text-white">
+                        <tr>
+                        <th>Training Date</th>
+                        <th>Topic Trained</th>
+                        <th>Trainer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php echo $rows; ?>
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
             <div class="row mt-4">
                 <div class="col-lg-12">
-                <h6 class="text-tblue">Modular Training</h6>
+                <h6 class="text-tblue">Tests/Assesstments Result</h6>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover modular" style="border: 1px solid lightgray;">
                         <thead class="bg-dsgreen text-white">
@@ -525,25 +653,7 @@ $arrears = $indet->listArrears();
                 </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-lg-12">
-                <h6 class="text-tblue">Team Training</h6>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover team" style="border: 1px solid lightgray;">
-                    <thead class="bg-dsgreen text-white">
-                        <tr>
-                        <th>Training Date</th>
-                        <th>Topic Trained</th>
-                        <th>Trainer</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php echo $rows; ?>
-                    </tbody>
-                    </table>
-                </div>
-                </div>
-            </div>
+           
             </div>
         </div>
         </div>

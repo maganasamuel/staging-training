@@ -37,30 +37,11 @@ class TrainingController extends DB
         $topic_type = '',
         $topic_level = '',
         $host_name = '',
-        $comp_name = ''
+        $comp_name = '',
+        $hour = '',
+        $minute = ''
     ) {
         $date = date('Y-m-d');
-
-        $query = 'INSERT INTO ta_test (
-                id_user_tested,
-                id_user_checked,
-                id_set,
-                venue
-            )
-            VALUES (
-                ?,
-                0,
-                ?,
-                ?
-            )';
-        $statement = $this->prepare($query);
-        $statement->bind_param(
-            'iis',
-            $idUser,
-            $idSet,
-            $venue
-        );
-        $this->execute($statement);
 
         $query = 'INSERT INTO ta_training (
                     trainer_id,
@@ -71,9 +52,13 @@ class TrainingController extends DB
                     attendee_id,
                     training_type,
                     host_name,
-                    comp_name
+                    comp_name,
+                    hour,
+                    minute
                 )
                 VALUES (
+                    ?,
+                    ?,
                     ?,
                     ?,
                     ?,
@@ -87,7 +72,7 @@ class TrainingController extends DB
 
         $statement = $this->prepare($query);
         $statement->bind_param(
-            'isssssiss',
+            'isssssissii',
             $trainer_id,
             $training_attendee,
             $training_date,
@@ -96,7 +81,9 @@ class TrainingController extends DB
             $attendee_id,
             $topic_type,
             $host_name,
-            $comp_name
+            $comp_name,
+            $hour,
+            $minute
         );
 
         $dataset = $this->execute($statement);
@@ -181,7 +168,8 @@ class TrainingController extends DB
                     CONCAT(ta_user.first_name,"     ",ta_user.last_name) as fullname,
                     ta_training.training_date,
                     ta_training_topic.topic_level,
-                    ta_training_topic.topic_title
+                    ta_training_topic.topic_title,
+                    ta_training.training_type
                 FROM
                     ta_training
                     LEFT JOIN ta_user
@@ -279,7 +267,7 @@ class TrainingController extends DB
             }
         }
         while ($row = $chckfsp->fetch_assoc()) {
-            if ($row['ssf_number'] == $ssf_number) {
+            if ($row['ssf_number'] == $ssf_number && $ssf_number != 0) {
                 return 'fspexisted';
             }
         }
@@ -398,7 +386,7 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
         return $dataset;
     }
 
-    public function cpdTraining($id)
+    public function cpdAttended($id)
     {
         $query = "SET time_zone = '+13:00'";
         $statement = $this->prepare($query);
@@ -410,6 +398,7 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
                     ta_training.training_id,
                     ta_training.training_topic,
                     ta_training.training_attendee,
+                    ta_training.host_name,
                     CONCAT(ta_user.first_name," ",ta_user.last_name) as fullname,
                     ta_training.training_date,
                     ta_training.training_type
@@ -436,6 +425,19 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
     public function getUser()
     {
         $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and email_address like "%eliteinsure.co.nz" GROUP BY email_address) ';
+
+        /* $mailDomain = '@eliteinsure.co.nz';
+
+        $query = 'SELECT * FROM ta_user WHERE id_user != 1 AND RIGHT(email_address, ' . strlen($mailDomain) . ') = "' . $mailDomain . '"'; */
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+
+        return $dataset;
+    }
+
+     public function getUserAdviser()
+    {
+        $query = 'SELECT * FROM ta_user a WHERE a.id_user IN (SELECT MAX(id_user) FROM ta_user WHERE id_user != "1" and id_user_type in ("2","7","8") and status = "1" and email_address like "%eliteinsure.co.nz" GROUP BY email_address)';
 
         /* $mailDomain = '@eliteinsure.co.nz';
 
@@ -776,19 +778,23 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $topic_id = '',
         $topic_level = '',
         $host_name = '',
-        $comp_name = ''
+        $comp_name = '',
+        $hour = '',
+        $minute = ''
     ) {
         $query = 'UPDATE ta_training SET training_attendee = ? ,
-                    training_date = ? , training_venue = ? , host_name = ? , comp_name = ? where training_id = ?';
+                    training_date = ? , training_venue = ? , host_name = ? , comp_name = ? , hour = ? , minute = ? where training_id = ?';
         $statement = $this->prepare($query);
 
         $statement->bind_param(
-            'sssssi',
+            'sssssiii',
             $training_attendee,
             $training_date,
             $training_venue,
             $host_name,
             $comp_name,
+            $hour,
+            $minute,
             $tId
         );
 
@@ -893,5 +899,36 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
         $insert_id = $this->mysqli->insert_id;
+    }
+    
+    public function pdpRate($id){
+
+        $query = "SELECT count(*) as total from training_cpd";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $pdp =  $dataset->fetch_assoc();   
+        $totalPDP = $pdp['total'];
+
+        $query = "SELECT count(*) as total FROM ta_training a 
+               LEFT JOIN ta_training_topic b ON a.training_id = b.training_id
+               WHERE a.training_type = 1 AND a.training_attendee = '$id' AND b.topic_title IN (SELECT cpd_name FROM training_cpd)";
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        $total =  $dataset->fetch_assoc();   
+        $totalAttended = $total['total'];
+
+        $rate = $totalAttended / $totalPDP * 100; 
+        return number_format((float)$rate, 2, '.', '');
+    }
+    public function alltimehour($id){
+        $query = "SELECT *, YEAR(training_date) AS year_date FROM ta_training a 
+                LEFT JOIN ta_user b ON a.trainer_id = b.id_user
+                WHERE a.training_attendee = '$id' and training_type = 2";
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+    
+        return $dataset;
     }
 }

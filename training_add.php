@@ -103,6 +103,8 @@ if ('' != $tID) {
         $attendeeUID = $row['training_attendee'];
         $host_name = $row['host_name'];
         $comp_name = $row['comp_name'];
+        $hour = $row['hour'];
+        $minute = $row['minute'];
     }
 
     $dataTopicTitle = [];
@@ -160,6 +162,8 @@ if ('save_training' == $action) {
         $topic_level = $app->param($_POST, 'level_topic');
         $host_name = $app->param($_POST, 'host_name');
         $comp_name = $app->param($_POST, 'comp_name');
+        $hour = $app->param($_POST, 'hour');
+        $minute = $app->param($_POST, 'minute');
 
         if (formValidated($app, $tID)) {
             if ('' != $tID) {
@@ -176,7 +180,9 @@ if ('save_training' == $action) {
                     $topic_id_save,
                     $topic_level,
                     $host_name,
-                    $comp_name
+                    $comp_name,
+                    $hour,
+                    $minute
                 ); ?>
                 <script type="text/javascript">
                   swal.fire({
@@ -202,7 +208,9 @@ if ('save_training' == $action) {
                     $topic_type,
                     $topic_level,
                     $host_name,
-                    $comp_name
+                    $comp_name,
+                    $hour,
+                    $minute
                 );
 
                 $_SESSION['successMessage'] = 'Training session saved.';
@@ -294,6 +302,16 @@ EOF;
       </div>
     </div>
     <div class="row justify-content-md-center">
+      <div class="col-sm-12 col-lg-2">
+        <label class="font-weight-normal text-center">Duration</label>
+        <input type="number" placeholder="Hours" min="1" max="24" class="form-control mb-1" name="hour" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?php echo $hour; ?>">
+      </div>
+      <div class="col-sm-12 col-lg-1">
+        <label class="font-weight-normal text-left">&nbsp;</label>
+        <input type="number" placeholder="Minutes" min="1" max="60" class="form-control mb-1" name="minute" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?php echo $minute; ?>">
+      </div>
+    </div>
+    <div class="row justify-content-md-center">
       <div class="col-sm-12 col-lg-3">
         <label class="font-weight-normal text-center">Venue</label>
         <input type="text" placeholder="Venue" class="form-control mb-1" name="training_venue" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?php echo $venue; ?>">
@@ -311,7 +329,11 @@ EOF;
     <div class="row justify-content-md-center">
       <div class="col-sm-12 col-lg-3">
         <label class="font-weight-normal text-center">Company Name</label>
-        <input type="text" placeholder="Company name" class="form-control mb-1" name="comp_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?php echo $comp_name; ?>">
+        <select class="form-control mb-1" id="company_name" onchange="display(this)">
+             <option value="0">Eliteinsure Limited</option>
+             <option value="1">External Resource Person</option>
+        </select>
+        <input type="text" id="text_company" placeholder="Company name" class="form-control mb-1" name="comp_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?php echo $comp_name; ?>">
       </div>
     </div>
     <br>
@@ -377,8 +399,8 @@ EOF;
         <label class="font-weight-normal text-center">Nature Of Training / Meeting</label>
         <select class="form-control mb-1" id="natureTraining" onchange="show()" name="topic_type">
           <option value="0" disabled selected>Select Option</option>
-          <option value="1">Continuing Professional Development (CPD)</option>
-          <option value="2">Team Training</option>
+          <option value="1">Personal Development Program (PDP)</option>
+          <option value="2">Continuing Professional Development (CPD) </option>
         </select>
 
         <div class="teamTraining">
@@ -452,7 +474,8 @@ EOF;
 <script type="text/javascript">
 
   var canvas = document.getElementById('signature-pad');
-
+  $("#text_company").hide();
+  $("#text_company").val('Eliteinsure Limited');
   function resizeCanvas() {
     var ratio = Math.max(window.devicePixelRatio || 1, 1);
     canvas.width = canvas.offsetWidth * ratio;
@@ -546,9 +569,19 @@ EOF;
         //console.log(data);
       }
     });
-
-
   }
+
+    function display(id){
+      if(id.value == 0){
+        $("#text_company").hide();
+        $("#text_company").val("Eliteinsure Limited");
+      }else{
+        $("#text_company").val('');
+        $("#text_company").show();
+      
+      }
+    }
+
 </script>
 <style type="text/css">
   .wrapper {

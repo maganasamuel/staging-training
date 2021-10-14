@@ -50,7 +50,7 @@ if ($action == "save_cpd") {
     <div class="subHeader">
       <div class="row">
         <div class="col title">
-          Add CPD TOPICS
+          Add PDP TOPICS
         </div>
       </div>
     </div>
@@ -79,7 +79,7 @@ if ($action == "save_cpd") {
           <div class="col-sm-12 col-lg-3">
             <div class="form-group">
             <label class="font-weight-normal text-center">Topic Description</label>
-              <textarea class="form-control" rows="5" placeholder="Describe yourself here..." name="cpd_description"><?= (empty($cpd_description)) ? '' : $cpd_description ?></textarea>
+              <textarea class="form-control" rows="5" placeholder="PDP Description" name="cpd_description"><?= (empty($cpd_description)) ? '' : $cpd_description ?></textarea>
             </div>
           </div>
         </div>

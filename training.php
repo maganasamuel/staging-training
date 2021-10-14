@@ -113,7 +113,7 @@ $page = $app->param($_GET, 'page', 'test_set');
 					<?php
                     if (1 == $idUserType || 3 == $idUserType) {
                         ?>
-						<a class="nav-link" style="color:#FFFFFF;" href="training?page=cpd_list">CPD Topics</a>
+						<a class="nav-link" style="color:#FFFFFF;" href="training?page=cpd_list">PDP Topics</a>
 						<?php
                     }
                     ?>
