@@ -54,10 +54,11 @@ class login
     {
         $_POST['inputErrors'] = [];
 
-        if (! in_array(trim($_POST['login_type'] ?? ''), array_keys($this->loginTypes))) {
-            array_push($_POST['inputErrors'], 'Please provide a valid value for Login as.');
-        }
-
+        if(!in_array($_POST['login_type'], [7, 8])){
+            if (! in_array(trim($_POST['login_type'] ?? ''), array_keys($this->loginTypes))) {
+                array_push($_POST['inputErrors'], 'Please provide a valid value for Login as.');
+            }
+        } 
         if (! trim($_POST['email'] ?? '')) {
             array_push($_POST['inputErrors'], 'Please provide a value for Email Address.');
         }
@@ -77,7 +78,7 @@ class login
     {
 
         $_POST['inputErrors'] = [];
-
+        $userType = "";
         if ('checker' == $_POST['login_type']) {
             $users = $this->login->userLogin($_POST['email'], $_POST['password']);
 
@@ -93,6 +94,12 @@ class login
         }
         $user = $this->training->trainingLogin($_POST['email'], $_POST['password'])->fetch_assoc();
 
+        if(in_array($user['id_user_type'], [7, 8])){
+            $userType = 2;
+        }else{
+            $userType = $user['id_user_type'];
+        }
+
         if (! $user) {
             array_push($_POST['inputErrors'], 'Email Address and Password do not match.');
         }
@@ -105,14 +112,18 @@ class login
             array_push($_POST['inputErrors'], 'Email Address and Password do not match.');
         }
 
-        if(!in_array($_POST['login_type'], [2, 7, 8])){
-            if ($_POST['login_type'] != $user['id_user_type']){
-                array_push($_POST['inputErrors'], 'Please select correct user type');
-            }
-        }else{
-             if ($_POST['login_type'] != $user['id_user_type']){
-                array_push($_POST['inputErrors'], 'Please select correct user type');
-            }
+        // if(!in_array($_POST['login_type'], [2, 7, 8])){
+        //     if ($_POST['login_type'] != $user['id_user_type']){
+        //         array_push($_POST['inputErrors'], 'Please select correct user type');
+        //     }
+        // }else{
+        //      if (in_array($_POST['login_type'], [2, 7, 8])){
+        //         array_push($_POST['inputErrors'], 'Please select correct user type');
+        //     }
+        // }
+
+        if($_POST['login_type'] != $userType ){
+            array_push($_POST['inputErrors'], 'Please select correct user type');
         }
 
         if (! count($_POST['inputErrors'] ?? [])) {
@@ -131,7 +142,7 @@ class login
             $data[] = $training_details;
 
             if ($this->session->createTemporarySession($data)) {
-                if (in_array($user['id_user_type'], [1, 3])) {
+                if (in_array($user['id_user_type'], [1, 3 , 4])) {
                    header('location: training?page=training_list');
                 } else {
                     header('location:' . $location);
