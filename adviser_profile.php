@@ -384,7 +384,30 @@ $arrears = $indet->listArrears();
         <div class="card">
             <h5 class="card-header"></h5>
             <div class="card-body">
-            <p class="card-text">Adviser: <?php echo $usName; ?></p>
+            <p class="card-text">
+                <?php 
+
+                    if($usType == "1"){
+                       echo "Manager Account";
+                    }elseif ($usType == "7") {
+                        echo "ADR";
+                    }elseif ($usType == "8") {
+                        echo "SADR";
+                    }elseif ($usType == "3") {
+                        echo "Compliance Officer";
+                    }elseif ($usType == "4") {
+                        echo "Admin";
+                    }elseif ($usType == "9") {
+                        echo "IT Specialist";
+                    }elseif ($usType == "5") {
+                        echo "Face to Face Marketer";
+                    }elseif ($usType == "6") {
+                       echo "Telemarketer";
+                    }
+                    else{
+                       echo "Adviser";
+                    }
+                ?>:<?php echo $usName; ?></p>
             <p>FSP: <?php echo $fsp; ?></p>
             <p>Email: <a href="mailto:<?php echo $email; ?>"> <?php echo $email; ?></a></p>
 
