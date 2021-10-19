@@ -75,7 +75,6 @@ class SessionHelper {
 		$dateRegistered = $user["date_registered"];
 		$idUserType = $user["id_user_type"];
 		$userType = $user["user_type"];
-		$venue = $user["venue"];
 
 		$_SESSION["id_user"] = $idUser;
 		$_SESSION["email_address"] = $emailAddress;
@@ -84,7 +83,6 @@ class SessionHelper {
 		$_SESSION["date_registered"] = $dateRegistered;
 		$_SESSION["id_user_type"] = $idUserType;
 		$_SESSION["user_type"] = $userType;
-		$_SESSION["venue"] = $venue;
 	}
 	
 	

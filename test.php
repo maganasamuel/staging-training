@@ -81,26 +81,27 @@ $page = $app->param($_GET, "page", "test_set");
 
 			<div class="collapse navbar-collapse" id="mainNav">
 				<ul class="navbar-nav mr-auto justify-content-end width100">
-
 					<li class="nav-item dropdown">
-					<?php
-
-						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Training</a>";
-					?>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a href="#" class="nav-link dropdown-toggle" id="otherSoftwareDropdown" style="color: white;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other Software</a>
+					<div class="dropdown-menu" aria-labelledby="otherSoftwareDropdown">
+						<a href="https://onlineinsure.co.nz/adviceprocess/" class="dropdown-item" target="_blank">Advice Process</a>
+						<?php
+                        if (in_array($idUserType, [1, 7, 8])) {
+                            ?>
+							<a href="training?page=login_to_clients_feedback" class="dropdown-item" target="_blank">Clients Feedback</a>
 							<?php
-								if ($idUserType != 1 && $idUserType != 3){
-									echo "<a class='dropdown-item' href=\"test?page=test_set\">Take Assessment</a>";
-								}
-							?>
-							<a class="dropdown-item" href="training?page=training_list">Training List</a>
-							<a class="dropdown-item" href="training?page=training_material_view">Training Materials</a>
-	        			</div>
-					</li>
-					<li class="nav-item">
-
-					</li>
-					<li class="nav-item dropdown">
+                        }
+                        ?>
+                         <?php
+                        if (in_array($idUserType, [1,2,7,8,5])) {
+                            ?>
+							<a href="training?page=login_to_leadtracker" class="dropdown-item" target="_blank">Leadtracker</a>
+							<?php
+                        }
+                        ?>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
 					<?php
 
 						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;'' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Resources</a>";
@@ -110,9 +111,28 @@ $page = $app->param($_GET, "page", "test_set");
 							<a class="dropdown-item" target="_blank" href="https://www.eliteinsure.co.nz/fact-sheets/">Fact Sheet</a>
 	        			</div>
 					</li>
-					<li class="nav-item">
-						<a class='nav-link' target="_blank" href='https://onlineinsure.co.nz/adviceprocess/' style="color:white;">Advise Process</a>
+					<li class="nav-item dropdown">
+					<?php
+
+						echo "<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Training</a>";
+					?>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class='dropdown-item' href="test?page=test_set">Take Assessment</a>
+							<?php
+                   				if (5 != $idUserType) {
+                       		?>
+								<a class="dropdown-item" href="training?page=training_list">Training List</a>
+								<a class="dropdown-item" href="training?page=training_material_view">Training Materials</a>
+							<?php
+                    			}
+                    		?>
+							
+	        			</div>
 					</li>
+					<li class="nav-item">
+
+					</li>
+					
 					<li class="nav-item">
 					<?php
 						if ($idUserType == 1){

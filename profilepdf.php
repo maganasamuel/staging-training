@@ -62,6 +62,8 @@ while ($row = $usProfile->fetch_assoc()) {
         $level = '(Product)';
       }elseif($trow['topic_level'] == ""){
         $level = '';
+      }elseif($trow['topic_level'] == "3"){
+        $level = '(Operations)';
       }else{
         $level = '(Compliance)';
       }
@@ -106,6 +108,8 @@ $cpdList = "";
         $level = '(Marketing)';
       }elseif($trow['topic_level'] == "1"){
         $level = '(Product)';
+      }elseif($trow['topic_level'] == "3"){
+          $level = '(Operations)';
       }elseif($trow['topic_level'] == ""){
         $level = '';
       }else{
