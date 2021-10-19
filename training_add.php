@@ -353,6 +353,7 @@ EOF;
                             $option1 = '';
                             $option2 = '';
                             $option3 = '';
+                            $option4 = '';
                             $level = '';
 
                             for ($i = 0; $i < count($dataTopicTitle); $i++) {
@@ -364,6 +365,8 @@ EOF;
                                     $option2 = 'selected';
                                 } elseif ('2' == $dataTopicLevel[$i]) {
                                     $option3 = 'selected';
+                                } elseif ('3' == $dataTopicLevel[$i]) {
+                                    $option4 = 'selected';
                                 }
 
                                 if ('1' != $uType) {
@@ -371,6 +374,7 @@ EOF;
                          <option value="0"' . $option1 . '>Marketing</option>
                          <option value="1"' . $option2 . '>Product</option>
                          <option value="2"' . $option3 . '>Compliance</option>
+                         <option value="3"' . $option4 . '>Operations</option>
                     </select>';
                                 } else {
                                     $level = '';
@@ -413,6 +417,7 @@ EOF;
               <option value="0">Marketing</option>
               <option value="1">Product</option>
               <option value="2">Compliance</option>
+              <option value="3">Operations</option>
             </select>
           </div>
           <button type="button" onclick="addTopic()" class="btn btn-info width mt-1">Add Topic</button>
@@ -506,7 +511,7 @@ EOF;
 
   function addTopic() {
     var newID = parseInt($('#numberChk').val()) + 1;
-    var new_input = "<input type='text' placeholder='Topic " + newID + "' id='topic" + newID + "' name='trainig_topic[]' class='form-control mb-1' aria-label='Large' aria-describedby='inputGroup-sizing-sm'><input type='hidden' value='0' name='topic_id[]'><select class='form-control mb-1' id='level_topic' name='level_topic[]''><option value='0'>Marketing</option><option value='1'>Product</option><option value='2'>Compliance</option></select>";
+    var new_input = "<input type='text' placeholder='Topic " + newID + "' id='topic" + newID + "' name='trainig_topic[]' class='form-control mb-1' aria-label='Large' aria-describedby='inputGroup-sizing-sm'><input type='hidden' value='0' name='topic_id[]'><select class='form-control mb-1' id='level_topic' name='level_topic[]''><option value='0'>Marketing</option><option value='1'>Product</option><option value='2'>Compliance</option><option value='3'>Operations</option></select>";
 
     $('#topicTag').append(new_input);
     $('#numberChk').val(newID);
@@ -608,7 +613,7 @@ EOF;
   }
 
   <?php if ('' == $newDateTime) {
-                                    echo '
+    echo '
 .block {
       display: none;
     }

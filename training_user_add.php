@@ -178,24 +178,29 @@ foreach($adr as $row) {
         </div>
         <div class="row justify-content-md-center">
           <div class="col-sm-12 col-lg-3">
-            <label class="font-weight-normal text-center">FSP Number</label>
-            <input type="text" placeholder="FSP Number" class="form-control mb-2" value="<?=(empty($usFSP)) ? '' : $usFSP?>" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-          </div>
-        </div>
-        <div class="row justify-content-md-center">
-          <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">User Type<span style="color:red;">*</span></label>
            <div class="form-group">
             <select class="form-control" id="userType" name="user_type" onchange="changeProp(this)">
-              <option value="1" <?php if($usType == 1) echo "Selected";?> >Admin</option>
-              <option value="3" <?php if($usType == 3) echo "Selected";?> >Checker</option>
+              <option value="1" <?php if($usType == 1) echo "Selected";?> >Manager Account</option>
+              <option value="4" <?php if($usType == 4) echo "Selected";?> >Admin</option>
+              <option value="3" <?php if($usType == 3) echo "Selected";?> >Compliance Officer</option>
+               <option value="5" <?php if($usType == 5) echo "Selected";?> >Face To Face Marketer</option>
+                <option value="6" <?php if($usType == 6) echo "Selected";?> >Telemarketer</option>
               <option value="8" <?php if($usType == 8) echo "Selected";?> >SADR </option>
               <option value="7" <?php if($usType == 7) echo "Selected";?> >ADR </option>
               <option value="2" <?php if($usType == 2) echo "Selected";?> >Adviser</option>
+              <option value="9" <?php if($usType == 9) echo "Selected";?> >IT Specialist</option>
             </select>
             </div>
           </div>
         </div>
+        <div class="row justify-content-md-center fsp_number">
+          <div class="col-sm-12 col-lg-3">
+            <label class="font-weight-normal text-center">FSP Number</label>
+            <input type="text" placeholder="FSP Number" class="form-control mb-2" value="<?=(empty($usFSP)) ? '' : $usFSP?>" name="ssfnumber" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+          </div>
+        </div>
+        
         <div class="row justify-content-md-center adrMember">
           <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">ADR Team<span style="color:red;">*</span></label>
@@ -255,7 +260,18 @@ foreach($adr as $row) {
                $(".adrMember").hide();
                $(".sadrMember").show();
           }
-        }
+          if(id.value == "6"){
+            $(".fsp_number").hide();
+          }else if(id.value == "4"){
+            $(".fsp_number").hide();
+          }else if(id.value == "5"){
+            $(".fsp_number").hide();
+          }else if(id.value == "9"){
+            $(".fsp_number").hide();
+          }else{
+            $(".fsp_number").show();
+          }
+      }
     </script>
 
 

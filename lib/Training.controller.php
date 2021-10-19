@@ -176,7 +176,7 @@ class TrainingController extends DB
                     ON ta_user.id_user = ta_training.trainer_id
                     LEFT JOIN ta_training_topic 
                     ON ta_training.training_id = ta_training_topic.training_id
-                    where ta_training.training_id = "' . $trainingID . '"';
+                    where   ta_training.training_id = "' . $trainingID . '"';
 
         if (1 == $idUserType || 3 == $idUserType) {
             //do nothing
@@ -378,7 +378,7 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
                 FROM
                     ta_training
                     LEFT JOIN ta_user
-                    ON ta_user.id_user = ta_training.trainer_id WHERE FIND_IN_SET ("' . $id . '",ta_training.training_attendee) and ta_training.training_type = "2"';
+                    ON ta_user.id_user = ta_training.trainer_id WHERE ta_training.training_date <= now() AND FIND_IN_SET ("' . $id . '",ta_training.training_attendee) and ta_training.training_type = "2"';
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -900,7 +900,7 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $dataset = $this->execute($statement);
         $insert_id = $this->mysqli->insert_id;
     }
-    
+
     public function pdpRate($id){
 
         $query = "SELECT count(*) as total from training_cpd";
@@ -924,7 +924,7 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
     public function alltimehour($id){
         $query = "SELECT *, YEAR(training_date) AS year_date FROM ta_training a 
                 LEFT JOIN ta_user b ON a.trainer_id = b.id_user
-                WHERE a.training_attendee = '$id' and training_type = 2";
+                WHERE a.training_attendee = '$id' and training_type = 2 AND a.training_date <= now()";
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);

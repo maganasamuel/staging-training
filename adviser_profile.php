@@ -189,8 +189,10 @@ foreach($dataset as $row) {
         $totalPoints = $getTotalMinutes + $mul;
         $totalPoints = number_format((float)$totalPoints, 2, '.', '');
 
-        $alltime += $alltimehour;
-        $allminute += $minute;
+        $alltime = $alltimehour;
+        $allminute = $minute;
+
+
 
    }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited" && $row['comp_name'] != "") {
         $hourtime  += $row['hour'];
@@ -198,8 +200,8 @@ foreach($dataset as $row) {
 
         $getTotalMinutes = $hourtime * 60 + $minutetime;
         $totalPoints += $getTotalMinutes / 60;
-        $alltime += $hourtime;
-        $allminute += $minutetime;
+        $alltime = $hourtime;
+        $allminute = $minutetime;
    }
    
 if($row['year_date'] == date("Y")){
@@ -215,9 +217,8 @@ if($row['year_date'] == date("Y")){
         $ytotalPoints = $getTotalMinutes + $mul;
         $ytotalPoints = number_format((float)$ytotalPoints, 2, '.', '');
 
-
-        $yalltime += $yalltimehour;
-        $yallminute += $yminute;
+        $yalltime = $yalltimehour;
+        $yallminute = $yminute;
 
     }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited") {
         $yhourtime  += $row['hour'];
@@ -225,15 +226,27 @@ if($row['year_date'] == date("Y")){
 
         $getTotalMinutes = $yhourtime * 60 + $yminutetime;
         $ytotalPoints += $getTotalMinutes / 60;
-        $yalltime += $yhourtime;
-        $yallminute += $yminutetime;
+        $yalltime = $yhourtime;
+        $yallminute = $yminutetime;
 
     }
  }
 }
 
-$alltime += $allminute/60;
-$yalltime += $yallminute/60;
+if($allminute <= 60){
+    $alltime .= '.'. $allminute;
+}else{
+ $min = $allminute/60;
+ $alltime += $min;
+}
+
+if($yallminute <= 60){
+    $yalltime .= '.'. $yallminute;
+}else{
+ $min = $yallminute/60;
+ $yalltime += $min;
+}
+
 
 while ($row = $adviserTeam->fetch_assoc()) {
     $sadr_id = $row['id_user'];
@@ -578,8 +591,12 @@ $arrears = $indet->listArrears();
             <div class="tab-pane fade <?php echo $authIsAdviser ? null : 'show active'; ?>" id="trainDevTabPanel" role="tabpanel" aria-labelledby="training-and-development-tab">
             <div class="row">
                 <div class="col-lg-12">
-                <h6 class="text-tblue">Personal Development Program</h6>
-                <h6>Completion: <?= $pdpRate ?> </h6>
+                <?php if (in_array($idUserType, [2, 7, 8,3])) { ?>
+                    <h6 class="text-tblue">Personal Development Program</h6>
+                 <?php }else{ ?>
+                    <h6 class="text-tblue">Onboarding</h6>
+                  <?php } ?>
+                <h6>Completion: <?= $pdpRate ?>%</h6>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover cpd" style="border: 1px solid lightgray;">
                     <thead class="bg-dsgreen text-white">
@@ -602,13 +619,13 @@ $arrears = $indet->listArrears();
                 <h6 class="text-tblue">Continuing Professional Development</h6>
                 <div class="row mb-1">
                     <div class="col-lg-3">
-                        <h6>Hours(Total): <?= $alltime; ?> </h6>
+                        <h6>Hours(Total): <?= number_format((float)$alltime, 2, '.', ''); ?> </h6>
                     </div>
                     <div class="col-lg-3">
                         <h6>Points(Total): <?= $totalPoints; ?> </h6>
                     </div>
                     <div class="col-lg-3">
-                        <h6>Hours(Current Year): <?= $yalltime; ?></h6>
+                        <h6>Hours(Current Year): <?= number_format((float)$yalltime, 2, '.', ''); ?></h6>
                     </div>
                     <div class="col-lg-3">
                         <h6>Point(Current Year): <?= $ytotalPoints; ?></h6>
