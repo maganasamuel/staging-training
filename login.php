@@ -3,11 +3,13 @@
 class login
 {
     protected $loginTypes = [
-        'checker' => 'Checker',
-        'admin' => 'Admin',
-        'adviser' => 'Adviser',
-        'bdm' => 'BDM',
-        'telemarketer' => 'Telemarketer',
+        '1' => 'Manager Account',
+        '3' => 'Compliance Officer',
+        '4' => 'Admin',
+        '2' => 'Adviser',
+        '5' => 'Face to Face Marketer',
+        '6' => 'Telemarketer',
+        '9' => 'IT Specialist',
     ];
 
     protected $userTypeIds = [
@@ -64,18 +66,6 @@ class login
             array_push($_POST['inputErrors'], 'Please provide a value for Password.');
         }
 
-        if (in_array(trim($_POST['login_type'] ?? ''), ['admin', 'bdm', 'telemarketer']) && ! trim($_POST['first_name'] ?? '')) {
-            array_push($_POST['inputErrors'], 'Please provide a value for First Name.');
-        }
-
-        if (in_array(trim($_POST['login_type'] ?? ''), ['admin', 'bdm', 'telemarketer']) && ! trim($_POST['last_name'] ?? '')) {
-            array_push($_POST['inputErrors'], 'Please provide a value for Last Name.');
-        }
-
-        if (in_array(trim($_POST['login_type'] ?? ''), ['bdm', 'telemarketer']) && ! trim($_POST['venue'] ?? '')) {
-            array_push($_POST['inputErrors'], 'Please provide a value for Venue.');
-        }
-
         if (count($_POST['inputErrors'] ?? [])) {
             return false;
         }
@@ -85,6 +75,7 @@ class login
 
     protected function login()
     {
+
         $_POST['inputErrors'] = [];
 
         if ('checker' == $_POST['login_type']) {
@@ -100,68 +91,51 @@ class login
                 header('location: index.php');
             }
         }
+        $user = $this->training->trainingLogin($_POST['email'], $_POST['password'])->fetch_assoc();
 
-        if ('adviser' == $_POST['login_type'] && ($_GET['type'] ?? '') != 'adviser') {
-            $user = $this->training->trainingLogin($_POST['email'], $_POST['password'])->fetch_assoc();
+        if (! $user) {
+            array_push($_POST['inputErrors'], 'Email Address and Password do not match.');
+        }
 
-            if (! $user) {
-                array_push($_POST['inputErrors'], 'Email Address and Password do not match.');
+        if ('0' == $user['status']) {
+            array_push($_POST['inputErrors'], 'Account is deactivated.');
+        }
+
+        if ($_POST['password'] != $user['password']) {
+            array_push($_POST['inputErrors'], 'Email Address and Password do not match.');
+        }
+
+        if(!in_array($_POST['login_type'], [2, 7, 8])){
+            if ($_POST['login_type'] != $user['id_user_type']){
+                array_push($_POST['inputErrors'], 'Please select correct user type');
             }
-
-            if ('0' == $user['status']) {
-                array_push($_POST['inputErrors'], 'Account is deactivated.');
-            }
-
-            if ($_POST['password'] != $user['password']) {
-                array_push($_POST['inputErrors'], 'Email Address and Password do not match.');
-            }
-
-            if (! count($_POST['inputErrors'] ?? [])) {
-                $_SESSION['full_name'] = $user['first_name'] . $user['last_name'];
-                $_SESSION['fsp'] = $user['ssf_number'];
-                $_SESSION['email'] = $user['email_address'];
-                $_SESSION['id_user_type'] = $user['id_user_type'];
-                $_SESSION['id_user'] = $user['id_user'];
-                $_SESSION['grant'] = 'yes';
-
-                $training_details = $this->test->userCheck($user['email_address'], $user['id_user_type']);
-                $training_details = $training_details->fetch_assoc();
-
-                $location = 'training?page=adviser_profile&id=' . $user['id_user'] . '&email=' . $user['email_address'] . '&user_type=' . $user['id_user_type'];
-
-                $data[] = $training_details;
-
-                if ($this->session->createTemporarySession($data)) {
-                    if (in_array($user['id_user_type'], [1, 3])) {
-                        header('location: training?page=training_list');
-                    } else {
-                        header('location:' . $location);
-                    }
-                }
+        }else{
+             if ($_POST['login_type'] != $user['id_user_type']){
+                array_push($_POST['inputErrors'], 'Please select correct user type');
             }
         }
 
-        $userTypeId = $this->userTypeIds[$_POST['login_type']];
+        if (! count($_POST['inputErrors'] ?? [])) {
+            $_SESSION['full_name'] = $user['first_name'] . $user['last_name'];
+            $_SESSION['fsp'] = $user['ssf_number'];
+            $_SESSION['email'] = $user['email_address'];
+            $_SESSION['id_user_type'] = $user['id_user_type'];
+            $_SESSION['id_user'] = $user['id_user'];
+            $_SESSION['grant'] = 'yes';
 
-        $correctPassword = $this->test->getReferralCode($userTypeId)->fetch_assoc()['password'];
+            $training_details = $this->test->userCheck($user['email_address'], $user['id_user_type']);
+            $training_details = $training_details->fetch_assoc();
 
-        if (! in_array($userTypeId, [2, 7, 8])) {
-            if ($_POST['password'] != $correctPassword) {
-                array_push($_POST['inputErrors'], 'Invalid referral code.');
-            }
+            $location = 'training?page=adviser_profile&id=' . $user['id_user'] . '&email=' . $user['email_address'] . '&user_type=' . $user['id_user_type'];
 
-            $user = $this->test->userAdd($_POST['email'], $_POST['password'], $_POST['first_name'], $_POST['last_name'], $userTypeId)->fetch_assoc();
+            $data[] = $training_details;
 
-            if (! $user) {
-                array_push($_POST['inputErrors'], 'Something went wrong. Please try again.');
-            }
-
-            if (! count($_POST['inputErrors'])) {
-                $user['venue'] = $_POST['venue'];
-
-                $this->session->createTemporarySession([$user]);
-
-                header('location: test.php?page=test_set');
+            if ($this->session->createTemporarySession($data)) {
+                if (in_array($user['id_user_type'], [1, 3])) {
+                   header('location: training?page=training_list');
+                } else {
+                    header('location:' . $location);
+                }
             }
         }
 
@@ -279,6 +253,7 @@ class login
                                                     <div class="ml-3">
                                                     <h3 class="text-sm font-bold text-red-800">
                                                         Could not sign in to your account.
+                                                     
                                                     </h3>
                                                     <div class="mt-2 text-sm text-red-700">
                                                         <ul role="list" class="list-disc pl-5 space-y-1">
@@ -327,7 +302,7 @@ class login
                                         </div>
                                     </div>
 
-                                    <div x-show="['admin', 'bdm', 'telemarketer'].includes(login_type)">
+                                    <div x-show="['', '', ''].includes(login_type)">
                                         <div>
                                             <input id="first_name" name="first_name" type="text" placeholder="First Name" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                                                 x-model="first_name"
@@ -335,7 +310,7 @@ class login
                                         </div>
                                     </div>
 
-                                    <div x-show="['admin', 'bdm', 'telemarketer'].includes(login_type)">
+                                    <div x-show="['', '', ''].includes(login_type)">
                                         <div>
                                             <input id="last_name" name="last_name" type="text" placeholder="Last Name" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                                                 x-model="last_name"
@@ -343,7 +318,7 @@ class login
                                         </div>
                                     </div>
 
-                                    <div x-show="['bdm', 'telemarketer'].includes(login_type)">
+                                    <div x-show="['', ''].includes(login_type)">
                                         <div>
                                             <input id="venue" name="venue" type="text" placeholder="Venue" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm"
                                                 x-model="venue"

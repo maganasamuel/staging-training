@@ -89,12 +89,21 @@ $page = $app->param($_GET, 'page', 'test_set');
 
 		<div class="collapse navbar-collapse" id="mainNav">
 			<ul class="navbar-nav mr-auto justify-content-end width100">
+				<li class="nav-item">
+					<?php
+                    if (1 == $idUserType || 4 == $idUserType || 3 == $idUserType) {
+                        ?>
+						<a class="nav-link" style="color:#FFFFFF;" href="index.php?page=test_result">Tests</a>
+						<?php
+                    }
+                    ?>
+				</li>
 				<li class="nav-item dropdown">
 					<a href="#" class="nav-link dropdown-toggle" id="otherSoftwareDropdown" style="color: white;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other Software</a>
 					<div class="dropdown-menu" aria-labelledby="otherSoftwareDropdown">
 						<a href="https://onlineinsure.co.nz/adviceprocess/" class="dropdown-item" target="_blank">Advice Process</a>
 						<?php
-                        if (in_array($idUserType, [1, 7, 8])) {
+                        if (in_array($idUserType, [1, 7, 8 , 4])) {
                             ?>
 							<a href="training?page=login_to_clients_feedback" class="dropdown-item" target="_blank">Clients Feedback</a>
 							<?php
@@ -111,7 +120,7 @@ $page = $app->param($_GET, 'page', 'test_set');
 				</li>
 				<li class="nav-item">
 					<?php
-                    if (1 == $idUserType || 3 == $idUserType) {
+                    if (1 == $idUserType || 4 == $idUserType) {
                         ?>
 						<a class="nav-link" style="color:#FFFFFF;" href="training?page=cpd_list">PDP Topics</a>
 						<?php
@@ -121,20 +130,20 @@ $page = $app->param($_GET, 'page', 'test_set');
 				<li class="nav-item dropdown">
 					<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Training</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class='dropdown-item' href="test?page=test_set">Take Assessment</a>
 						<?php
-                        if (1 != $idUserType && 3 != $idUserType) {
-                            ?>
-							<a class='dropdown-item' href="test?page=test_set">Take Assessment</a>
-							<?php
-                        }
-                        ?>
+               				if (5 != $idUserType) {
+                   		?>
 						<a class="dropdown-item" href="training?page=training_list">Training List</a>
 						<a class="dropdown-item" href="training?page=training_material_view">Training Materials</a>
+						<?php
+                    			}
+                    		?>
 					</div>
 				</li>
 				<li class="nav-item">
 					<?php
-                    if (1 == $idUserType || 7 == $idUserType || 8 == $idUserType || 3 == $idUserType) {
+                    if (4 == $idUserType || 1 == $idUserType || 7 == $idUserType || 8 == $idUserType || 3 == $idUserType) {
                         ?>
 						<a class="nav-link" style="color:#FFFFFF;" href="training?page=training_user">Member List</a>
 						<?php

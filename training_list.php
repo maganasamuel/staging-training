@@ -31,7 +31,6 @@ if ($action == "del") {
 $conductedTraining = $trainingController->conductedTraining($id_user);
 $trConducted = "";
 
-$attendedTraining = $trainingController->attendedTraining($id_user);
 $trAttended = "";
 
 $totalConcducted = $trainingController->gettotalContducted($id_user);
@@ -68,7 +67,10 @@ if ($dataset->num_rows <= 0) {
 				$level = '(Marketing)';
 			}elseif($trow['topic_level'] == "1"){
 				$level = '(Product)';
-			}elseif($trow['topic_level'] == ""){
+			}elseif($trow['topic_level'] == "3"){
+				$level = '(Operations)';
+			}
+			elseif($trow['topic_level'] == ""){
 				$level = '';
 			}else{
 				$level = '(Compliance)';

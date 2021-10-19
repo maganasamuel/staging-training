@@ -74,6 +74,8 @@ for($i = 0; $i< count($dataTopicTitle); $i++) {
           $levelText = ' (Marketing)';
         }elseif($dataTopicLevel[$i] == "1"){
          $levelText = ' (Product)';
+        }elseif($dataTopicLevel[$i] == "3"){
+          $level = ' (Operations)';
         }elseif($dataTopicLevel[$i] == "2"){
           $levelText = ' (Compliance)';
         }

@@ -39,6 +39,15 @@ $hostName = '';
     $trainerID = $row["trainer_id"];
     $hostName = $row["host_name"];
     $compName = $row["comp_name"];
+    $hour = $row["hour"];
+    $minute = $row["minute"];
+
+    if($hour > 1 ){
+      $textHour = 'hours';
+    }else{
+      $textHour = 'hour';
+    }
+
   }
 
 $fullnameTrainer = "";
@@ -93,6 +102,8 @@ for($i = 0; $i< count($dataTopicTitle); $i++) {
          $levelText = ' (Product)';
         }elseif($dataTopicLevel[$i] == "2"){
           $levelText = ' (Compliance)';
+        }elseif($dataTopicLevel[$i] == "3"){
+          $levelText = ' (Operations)';
         }
     $ctr = $ctr +1;
     $div .= '<div class="column">
@@ -140,10 +151,20 @@ if($hostName != ''){
 
 <div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:5.33in;line-height:0.17in;">
   <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$trainingVenue.'</span>
-</div> ';
+</div>
+
+<div class="trainer" width="150" style="text-align:center;position:absolute;top:2.52in;left:6.45in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">for a period</span>
+</div>
+
+<div class="trainer" width="150" style="position:absolute;top:2.79in;left:1.36in;line-height:0.17in;">
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">of '.$hour.' '.$textHour .' and '.$minute.' minutes.</span>
+</div>';
+
+
 
 $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training that was conducted by '.$hostName.'<br>on '.$newDateTime.' at '.$trainingVenue.'.
-</div> ';
+</div><br> ';
 
 $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$fullnameTrainer.'</span>
@@ -178,9 +199,12 @@ $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
   <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">at</span>
 </div>
 
-<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:4.43in;line-height:0.17in;">
+<div class="trainer" width="130" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.52in;left:4.43in;line-height:0.17in;">
   <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$trainingVenue.'</span>
-</div>';
+</div>
+<div class="trainer" width="200" style="position:absolute;top:2.52in;left:5.85in;line-height:0.17in;">
+   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">for a period '.$hour.' '.$textHour.' and '.$minute.' minutes.</span>
+</div>'; 
 
 $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training
  that I have conducted on '.$newDateTime.' <div class="trainer" style="position:absolute;top:in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">
@@ -264,12 +288,12 @@ td{
 {$textbuild}
 
 <div style="position:absolute;top:2.96in;left:1.36in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">The topics that were discussed/trained to the attendee/s were:  </span><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"></span>
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"><br>The topics that were discussed/trained to the attendee/s were:  </span><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"></span>
   <br/>
 </div>
 
 
-<div class="row"><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="row"><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
    {$div}
 </div>
 
