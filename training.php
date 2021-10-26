@@ -130,7 +130,19 @@ $page = $app->param($_GET, 'page', 'test_set');
 				<li class="nav-item dropdown">
 					<a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' style='color:white;' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Training</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class='dropdown-item' href="test?page=test_set">Take Assessment</a>
+
+
+						<?php if (in_array($idUserType, [1,4,3,9])) {
+
+							echo '<a class="dropdown-item" href="javascript:;">Take Assessment</a>';
+
+						}else{
+							echo '<a class="dropdown-item" href="test?page=test_set">Take Assessment</a>';
+						} ?>
+
+
+
+
 						<?php
                				if (5 != $idUserType) {
                    		?>

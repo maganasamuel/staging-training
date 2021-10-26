@@ -27,6 +27,8 @@ $trainingController = new TrainingController();
 $action = $app->param($_POST, 'action');
 $delete = $app->param($_POST, 'delete');
 
+$getPDP = $app->param($_POST, 'getPDP');
+
 $message = '';
 
 $currentSessionFirstName = $app->param($_SESSION, 'first_name', 'User');
@@ -127,6 +129,30 @@ if ('' != $tID) {
     $topics_title = substr($topics_title, 0, -1);
     $uLevel = substr($uLevel, 0, -1);
     $topic_id = substr($topic_id, 0, -1);
+}
+
+$pdpID = '';
+$pdpList = '';
+$cpdList = '';
+if($getPDP == 'getPDP'){
+    $pdpID = $app->param($_POST, 'pdpID'); 
+    $pdpList = $trainingController->getPDP($pdpID); 
+
+    $cpdList = 'inputCheckbox';
+    $ctr = 0;
+
+    foreach ($pdpList as $row) {
+        $cpdTopic = $row['cpd_name'];
+        $cpdDesc = $row['cpd_description'];
+        $ctr++;
+
+        $cpdList .= <<<EOF
+        <input class="form-check-input mr-2 chkbox" type="checkbox" value="$cpdTopic" id="$ctr" name="cpd_topic[]"><label title = "$cpdDesc" class="form-check-label chkbox mr-4" for="$ctr">$cpdTopic</label></br>
+        EOF;
+    }
+    $cpdList .= "inputLastCheckbox";
+    echo $cpdList;
+    //var_dump($cpdList); //NEED FOR FILTERING
 }
 
 if ('delete' == $delete) {
@@ -240,19 +266,6 @@ foreach ($adviser as $row) {
     }
 }
 
-$cpd = $trainingController->getCPD();
-$cpdList = '';
-$ctr = 0;
-
-foreach ($cpd as $row) {
-    $cpdTopic = $row['cpd_name'];
-    $cpdDesc = $row['cpd_description'];
-    $ctr++;
-
-    $cpdList .= <<<EOF
-    <input class="form-check-input mr-2 chkbox" type="checkbox" value="$cpdTopic" id="$ctr" name="cpd_topic[]"><label title = "$cpdDesc" class="form-check-label chkbox mr-4" for="$ctr">$cpdTopic</label></br>
-EOF;
-}
 ?>
 
 <div class="subHeader">
@@ -321,7 +334,7 @@ EOF;
     <?php if (1 == $idUserType) { ?>
     <div class="row justify-content-md-center">
       <div class="col-sm-12 col-lg-3">
-        <label class="font-weight-normal text-center">Trainer Name</label>
+        <label class="font-weight-normal text-center testssss">Trainer Name</label>
         <input type="text" placeholder="Trainer name" class="form-control mb-1" name="host_name" aria-label="Large" aria-describedby="inputGroup-sizing-sm" value="<?php echo $host_name; ?>">
       </div>
     </div>
@@ -424,10 +437,17 @@ EOF;
         </div>
 
         <div class="cpdTraining">
+            <br>
+            <select class="form-control" id="classification" name="classification" onchange="getPDP(this)">
+              <option value="1">Manager</option>
+              <option value="2">Admin</option>
+              <option value="3">IT Specialist</option>
+              <option value="4">Adviser</option>
+              <option value="5">Compliance Officer</option>
+            </select>
           </br>
           <label class="font-weight-normal text-center">Topics that will discuss</label>
-          <div class="form-check">
-            <?php echo $cpdList; ?>
+          <div class="form-check pdpList">
           </div>
         </div>
         <?php } ?>
@@ -438,9 +458,9 @@ EOF;
       <div class="col-sm-12 col-lg-3">
         <label class="font-weight-normal text-center">Attendee on the training</label>
         <select class="adviser js-states form-control" multiple="multiple" name="training_attendee[]">
-          <?php
-                                    echo $sets;
-                                ?>
+            <?php
+                echo $sets;
+            ?>
         </select>
       </div>
     </div>
@@ -587,6 +607,27 @@ EOF;
       }
     }
 
+    function getPDP(id){
+
+      $.ajax({
+          url: 'training?page=training_add',
+          type: 'post',
+          data: {
+            pdpID: id.value,
+            getPDP: 'getPDP'
+          },
+          success: function (data) {
+
+           console.log(data);
+           var firstInput = data.search('inputCheckbox');
+           var firstFilter =  data.substr(firstInput+13);
+           var lastInput = firstFilter.search('inputLastCheckbox');
+           var lastFilter =  firstFilter.substr(0,lastInput);
+           $(".pdpList").html(lastFilter);
+          }
+        });
+    }
+
 </script>
 <style type="text/css">
   .wrapper {
@@ -624,7 +665,7 @@ EOF;
   }
 
   ';
-                                }
+}
 
   ?>
 

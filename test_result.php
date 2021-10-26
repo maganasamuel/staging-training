@@ -29,7 +29,15 @@ switch ($currentSessionUserType) {
 
         break;
     case 3:
-        $setDataset = $userController->getTrainerTestSetAccess($currentSessionUserID);
+
+        $setDataset = $testController->getSetAll(-1);
+
+    case 4:
+
+        $setDataset = $testController->getSetAll(-1);
+
+
+        //$setDataset = $userController->getTrainerTestSetAccess($currentSessionUserID);
 
         break;
 }
