@@ -36,12 +36,14 @@ while ($row = $cpdList->fetch_assoc()) {
 if ($action == "save_cpd") {
   $cpd_name = $app->param($_POST, "cpd_name");
   $cpd_description = $app->param($_POST, "cpd_description");
+  $cpd_classification = $app->param($_POST, "classification");
+
   if($cpdID != ""){
-     $dataset = $trainingController->updateCPD($cpd_name,$cpd_description,$cpdID);   
+     $dataset = $trainingController->updateCPD($cpd_name,$cpd_description,$cpd_classification,$cpdID);   
   }else{
-     $dataset = $trainingController->addCPD($cpd_name,$cpd_description);   
+     $dataset = $trainingController->addCPD($cpd_name,$cpd_description,$cpd_classification);   
   }
-  $message = "<div class=\"alert alert-success\" role=\"alert\">CPD topic created!.</div>";
+  $message = "<div class=\"alert alert-success\" role=\"alert\">PDP topic created!.</div>";
   
   }
 
@@ -54,7 +56,6 @@ if ($action == "save_cpd") {
         </div>
       </div>
     </div>
-    
     <div align="container">
       <div class="row justify-content-md-center mt-4">
 
@@ -65,9 +66,21 @@ if ($action == "save_cpd") {
           </div>
         </div>
       <form method="post">
-        <br>
         <div class="row text-center">
         </div>
+        <div class="row justify-content-md-center">
+          <div class="col-sm-12 col-lg-3">
+           <label class="font-weight-normal text-center">Classification</label>
+           <select class="form-control" id="classification" name="classification">
+              <option value="1">Manager Account</option>
+              <option value="2">Admin</option>
+              <option value="3">IT Specialist</option>
+              <option value="4">Adviser</option>
+              <option value="5">Compliance Officer</option>
+            </select>
+          </div>
+        </div>
+        <br>
         <div class="row justify-content-md-center">
           <div class="col-sm-12 col-lg-3">
             <label class="font-weight-normal text-center">Topic</label>

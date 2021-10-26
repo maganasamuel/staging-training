@@ -31,12 +31,12 @@ if ($action == "delUser") {
 	$deteUser = $trainingController->deteUsertraining($idUser);
 }
 
-if($idUserType == "1"){
+if($idUserType == "1" || $idUserType == "4"){
 	$userList = $trainingController->getUser();
 	$usList = "";
 
-}elseif($idUserType == "4"){
-	$userList = $trainingController->getUser();
+}elseif($idUserType == "3"){
+	$userList = $trainingController->getUserAdviser();
 	$usList = "";
 }
 elseif($idUserType == "7"){
@@ -44,9 +44,6 @@ elseif($idUserType == "7"){
 	$usList = "";
 }elseif($idUserType == "8"){
 	$userList = $trainingController->getSadrMember($id_user);
-	$usList = "";
-}elseif($idUserType == "3"){
-	$userList = $trainingController->getUserAdviser();
 	$usList = "";
 }
 
@@ -79,15 +76,16 @@ while ($row = $userList->fetch_assoc()) {
 			$ustype = "SADR";
 		}elseif ($usNumber == "3") {
 			$ustype = "Compliance Officer";
-		}elseif ($usNumber == "5") {
-			$ustype = "Face to Face Marketer";
 		}elseif ($usNumber == "4") {
 			$ustype = "Admin";
-		}elseif ($usNumber == "6") {
-			$ustype = "Telemarketer";
 		}elseif ($usNumber == "9") {
 			$ustype = "IT Specialist";
-		}else{
+		}elseif ($usNumber == "5") {
+			$ustype = "Face to Face Marketer";
+		}elseif ($usNumber == "6") {
+			$ustype = "Telemarketer";
+		}
+		else{
 			$ustype = "Adviser";
 		}
 

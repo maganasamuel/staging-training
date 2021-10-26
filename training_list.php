@@ -187,13 +187,17 @@ EOF;
 			</div>
 		</div>
 	<style type="text/css">
-		th{
-			width: 250px;
-			text-align: center;
+		
+		table {
+			  table-layout: fixed ;
+			  width: 100% ;
+			  text-align: center;
+			}
+			td {
+			  width: 25% ;
+			  word-wrap: break-word;
 		}
-		td:nth-child(2),td:nth-child(3),td:nth-child(1),td:nth-child(4),td:nth-child(5){
-			text-align: center;
-		}
+
 		<?php if ( $idUserType == "2"){
 			echo "
              .sendEmail{

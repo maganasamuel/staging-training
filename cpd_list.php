@@ -27,11 +27,27 @@ while ($row = $cpdList->fetch_assoc()) {
 		$id_cpd = $row["id_cpd"];
 		$cpd_name = $row["cpd_name"];
 		$cpd_description = $row["cpd_description"];
-		
+		$cpd_classification = $row["cpd_classification"];
+
+
+		if($row['cpd_classification'] == "1"){
+				$cpd_classification = 'Manager Account';
+			}elseif($row['cpd_classification'] == "2"){
+				$cpd_classification = 'Admin';
+			}elseif($row['cpd_classification'] == "3"){
+				$cpd_classification = 'IT Specialist';
+			}
+			elseif($row['cpd_classification'] == "4"){
+				$cpd_classification = 'Adviser';
+			}else{
+				$cpd_classification = 'Compliance Officer';
+			}
+
 		$cpd .= <<<EOF
 		<tr>
 			<td>{$cpd_name}</td>
 			<td>{$cpd_description}</td>
+			<td>{$cpd_classification}</td>
 			<td>
 				<a href="training?page=cpd_add&id={$id_cpd}" title="Edit CPD"  data-toggle="tooltip" data-placement="bottom">
 					<i class="material-icons">edit</i>
@@ -69,8 +85,9 @@ EOF;
 						  <table class="table table-responsive-md table-hoverable cpdList">
 							  <thead style="background-color:#e9ecef;">
 							    <tr>
-							      <th>PDP Topic</th>
-							      <th>PDP Description</th>
+							      <th>Topic</th>
+							      <th>Description</th>
+							       <th>Classification</th>
 							      <th>Action</th>
 							    </tr>
 							  </thead>
@@ -87,12 +104,16 @@ EOF;
 			</div>
 		</div>
 		<style type="text/css">
-			table td:nth-child(1){
-				width: 20%;
+			table {
+			  table-layout: fixed ;
+			  width: 100% ;
+			  text-align: center;
 			}
-			table td:nth-child(2){
-				width: 70%;
+			td {
+			  width: 25% ;
+			  word-wrap: break-word;
 			}
+
 		</style>
 		<script type="text/javascript">
 			$(document).ready( function () {

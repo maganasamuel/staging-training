@@ -15,7 +15,7 @@ $emailID = $app->param($_GET, "email", 0);
 $attendedTraining = $trainingController->attendedTraining($idProfile);
 $trAttended = "";
 
-$cpdTraining = $trainingController->cpdTraining($idProfile);
+$cpdTraining = $trainingController->cpdAttended($idProfile);
 $trAttended = "";
 $rows = '';
 
@@ -35,51 +35,45 @@ while ($row = $usProfile->fetch_assoc()) {
   $password = $row["password"];
 }
 
-    while ($row = $attendedTraining->fetch_assoc()) {
-    $topic = str_replace(',','<br>', $row["training_topic"]);
-    $date = $row["training_date"];
+while ($row = $attendedTraining->fetch_assoc()) {
+    $topic = str_replace(',', '<br>', $row['training_topic']);
+    $date = $row['training_date'];
     $trainerID = $row['trainer_id'];
     $newDateTime = date('d-m-Y h:i A', strtotime($date));
-   
-    if($row['host_name'] == ""){
-    		$trainer = $row["fullname"];
-    	}else{
-    		$trainer = $row["host_name"];
-    	}
 
-    $trainingID = $row["training_id"];
-    $today = new DateTime();
-    $status = "";
-    
-    $datasetRow = $trainingController->getTrainingTopic($id_user,$idUserType,$trainingID);
-    $trow = "";
-    $topicTitle = "";
-    while ($trow = $datasetRow->fetch_assoc()) {
-      $level = "";
-      if($trow['topic_level'] == "0"){
-        $level = '(Marketing)';
-      }elseif($trow['topic_level'] == "1"){
-        $level = '(Product)';
-      }elseif($trow['topic_level'] == ""){
-        $level = '';
-      }elseif($trow['topic_level'] == "3"){
-        $level = '(Operations)';
-      }else{
-        $level = '(Compliance)';
-      }
-      $topicTitle .= $trow['topic_title'] .' '. $level . '<br>'; 
+    if ('' == $row['host_name']) {
+        $trainer = $row['fullname'];
+    } else {
+        $trainer = $row['host_name'];
     }
+    $trainingID = $row['training_id'];
+    $today = new DateTime();
+    $status = '';
 
+    $datasetRow = $trainingController->getTrainingTopic($id_user, $idUserType, $trainingID);
+    $trow = '';
+    $topicTitle = '';
+    while ($trow = $datasetRow->fetch_assoc()) {
+        $level = '';
 
-    
-        $rows .= <<<EOF
-    <tr>
-      <td class="capitalize">{$topicTitle}</td>
-      <td>{$newDateTime}</td>
-      <td>{$trainer}</td>
-    </tr>
-
-EOF;
+        if ('0' == $trow['topic_level']) {
+            $level = '(Marketing)';
+        } elseif ('1' == $trow['topic_level']) {
+            $level = '(Product)';
+        } elseif ('' == $trow['topic_level']) {
+            $level = '';
+        } else {
+            $level = '(Compliance)';
+        }
+        $topicTitle .= $trow['topic_title'] . ' ' . $level . '<br>';
+    }
+    $rows .= <<<EOF
+      <tr>
+        <td>{$newDateTime}</td>
+        <td class="capitalize">{$topicTitle}</td>
+        <td>{$trainer}</td>
+      </tr>
+      EOF;
 }
 
 $cpdList = "";
@@ -256,7 +250,7 @@ $html =
 	
 	<table class="table-head" width="100%" cellpadding="0" cellspacing="0">
 		<tr>
-			<th colspan="4">Continuing Professional Development Course</th>
+			<th colspan="4">Personal Development Program</th>
 		</tr>
 		'.$cpdList.'
 	</table>
@@ -265,7 +259,7 @@ $html =
 	
 	<table class="table-head" width="100%" cellpadding="0" cellspacing="0">
 		<tr>
-			<th colspan="4">Team Training Course</th>
+			<th colspan="4">Continuing Professional Development</th>
 		</tr>
 		'.$rows.'
 	</table>

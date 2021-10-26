@@ -26,6 +26,7 @@ class TrainingController extends DB
         parent::__construct();
     }
 
+   
     public function addTraining(
         $trainer_id = '',
         $training_topic = [],
@@ -476,14 +477,16 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
         return $dataset;
     }
 
-    public function addCPD($cpd_name, $cpd_description)
+    public function addCPD($cpd_name, $cpd_description,$cpd_classification)
     {
         $query = "INSERT INTO training_cpd (
                     cpd_name,
-                    cpd_description)
+                    cpd_description,
+                    cpd_classification)
                 VALUES (
                     '$cpd_name',
-                    '$cpd_description')";
+                    '$cpd_description',
+                    '$cpd_classification')";
 
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
@@ -611,9 +614,9 @@ FROM ta_user WHERE email_address = '$email_address' GROUP BY email_address)  ";
         $dataset = $this->execute($statement);
     }
 
-    public function updateCPD($topic, $description, $id)
+    public function updateCPD($topic, $description,$cpd_classification, $id)
     {
-        $query = "UPDATE training_cpd SET cpd_name = '{$topic}',cpd_description = '{$description}' where id_cpd = '{$id}'";
+        $query = "UPDATE training_cpd SET cpd_name = '{$topic}',cpd_description = '{$description}', cpd_classification='{$cpd_classification}' where id_cpd = '{$id}'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
     }
@@ -926,6 +929,13 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
                 LEFT JOIN ta_user b ON a.trainer_id = b.id_user
                 WHERE a.training_attendee = '$id' and training_type = 2 AND a.training_date <= now()";
 
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+    
+        return $dataset;
+    }
+    public function getPDP($id){
+        $query = "SELECT * FROM training_cpd WHERE cpd_classification  = '$id'";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
     
