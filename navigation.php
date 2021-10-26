@@ -68,12 +68,14 @@ switch ($page) {
 
 	<div class="collapse navbar-collapse" id="mainNav">
 		<ul class="navbar-nav mr-auto justify-content-end width100">
-			<li class="nav-item <?php echo $isTest; ?>">
-				<a class="nav-link" href="index.php?page=test_result">Tests</a>
-			</li>
-            <li class="nav-item <?php echo $isTraining; ?>">
+			    <li class="nav-item <?php echo $isTest; ?>">
+				    <a class="nav-link" href="index.php?page=test_result">Tests</a>
+			     </li>
+                 <?php if($idUserType != 3 ){ ?>
+                <li class="nav-item <?php echo $isTraining; ?>">
                     <a class="nav-link" href="index.php?page=training_material">Training Material</a>
                 </li>
+                <?php } ?>
 				<?php
                     if (1 == $session->get('id_user_type')) {
                         ?>

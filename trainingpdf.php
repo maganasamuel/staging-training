@@ -28,6 +28,7 @@ foreach($uTopic as $row) {
 }
 
 $topiclist = '';
+$textMinute = '';
 $hostName = '';
   while ($row = $dataset->fetch_assoc()) {
     $trainingTopic = $row["training_topic"];
@@ -41,6 +42,12 @@ $hostName = '';
     $compName = $row["comp_name"];
     $hour = $row["hour"];
     $minute = $row["minute"];
+
+    if($minute == 0){
+      $textMinute = "";
+    }else{
+      $textMinute = 'and '.$minute. ' minutes';
+    }
 
     if($hour > 1 ){
       $textHour = 'hours';
@@ -158,7 +165,7 @@ if($hostName != ''){
 </div>
 
 <div class="trainer" width="150" style="position:absolute;top:2.79in;left:1.36in;line-height:0.17in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">of '.$hour.' '.$textHour .' and '.$minute.' minutes.</span>
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">of '.$hour.' '.$textHour .' '.$textMinute.'</span>
 </div>';
 
 
@@ -203,7 +210,7 @@ $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
   <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$trainingVenue.'</span>
 </div>
 <div class="trainer" width="200" style="position:absolute;top:2.52in;left:5.85in;line-height:0.17in;">
-   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">for a period '.$hour.' '.$textHour.' and '.$minute.' minutes.</span>
+   <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">for a period '.$hour.' '.$textHour.' '.$textMinute.'</span>
 </div>'; 
 
 $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to confirm you have attended the meeting/training

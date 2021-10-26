@@ -36,7 +36,7 @@ if($idUserType == "1" || $idUserType == "4"){
 	$usList = "";
 
 }elseif($idUserType == "3"){
-	$userList = $trainingController->getUser();
+	$userList = $trainingController->getUserAdviser();
 	$usList = "";
 }
 elseif($idUserType == "7"){
