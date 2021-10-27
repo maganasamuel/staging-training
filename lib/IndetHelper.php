@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 
 $autoloadPath = realpath(__DIR__ . '/../package/vendor/autoload.php');
 
@@ -7,7 +8,6 @@ require_once $autoloadPath;
 include_once('class/DB.class.php');
 
 use Carbon\Carbon;
-use Carbon\CarbonTimeZone;
 
 class IndetHelper extends DB
 {
@@ -160,6 +160,51 @@ class IndetHelper extends DB
         $collection = $this->listDeals();
 
         return $collection->whereNotNull('arrear_status')->values();
+    }
+
+    public function listSubmittedDeals()
+    {
+        $query = "SELECT id FROM $this->dbName.adviser_tbl WHERE email = '$this->email'";
+
+        $adviser_id = $this->execute($this->prepare($query))->fetch_assoc()['id'];
+
+        $query = "SELECT
+                    s.id AS id,
+                    s.deals AS deals,
+                    s.timestamp,
+                    c.id AS client_id,
+                    c.name AS client_name,
+                    l.name AS leadgen_name,
+                    a.name AS adviser_name,
+                    s.deals
+                FROM $this->dbName.submission_clients s
+                LEFT JOIN $this->dbName.clients_tbl c ON s.client_id = c.id
+                LEFT JOIN $this->dbName.leadgen_tbl l ON c.leadgen = l.id
+                LEFT JOIN $this->dbName.adviser_tbl a ON c.assigned_to = a.id
+                WHERE
+                    s.client_id NOT IN (
+                        SELECT name FROM $this->dbName.issued_clients_tbl
+                    )
+                    AND c.assigned_to = '$adviser_id'
+                ORDER BY s.timestamp DESC";
+
+        $result = $this->execute($this->prepare($query));
+
+        $collection = collect([]);
+
+        while ($row = $result->fetch_assoc()) {
+            if (! isset($row['deals'])) {
+                continue;
+            }
+
+            $deals = json_decode($row['deals']);
+
+            foreach ($deals as $deal) {
+                $collection->push($deal);
+            }
+        }
+
+        return $collection;
     }
 
     protected function listDeals()
