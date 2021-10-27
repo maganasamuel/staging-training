@@ -48,7 +48,7 @@ function securePage (
 	}
 	else {
 		switch ($idUserType) {
-			case 1:case 3: //master, trainer
+			case 1:case 3:case 4: //master, trainer
 				if ($groupName != "index") {
 					destroyCurrentSession();
 				}

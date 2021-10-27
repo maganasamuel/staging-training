@@ -29,11 +29,9 @@ switch ($currentSessionUserType) {
 
         break;
     case 3:
-
         $setDataset = $testController->getSetAll(-1);
 
     case 4:
-
         $setDataset = $testController->getSetAll(-1);
 
 
@@ -51,7 +49,7 @@ if (count($setDataset) > 0) {
     foreach ($setDataset as $row) {
         $idSet = $row['id_set'];
 
-        if (3 == $currentSessionUserType && 0 == $ctr && 1 == $view) {
+        if (4 == $currentSessionUserType && 3 == $currentSessionUserType && 0 == $ctr && 1 == $view) {
             $view = $idSet;
         }
 
