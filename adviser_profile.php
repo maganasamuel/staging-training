@@ -140,7 +140,7 @@ while ($row = $cpdTraining->fetch_assoc()) {
 
 $adviserList = '';
 
-$pdpRate = $trainingController->pdpRate($idProfile);
+$pdpRate = $trainingController->pdpRate($idProfile, $type);
 
 $dataset = $trainingController->alltimehour($idProfile);
 
