@@ -904,9 +904,9 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $insert_id = $this->mysqli->insert_id;
     }
 
-    public function pdpRate($id){
+    public function pdpRate($id,$user_type){
 
-        $query = "SELECT count(*) as total from training_cpd";
+        $query = "SELECT count(*) as total from training_cpd where cpd_classification = '$user_type' ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
         $pdp =  $dataset->fetch_assoc();   
@@ -919,10 +919,13 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
         $total =  $dataset->fetch_assoc();   
-        $totalAttended = $total['total'];
+          $totalAttended = $total['total'];
+        if($totalAttended != 0){
+            $rate = $totalAttended / $totalPDP * 100;
+              return number_format((float)$rate, 2, '.', ''); 
+        }
 
-        $rate = $totalAttended / $totalPDP * 100; 
-        return number_format((float)$rate, 2, '.', '');
+      
     }
     public function alltimehour($id){
         $query = "SELECT *, YEAR(training_date) AS year_date FROM ta_training a 

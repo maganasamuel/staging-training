@@ -61,12 +61,6 @@ function formValidated($app, $tID)
         return false;
     }
 
-    if (1 == $_SESSION['id_user_type'] && ! $app->param($_POST, 'host_name')) {
-        $_SESSION['errorMessage'] = 'Please provide a trainer name';
-
-        return false;
-    }
-
     if (1 == $_SESSION['id_user_type'] && ! $app->param($_POST, 'comp_name')) {
         $_SESSION['errorMessage'] = 'Please provide a company name';
 
