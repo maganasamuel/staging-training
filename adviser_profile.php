@@ -140,6 +140,18 @@ while ($row = $cpdTraining->fetch_assoc()) {
 
 $adviserList = '';
 
+$type = "";
+if(in_array($usType, [2,7,8])){
+    $type = 4;
+}elseif($usType == 1){
+    $type = 1;
+}elseif($usType == 9) {
+    $type = 3;
+}elseif ($usType == 3) {
+    $type = 5;
+}elseif ($usType == 4) {
+    $type = 2;
+}
 $pdpRate = $trainingController->pdpRate($idProfile, $type);
 
 $dataset = $trainingController->alltimehour($idProfile);
@@ -152,6 +164,8 @@ $minute = 0;
 $yalltimehour = 0;
 $yminute = 0;
 
+
+
 //External Company Pointing
 $hourtime = 0;
 $minutetime = 0;
@@ -163,62 +177,87 @@ $yminutetime = 0;
 //Final Computation
 $allminute = 0;
 $alltime = 0;
-$totalPoints = 0;
+$totalPoints  = 0;
 
 //Year Final Computation
 $yallminute = 0;
 $yalltime = 0;
-$ytotalPoints = 0;
+$ytotalPoints  = 0;
 
-foreach ($dataset as $row) {
-    if (8 == $row['id_user_type'] || 7 == $row['id_user_type'] && '' == $row['comp_name'] || 'Eliteinsure Limited' == $row['comp_name']) {
+$getTotalMinutes = 0;
+$ygetTotalMinutes = 0;
+
+$ygetMaxMinutes = 0;
+$getMaxMinutes = 0;
+foreach($dataset as $row) {
+      
+
+    if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited' && $row['hour'] ){
         $alltimehour += $row['hour'];
         $minute += $row['minute'];
 
-        $getTotalMinutes = $alltimehour / 2;
-        $getMaxMinutes = $minute / 60;
-        $mul = $getMaxMinutes * .50;
-
-        $totalPoints = $getTotalMinutes + $mul;
-        $totalPoints = number_format((float) $totalPoints, 2, '.', '');
+        if(in_array($row['id_user_type'], [7, 8])){
+            $getTotalMinutes +=  $row['hour'] / 4;
+            $getMaxMinutes += $row['minute'] / 240;
+        }else{
+            $getTotalMinutes += $row['hour'] / 2;
+            $getMaxMinutes += $row['minute'] / 120;
+        }
 
         $alltime = $alltimehour;
         $allminute = $minute;
-    } elseif (1 == $row['id_user_type'] && 'Eliteinsure Limited' != $row['comp_name'] && '' != $row['comp_name']) {
-        $hourtime += $row['hour'];
-        $minutetime += $row['minute'];
 
-        $getTotalMinutes = $hourtime * 60 + $minutetime;
-        $totalPoints += $getTotalMinutes / 60;
-        $alltime = $hourtime;
-        $allminute = $minutetime;
+   }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited" && $row['comp_name'] != "") {
+
+        $alltimehour  += $row['hour'];
+        $minute  += $row['minute'];
+
+        $alltime = $alltimehour;
+
+        $pointsEx = $row['hour'] * 60 + $row['minute'];
+        $totalPoints += $pointsEx / 60;
+
+        $allminute = $minute;
+
+   }
+   
+if($row['year_date'] == date("Y")){
+    if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited'){
+        
+        $yalltimehour += $row['hour'];
+        $yminute += $row['minute'];
+
+        if(in_array($row['id_user_type'], [7, 8])){
+            $ygetTotalMinutes +=  $row['hour'] / 4;
+            $ygetMaxMinutes += $row['minute'] / 240;
+        }else{
+            $ygetTotalMinutes += $row['hour'] / 2;
+            $ygetMaxMinutes += $row['minute'] / 120;
+        }        
+
+        $yalltime = $yalltimehour;
+        $yallminute = $yminute;
+
+    }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited") {
+
+        $yalltimehour  += $row['hour'];
+        $yminute  += $row['minute'];
+
+
+        $yalltime = $yalltimehour;
+
+
+        $pointsExY = $row['hour'] * 60 + $row['minute'];
+        $ytotalPoints += $pointsExY / 60;
+
+        $yallminute = $yminute;
+
     }
-
-    if ($row['year_date'] == date('Y')) {
-        if (8 == $row['id_user_type'] || 7 == $row['id_user_type'] && '' == $row['comp_name'] || 'Eliteinsure Limited' == $row['comp_name']) {
-            $yalltimehour += $row['hour'];
-            $yminute += $row['minute'];
-
-            $getTotalMinutes = $yalltimehour / 2;
-            $getMaxMinutes = $yminute / 60;
-            $mul = $getMaxMinutes * .50;
-
-            $ytotalPoints = $getTotalMinutes + $mul;
-            $ytotalPoints = number_format((float) $ytotalPoints, 2, '.', '');
-
-            $yalltime = $yalltimehour;
-            $yallminute = $yminute;
-        } elseif (1 == $row['id_user_type'] && 'Eliteinsure Limited' != $row['comp_name']) {
-            $yhourtime += $row['hour'];
-            $yminutetime += $row['minute'];
-
-            $getTotalMinutes = $yhourtime * 60 + $yminutetime;
-            $ytotalPoints += $getTotalMinutes / 60;
-            $yalltime = $yhourtime;
-            $yallminute = $yminutetime;
-        }
-    }
+ }
 }
+
+$totalPoints += $getTotalMinutes + $getMaxMinutes;
+$ytotalPoints += $ygetTotalMinutes + $ygetMaxMinutes;
 
 if ($allminute <= 60) {
     $alltime .= '.' . $allminute;

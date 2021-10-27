@@ -63,7 +63,16 @@ $trainerName = $trainingController->getAttendee($trainerID);
   while ($row = $trainerName->fetch_assoc()) {
         $fullnameTrainer = $row["first_name"].' '.$row["last_name"];
         $emailTrainer = $row["email_address"];
+        $trainer_type = $row['id_user_type'];
   }
+
+if($trainer_type == 3){
+  $trainerType = 'Compliance Officer';
+}elseif ($trainer_type == 4) {
+  $trainerType = 'Admin';
+}elseif ($trainer_type == 1) {
+  $trainerType = 'Manager';
+}
 
 
 $arrAttendee =  explode(',',$attendee);
@@ -183,12 +192,12 @@ $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
   $textbuild = '<div class="trainer" style="position:absolute;top:2.23in;left:1.36in;width:8.86in;line-height:0.17in;"><span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">This is to attest that I,
 </div>
 
-<div class="trainer" width="220" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:2.66in;line-height:0.17in;">
+<div class="trainer" width="150" style="text-align:center;border-bottom: 1px solid #000;position:absolute;top:2.23in;left:2.66in;line-height:0.17in;">
 <span style="font-style:normal;font-weight:normal;font-size:11pt;font-family:Calibri;color:#000000">'.$fullnameTrainer.'</span>
 </div>
 
-<div style="position:absolute;top:2.23in;left:4.9in;width:8.86in;line-height:0.17in;">
-<span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"> an ADR/SADR of Eliteinsure Limited has conducted</span>
+<div style="position:absolute;top:2.23in;left:4.3in;width:8.86in;line-height:0.17in;">
+<span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000"> an '.$trainerType.' of Eliteinsure Limited has conducted</span>
 </span>
 </div>
 
@@ -221,7 +230,7 @@ $textbuildAdivser = '<div class="trainer" style="position:absolute;top:2.43in;le
 </div> ';
 
 $divsig = '<div style="margin-left: 480px;left:5.36in;width:7.93in;">
-  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">ADR/SADR Signature</span>
+  <span style="font-style:normal;font-weight:normal;font-size:9pt;font-family:Calibri;color:#000000">'.$trainerType.' Signature</span>
   <br/>
 </div>';
 

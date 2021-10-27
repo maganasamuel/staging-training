@@ -50,7 +50,7 @@ while ($row = $attendedTraining->fetch_assoc()) {
     $today = new DateTime();
     $status = '';
 
-    $datasetRow = $trainingController->getTrainingTopic($id_user, $idUserType, $trainingID);
+    $datasetRow = $trainingController->getTrainingTopic($id_user, '', $trainingID);
     $trow = '';
     $topicTitle = '';
     while ($trow = $datasetRow->fetch_assoc()) {
