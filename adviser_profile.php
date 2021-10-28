@@ -190,7 +190,7 @@ $ygetTotalMinutes = 0;
 $ygetMaxMinutes = 0;
 $getMaxMinutes = 0;
 foreach($dataset as $row) {
-      
+
 
     if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited' && $row['hour'] ){
         $alltimehour += $row['hour'];
@@ -220,10 +220,10 @@ foreach($dataset as $row) {
         $allminute = $minute;
 
    }
-   
+
 if($row['year_date'] == date("Y")){
     if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited'){
-        
+
         $yalltimehour += $row['hour'];
         $yminute += $row['minute'];
 
@@ -233,7 +233,7 @@ if($row['year_date'] == date("Y")){
         }else{
             $ygetTotalMinutes += $row['hour'] / 2;
             $ygetMaxMinutes += $row['minute'] / 120;
-        }        
+        }
 
         $yalltime = $yalltimehour;
         $yallminute = $yminute;
@@ -659,7 +659,7 @@ $submittedDeals = $indet->listSubmittedDeals();
                                                 foreach ($submittedDeals as $deal) {
                                                     ?>
                                                     <tr>
-                                                        <td><?php echo $deal->life_insured; ?></td>
+                                                        <td><?php echo $deal->client_name_life_insured; ?></td>
                                                         <td><?php echo $deal->company; ?></td>
                                                         <td class="text-center"><?php echo Carbon::createFromFormat('Ymd', $deal->submission_date)->format('d/m/Y'); ?></td>
                                                         <td class="text-right">$<?php echo number_format($deal->original_api, 2); ?></td>

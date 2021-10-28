@@ -200,6 +200,8 @@ class IndetHelper extends DB
             $deals = json_decode($row['deals']);
 
             foreach ($deals as $deal) {
+                $deal->client_name_life_insured = $row['client_name'] . ($deal->life_insured ? (', ' . $deal->life_insured) : '');
+
                 $collection->push($deal);
             }
         }
