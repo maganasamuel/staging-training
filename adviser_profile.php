@@ -189,10 +189,12 @@ $ygetTotalMinutes = 0;
 
 $ygetMaxMinutes = 0;
 $getMaxMinutes = 0;
+
+$pointsEx = 0;
 foreach($dataset as $row) {
+      
 
-
-    if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited' && $row['hour'] ){
+    if( $row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited' && $row['hour'] ){
         $alltimehour += $row['hour'];
         $minute += $row['minute'];
 
@@ -215,15 +217,16 @@ foreach($dataset as $row) {
         $alltime = $alltimehour;
 
         $pointsEx = $row['hour'] * 60 + $row['minute'];
+
         $totalPoints += $pointsEx / 60;
 
         $allminute = $minute;
 
    }
-
+   
 if($row['year_date'] == date("Y")){
     if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited'){
-
+        
         $yalltimehour += $row['hour'];
         $yminute += $row['minute'];
 
@@ -233,12 +236,12 @@ if($row['year_date'] == date("Y")){
         }else{
             $ygetTotalMinutes += $row['hour'] / 2;
             $ygetMaxMinutes += $row['minute'] / 120;
-        }
+        }        
 
         $yalltime = $yalltimehour;
         $yallminute = $yminute;
 
-    }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited") {
+    }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited" && $row['comp_name'] != "") {
 
         $yalltimehour  += $row['hour'];
         $yminute  += $row['minute'];
@@ -248,6 +251,7 @@ if($row['year_date'] == date("Y")){
 
 
         $pointsExY = $row['hour'] * 60 + $row['minute'];
+
         $ytotalPoints += $pointsExY / 60;
 
         $yallminute = $yminute;
@@ -256,22 +260,19 @@ if($row['year_date'] == date("Y")){
  }
 }
 
+
 $totalPoints += $getTotalMinutes + $getMaxMinutes;
 $ytotalPoints += $ygetTotalMinutes + $ygetMaxMinutes;
 
-if ($allminute <= 60) {
-    $alltime .= '.' . $allminute;
-} else {
-    $min = $allminute / 60;
-    $alltime += $min;
-}
+$min = $allminute % 60;
+$miny = $yallminute % 60;
 
-if ($yallminute <= 60) {
-    $yalltime .= '.' . $yallminute;
-} else {
-    $min = $yallminute / 60;
-    $yalltime += $min;
-}
+$yalltime += floor($allminute / 60); 
+$alltime += floor($yallminute / 60); 
+$alltime .= '.' . $min;
+$yalltime .= '.' . $miny;
+
+
 
 while ($row = $adviserTeam->fetch_assoc()) {
     $sadr_id = $row['id_user'];
@@ -486,7 +487,8 @@ $submittedDeals = $indet->listSubmittedDeals();
             }
             ?>
 
-                    <a href="<?php echo 'profilepdf?id=' . $idProfile . '&email=' . $emailID; ?>" class="sendEmail" target="_blank" title="Print Adviser Profile" data-toggle="tooltip" data-placement="bottom">
+                    <a href="<?php echo 'profilepdf?id=' . $idProfile . '&email=' . $emailID; ?>" class="sendEmail" target="_blank" title="Print Adviser Profile" data-toggle="tooltip" data-placement="bottom"> 
+                        
                         <button class="btn btn-primary btn-sm">Print to PDF</button>
                     </a>
                 </div>
