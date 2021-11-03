@@ -192,7 +192,7 @@ $getMaxMinutes = 0;
 
 $pointsEx = 0;
 foreach($dataset as $row) {
-      
+
 
     if( $row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited' && $row['hour'] ){
         $alltimehour += $row['hour'];
@@ -223,10 +223,10 @@ foreach($dataset as $row) {
         $allminute = $minute;
 
    }
-   
+
 if($row['year_date'] == date("Y")){
     if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited'){
-        
+
         $yalltimehour += $row['hour'];
         $yminute += $row['minute'];
 
@@ -236,7 +236,7 @@ if($row['year_date'] == date("Y")){
         }else{
             $ygetTotalMinutes += $row['hour'] / 2;
             $ygetMaxMinutes += $row['minute'] / 120;
-        }        
+        }
 
         $yalltime = $yalltimehour;
         $yallminute = $yminute;
@@ -267,8 +267,8 @@ $ytotalPoints += $ygetTotalMinutes + $ygetMaxMinutes;
 $min = $allminute % 60;
 $miny = $yallminute % 60;
 
-$yalltime += floor($allminute / 60); 
-$alltime += floor($yallminute / 60); 
+$yalltime += floor($allminute / 60);
+$alltime += floor($yallminute / 60);
 $alltime .= '.' . $min;
 $yalltime .= '.' . $miny;
 
@@ -487,8 +487,8 @@ $submittedDeals = $indet->listSubmittedDeals();
             }
             ?>
 
-                    <a href="<?php echo 'profilepdf?id=' . $idProfile . '&email=' . $emailID; ?>" class="sendEmail" target="_blank" title="Print Adviser Profile" data-toggle="tooltip" data-placement="bottom"> 
-                        
+                    <a href="<?php echo 'profilepdf?id=' . $idProfile . '&email=' . $emailID; ?>" class="sendEmail" target="_blank" title="Print Adviser Profile" data-toggle="tooltip" data-placement="bottom">
+
                         <button class="btn btn-primary btn-sm">Print to PDF</button>
                     </a>
                 </div>

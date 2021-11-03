@@ -99,6 +99,7 @@ class IndetHelper extends DB
         $collection = $this->listDeals();
 
         $deals = $collection->where('status', 'Issued')
+            ->where('clawback_status')
             ->where('clawback_status', '!=', 'None')
             ->where('refund_status', 'No')
             ->map(function ($deal) {
