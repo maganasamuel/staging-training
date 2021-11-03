@@ -306,6 +306,31 @@ while ($row = $adrTeam->fetch_assoc()) {
       EOF;
 }
 
+$icList = $trainingController->incidentList($emailID);
+while ($row = $icList->fetch_assoc()) {
+
+    $date_created = $row['date_created'];
+    $report_number = $row['report_number'];
+    $status = $row['irstat'];
+
+    if($status == 1){
+        $status = '<span class="badge bg-success" style="color:white;">Completed</span>';
+    }else{
+        $status = '<span class="badge bg-danger" style="color:white;">Not Completed</span>';
+    }
+
+    //https://onlineinsure.co.nz/cir-beta/admin/Compliance_Report?report_number=0034&type=0
+
+    $incidentList .= <<<EOF
+      <tr>
+        <td>IR2021{$report_number}</td>
+        <td>{$date_created}</td>
+        <td><a href="https://onlineinsure.co.nz/cir-beta/admin/Compliance_Report?report_number={$report_number}&type=0" target="_blank">View Summary</a></td>
+        <td>{$status}</td>
+      </tr>
+      EOF;
+}
+
 $adminadrTeam = $trainingController->adminadrTeam($idProfile);
 $adminadrList = '';
 
@@ -535,6 +560,11 @@ $submittedDeals = $indet->listSubmittedDeals();
                     <a class="nav-link <?php echo $authIsAdviser ? null : 'active'; ?>" id="trainDevTab" data-toggle="tab" href="#trainDevTabPanel" role="tab" aria-controls="profile" aria-selected="false">Training and
                         Development</a>
                 </li>
+                <?php if (!$authIsAdviser) { ?>
+                <li class="nav-item">
+                    <a class="nav-link" id="incidentTab" data-toggle="tab" href="#incident" role="tab" aria-controls="profile" aria-selected="false">Incident Report</a>
+                </li>
+                 <?php } ?>
             </ul>
             <div class="tab-content p-3 border border-top-0" id="adviserProfileTabContent">
                 <?php
@@ -943,9 +973,64 @@ $submittedDeals = $indet->listSubmittedDeals();
                     </div>
 
                 </div>
+
+                <div class="tab-pane fade" id="incident" role="tabpanel">
+                   <div class="row mt-2">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h6 class="text-tblue mr-5" style="float: left;">Incident Report</h6> <span style="display: inline;">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch9" data-toggle="collapse" data-target="#irCollapse" aria-expanded="false" aria-controls="irCollapse">
+                                            <label class="custom-control-label" for="customSwitch9" style="font-size: 10px"></label>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="collapse" id="irCollapse">
+                                <div class="table-responsive modularTable">
+                                    <table class="table table-striped table-hover modular" style="border: 1px solid lightgray;">
+                                        <thead class="bg-dsgreen text-white">
+                                            <tr>
+                                                <th>IR Number</th>
+                                                <th>Date</th>
+                                                <th>Summary</th>
+                                                <th>Results</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                echo $incidentList;
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Incident Report Summary</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            
+      </div>
+      <div class="modal-footer">
+        
+      </div>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
