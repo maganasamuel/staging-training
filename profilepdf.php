@@ -50,7 +50,7 @@ while ($row = $attendedTraining->fetch_assoc()) {
     $today = new DateTime();
     $status = '';
 
-    $datasetRow = $trainingController->getTrainingTopic($id_user, '', $trainingID);
+    $datasetRow = $trainingController->getTrainingTopic($idProfile, '', $trainingID);
     $trow = '';
     $topicTitle = '';
     while ($trow = $datasetRow->fetch_assoc()) {
@@ -123,6 +123,126 @@ $cpdList = "";
 
 EOF;
 }
+
+
+$dataset = $trainingController->alltimehour($idProfile);
+
+//Eliteinsure Company Pointing Variable
+$alltimehour = 0;
+$minute = 0;
+
+//Year Eliteinsure Company Pointing Variable
+$yalltimehour = 0;
+$yminute = 0;
+
+
+
+//External Company Pointing
+$hourtime = 0;
+$minutetime = 0;
+
+//Year External Company Pointing
+$yhourtime = 0;
+$yminutetime = 0;
+
+//Final Computation
+$allminute = 0;
+$alltime = 0;
+$totalPoints  = 0;
+
+//Year Final Computation
+$yallminute = 0;
+$yalltime = 0;
+$ytotalPoints  = 0;
+
+$getTotalMinutes = 0;
+$ygetTotalMinutes = 0;
+
+$ygetMaxMinutes = 0;
+$getMaxMinutes = 0;
+
+$pointsEx = 0;
+foreach($dataset as $row) {
+      
+
+    if( $row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited' && $row['hour'] ){
+        $alltimehour += $row['hour'];
+        $minute += $row['minute'];
+
+        if(in_array($row['id_user_type'], [7, 8])){
+            $getTotalMinutes +=  $row['hour'] / 4;
+            $getMaxMinutes += $row['minute'] / 240;
+        }else{
+            $getTotalMinutes += $row['hour'] / 2;
+            $getMaxMinutes += $row['minute'] / 120;
+        }
+
+        $alltime = $alltimehour;
+        $allminute = $minute;
+
+   }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited" && $row['comp_name'] != "") {
+
+        $alltimehour  += $row['hour'];
+        $minute  += $row['minute'];
+
+        $alltime = $alltimehour;
+
+        $pointsEx = $row['hour'] * 60 + $row['minute'];
+
+        $totalPoints += $pointsEx / 60;
+
+        $allminute = $minute;
+
+   }
+   
+if($row['year_date'] == date("Y")){
+    if($row['id_user_type'] == 8 || $row['id_user_type'] == 7 && $row['comp_name'] == "" || $row['comp_name'] == 'Eliteinsure Limited'){
+        
+        $yalltimehour += $row['hour'];
+        $yminute += $row['minute'];
+
+        if(in_array($row['id_user_type'], [7, 8])){
+            $ygetTotalMinutes +=  $row['hour'] / 4;
+            $ygetMaxMinutes += $row['minute'] / 240;
+        }else{
+            $ygetTotalMinutes += $row['hour'] / 2;
+            $ygetMaxMinutes += $row['minute'] / 120;
+        }        
+
+        $yalltime = $yalltimehour;
+        $yallminute = $yminute;
+
+    }elseif ($row['id_user_type'] == 1 && $row['comp_name'] != "Eliteinsure Limited" && $row['comp_name'] != "") {
+
+        $yalltimehour  += $row['hour'];
+        $yminute  += $row['minute'];
+
+
+        $yalltime = $yalltimehour;
+
+
+        $pointsExY = $row['hour'] * 60 + $row['minute'];
+
+        $ytotalPoints += $pointsExY / 60;
+
+        $yallminute = $yminute;
+
+    }
+ }
+}
+
+
+$totalPoints += $getTotalMinutes + $getMaxMinutes;
+$ytotalPoints += $ygetTotalMinutes + $ygetMaxMinutes;
+
+$min = $allminute % 60;
+$miny = $yallminute % 60;
+
+$yalltime += floor($allminute / 60); 
+$alltime += floor($yallminute / 60); 
+$alltime .= '.' . $min;
+$yalltime .= '.' . $miny;
+
 
 
 
@@ -199,6 +319,7 @@ $html =
 	.table-head tr:nth-child(even) {
 	  background-color: #dddddd;
 	}
+ 
 </style>
 
 <div>
@@ -247,7 +368,6 @@ $html =
 	</table>
 	
 	<br><br>
-	
 	<table class="table-head" width="100%" cellpadding="0" cellspacing="0">
 		<tr>
 			<th colspan="4">Personal Development Program</th>
@@ -256,11 +376,16 @@ $html =
 	</table>
 
 	<br><br>
-	
-	<table class="table-head" width="100%" cellpadding="0" cellspacing="0">
+	<table class="table-head points" width="100%" cellpadding="0" cellspacing="0">
 		<tr>
 			<th colspan="4">Continuing Professional Development</th>
 		</tr>
+    <tr>
+      <th>Hours(Total): '.number_format((float) $alltime, 2, '.', '').'</th>
+      <th>Points(Total): '.$totalPoints.'</th>
+      <th>Hours(Current Year): '.number_format((float) $yalltime, 2, '.', '').'</th>
+      <th>Points(Current Year): '.$ytotalPoints.'</th>
+    </tr>
 		'.$rows.'
 	</table>
 </div>';

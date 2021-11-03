@@ -24,6 +24,7 @@ class TrainingController extends DB
     {
         // init API
         parent::__construct();
+
     }
 
    
@@ -942,6 +943,15 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);
     
+        return $dataset;
+    }
+      public function incidentList($id)
+    {
+        $query = "SELECT * , lpad(a.report_number,4,'0') as report_number,a.status as irstat FROM ei_register.ta_cir a 
+                  LEFT JOIN ei_register.advisers b ON b.id = a.adviser_id
+                  WHERE b.email = '$id' AND a.type = 0";
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
         return $dataset;
     }
 }
