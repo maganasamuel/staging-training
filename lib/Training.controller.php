@@ -17,13 +17,17 @@ include_once('class/DB.class.php');
 
 class TrainingController extends DB
 {
-    /**
-     * @desc: Init class
-     */
+    public $dbName;
+
+
     public function __construct()
     {
-        // init API
         parent::__construct();
+        $path = realpath(__DIR__ . '/class/conf/conf.ini');
+
+        $conf = parse_ini_file($path);
+
+        $this->dbName = $conf['register_db_name'];
 
     }
 
@@ -947,8 +951,9 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
     }
       public function incidentList($id)
     {
-        $query = "SELECT * , lpad(a.report_number,4,'0') as report_number,a.status as irstat FROM ei_register.ta_cir a 
-                  LEFT JOIN ei_register.advisers b ON b.id = a.adviser_id
+ 
+        $query = "SELECT * , lpad(a.report_number,4,'0') as report_number,a.status as irstat FROM $this->dbName.ta_cir a 
+                  LEFT JOIN $this->dbName.advisers b ON b.id = a.adviser_id
                   WHERE b.email = '$id' AND a.type = 0";
         $statement = $this->prepare($query);
         $dataset = $this->execute($statement);

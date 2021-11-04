@@ -309,7 +309,7 @@ while ($row = $adrTeam->fetch_assoc()) {
 $icList = $trainingController->incidentList($emailID);
 while ($row = $icList->fetch_assoc()) {
 
-    $date_created = $row['date_created'];
+    $date_created = $date_created = date('d-m-Y', strtotime($row['date_created'])); 
     $report_number = $row['report_number'];
     $status = $row['irstat'];
 

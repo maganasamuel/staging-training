@@ -42,7 +42,7 @@ $hostName = '';
     $compName = $row["comp_name"];
     $hour = $row["hour"];
     $minute = $row["minute"];
-
+    $date_created = date('d-m-Y', strtotime($row['date_created']));
     if($minute == 0){
       $textMinute = "";
     }else{
@@ -77,7 +77,7 @@ if($trainer_type == 3){
 
 $arrAttendee =  explode(',',$attendee);
 
-$date = date("d-m-Y");
+$date = $date_created;
 
 $divAttendee = "";
 $crtAttendee = 0;
