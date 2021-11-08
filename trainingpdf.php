@@ -397,7 +397,7 @@ if(isset($_GET['mail'])) {
 
       $message->attach($attachment);
 
-      //$message->setBcc(array('admin@eliteinsure.co.nz' => 'Admin'));
+      $message->setBcc(array('admin@eliteinsure.co.nz' => 'Admin'));
       $transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
       ->setUsername('wilfred@eliteinsure.co.nz')
       ->setPassword('Wilfred@2021@eliteinsure');

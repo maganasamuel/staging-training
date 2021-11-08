@@ -959,4 +959,20 @@ FROM ta_user WHERE email_address = '$emailAddress' GROUP BY email_address) ";
         $dataset = $this->execute($statement);
         return $dataset;
     }
+    public function getIRHistory($idProfile,$to_date,$from_date,$status){
+
+
+        if($status == 3){
+            $query = "SELECT *,lpad(a.report_number,4,'0') as report_number, a.status as irstat FROM $this->dbName.ta_cir a
+                LEFT JOIN $this->dbName.advisers b on b.id = a.adviser_id WHERE a.type = '0' and date_created BETWEEN '$from_date'  AND '$to_date'";
+        }else{
+            $query = "SELECT *,lpad(a.report_number,4,'0') as report_number, a.status as irstat FROM $this->dbName.ta_cir a
+                LEFT JOIN $this->dbName.advisers b on b.id = a.adviser_id WHERE a.type = '0' and a.status = '$status' and date_created BETWEEN '$from_date'  AND '$to_date'";  
+        }
+        
+
+        $statement = $this->prepare($query);
+        $dataset = $this->execute($statement);
+        return $dataset;
+    }
 }
