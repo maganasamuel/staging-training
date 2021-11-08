@@ -282,9 +282,10 @@ while ($row = $adviserTeam->fetch_assoc()) {
         $adviser_name = $row['first_name'] . ' ' . $row['last_name'];
     }
 
+
     $adviserList .= <<<EOF
       <tr>
-        <td>{$adviser_name}</td>
+        <td>{$adviser_name}/td>
       </tr>
       EOF;
 }
@@ -293,7 +294,7 @@ $adrTeam = $trainingController->adrTeam($idProfile);
 $adrList = '';
 
 while ($row = $adrTeam->fetch_assoc()) {
-    $name = $row['first_name'];
+    $name = $row['last_name'];
     $usID = $row['id_user'];
     $usEmail = $row['email_address'];
     $usNumber = $row['id_user_type'];
@@ -309,14 +310,22 @@ while ($row = $adrTeam->fetch_assoc()) {
 $icList = $trainingController->incidentList($emailID);
 while ($row = $icList->fetch_assoc()) {
 
-    $date_created = $row['date_created'];
+    $date_created = $date_created = date('d-m-Y', strtotime($row['date_created'])); 
     $report_number = $row['report_number'];
-    $status = $row['irstat'];
+    $result = $row['irstat'];
+  
+    $liable = substr($row['finalisation'], -7, 1);
 
-    if($status == 1){
-        $status = '<span class="badge bg-success" style="color:white;">Completed</span>';
+    if($liable == 1){
+        $status = '<span class="badge bg-danger" style="color:white;">Liable</span>';
     }else{
-        $status = '<span class="badge bg-danger" style="color:white;">Not Completed</span>';
+        $status = '<span class="badge bg-info" style="color:white;">Not Liable</span>';
+    }
+
+    if($result == 1){
+        $result = '<span class="badge bg-success" style="color:white;">Completed</span>';
+    }else{
+        $result = '<span class="badge bg-danger" style="color:white;">Not Completed</span>';
     }
 
     //https://onlineinsure.co.nz/cir-beta/admin/Compliance_Report?report_number=0034&type=0
@@ -326,6 +335,7 @@ while ($row = $icList->fetch_assoc()) {
         <td>IR2021{$report_number}</td>
         <td>{$date_created}</td>
         <td><a href="https://onlineinsure.co.nz/cir-beta/admin/Compliance_Report?report_number={$report_number}&type=0" target="_blank">View Summary</a></td>
+        <td>{$result}</td>
         <td>{$status}</td>
       </tr>
       EOF;
@@ -335,7 +345,7 @@ $adminadrTeam = $trainingController->adminadrTeam($idProfile);
 $adminadrList = '';
 
 while ($row = $adminadrTeam->fetch_assoc()) {
-    $name = $row['first_name'];
+    $name = $row['first_name'] .' '. $row['last_name'];
     $usID = $row['id_user'];
     $usEmail = $row['email_address'];
     $usNumber = $row['id_user_type'];
@@ -458,8 +468,8 @@ $submittedDeals = $indet->listSubmittedDeals();
 </style>
 <div class="subHeader">
     <div class="row">
-        <div class="col title">
-            Member Profile
+        <div class="col title"> 
+            Member Profile <?= $adviser_name ?>
         </div>
     </div>
 </div>
@@ -995,7 +1005,8 @@ $submittedDeals = $indet->listSubmittedDeals();
                                                 <th>IR Number</th>
                                                 <th>Date</th>
                                                 <th>Summary</th>
-                                                <th>Results</th>
+                                                <th>Status</th>
+                                                <th>Result</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1004,6 +1015,7 @@ $submittedDeals = $indet->listSubmittedDeals();
                                             ?>
                                         </tbody>
                                     </table>
+                                      <div align="right" class="mt-2 mb-2 mr-2"><button data-toggle="modal" data-target="#modals-top" type="button" class="btn btn-info">Generate Report</button></div>
                                 </div>
                             </div>
                         </div>
@@ -1014,23 +1026,43 @@ $submittedDeals = $indet->listSubmittedDeals();
     </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Incident Report Summary</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-            
-      </div>
-      <div class="modal-footer">
-        
-      </div>
+<div class="modal modal-top fade" id="modals-top" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+            </div>
+            <div class="modal-body">
+                 <div class="row">
+                    <div class="form-group col mb-0">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="status" name="status"->
+                          <option value="3">ALL</option>
+                          <option value="1">Complete</option>
+                          <option value="0">Not Complete</option>
+                        </select>
+                    </div>
+                </div><br>
+                <div class="form-row">
+                    <div class="form-group col mb-0">
+                        <label class="form-label">Date From</label>
+                        <input type="date" class="form-control" name="from_date" id="from_date" value="" />
+                       
+                    </div>
+                    <div class="form-group col mb-0">
+                        <label class="form-label">Date To</label>
+                        <input type="date" class="form-control" name="to_date" id="to_date" value="" />
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="generate()">Submit</button>
+            </div>
+        </form>
     </div>
-  </div>
 </div>
 
 <script type="text/javascript">
@@ -1040,4 +1072,12 @@ $submittedDeals = $indet->listSubmittedDeals();
         $('.cpd').DataTable();
         $('.team').DataTable();
     });
+
+    function generate(){
+        var status = $("#status").val();
+        var from_date = $("#from_date").val();
+        var to_date = $("#to_date").val();
+        window.open('<?php echo 'ir_report?id=' . $idProfile?>&status='+status+'&from_date='+from_date+'&to_date='+to_date+'',
+         "_newtab");
+    }
 </script>

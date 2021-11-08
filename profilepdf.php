@@ -26,6 +26,7 @@ while ($row = $usProfile->fetch_assoc()) {
 	$email = $row["email_address"];
 	$fsp = $row["ssf_number"];
 	$password = $row["password"];
+  $usType = $row['id_user_type'];
 }
 
 while ($row = $usProfile->fetch_assoc()) {
@@ -33,6 +34,7 @@ while ($row = $usProfile->fetch_assoc()) {
   $email = $row["email_address"];
   $fsp = $row["ssf_number"];
   $password = $row["password"];
+  $usType = $row['id_user_type'];
 }
 
 while ($row = $attendedTraining->fetch_assoc()) {
@@ -280,6 +282,20 @@ while ($row = $modTraining->fetch_assoc()) {
   
 }
 
+if(!in_array($usType, [2,7,8])){
+    $name = "Name:";
+    $nameType = "Contractor/Employee";
+    $title = '<div style="position:absolute;top:0.72in;left:2.7in;width:5.36in;line-height:0.27in;">
+        <span style="font-style:normal;font-weight:bold;font-size:15pt;font-family:Calibri;color:#44546a">CONTRACTOR/EMPLOYEE TRAINING REPORT</span>
+      </div>';
+}else{
+    $name = "Adviser Name:";
+    $nameType = "Adviser";
+    $title = '  <div style="position:absolute;top:0.72in;left:4.4in;width:4.36in;line-height:0.27in;">
+        <span style="font-style:normal;font-weight:bold;font-size:15pt;font-family:Calibri;color:#44546a">ADVISER TRAINING REPORT</span>
+      </div>';
+}
+
 if($modList == "")
 	$modList = '
 <tr>
@@ -325,10 +341,10 @@ $html =
 <div>
 	<table class="table-head">
 		<tr>
-			<th colspan="4">Adviser Information</th>
+			<th colspan="4">'.$nameType.' Information</th>
 		</tr>
 		<tr>
-			<td>Adviser Name:</td>
+			<td>'.$name.'</td>
 			<td>'.$usName.'</td>
 			<td>Financial Advice Provider Name:</td>
 			<td>Eliteinsure Limited</td>
@@ -353,6 +369,31 @@ $html =
 	
 	<br><br>
 	
+    <table class="table-head" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <th colspan="4">Personal Development Program</th>
+    </tr>
+    '.$cpdList.'
+  </table>
+
+  <br><br>
+
+    <table class="table-head points" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+      <th colspan="4">Continuing Professional Development</th>
+    </tr>
+    <tr>
+      <th>Hours(Total): '.number_format((float) $alltime, 2, '.', '').'</th>
+      <th>Points(Total): '.$totalPoints.'</th>
+      <th>Hours(Current Year): '.number_format((float) $yalltime, 2, '.', '').'</th>
+      <th>Points(Current Year): '.$ytotalPoints.'</th>
+    </tr>
+    '.$rows.'
+  </table>
+
+  <br><br>
+
+
 	<table class="table-head" width="100%" cellpadding="0" cellspacing="0">
 		<tr>
 			<th colspan="4">Modular Training</th>
@@ -367,27 +408,11 @@ $html =
 		'.$modList.'
 	</table>
 	
-	<br><br>
-	<table class="table-head" width="100%" cellpadding="0" cellspacing="0">
-		<tr>
-			<th colspan="4">Personal Development Program</th>
-		</tr>
-		'.$cpdList.'
-	</table>
 
-	<br><br>
-	<table class="table-head points" width="100%" cellpadding="0" cellspacing="0">
-		<tr>
-			<th colspan="4">Continuing Professional Development</th>
-		</tr>
-    <tr>
-      <th>Hours(Total): '.number_format((float) $alltime, 2, '.', '').'</th>
-      <th>Points(Total): '.$totalPoints.'</th>
-      <th>Hours(Current Year): '.number_format((float) $yalltime, 2, '.', '').'</th>
-      <th>Points(Current Year): '.$ytotalPoints.'</th>
-    </tr>
-		'.$rows.'
-	</table>
+
+
+
+
 </div>';
 
 $htmlHeader = '<div style="position:absolute;top:0.26in;left:0in;width:90px;line-height:0.27in; background-color: #455a73;height:70px;">
@@ -398,9 +423,7 @@ $htmlHeader = '<div style="position:absolute;top:0.26in;left:0in;width:90px;line
 			  <img src="img/elitelogo.png" alt="eliteinsure" class="logo" width="100"/>
 			</div>
 
-			<div style="position:absolute;top:0.72in;left:4.4in;width:4.36in;line-height:0.27in;">
-			  <span style="font-style:normal;font-weight:bold;font-size:15pt;font-family:Calibri;color:#44546a">ADVISER TRAINING REPORT</span>
-			</div>
+		  '.$title.'
 
 			<div style="position:absolute;top:0.26in;left:7.4in;width:90px;line-height:0.27in; background-color: #1881c7;height:70px;">
 			    <span style="background-colro:red"></span>

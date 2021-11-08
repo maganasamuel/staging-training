@@ -42,7 +42,7 @@ $hostName = '';
     $compName = $row["comp_name"];
     $hour = $row["hour"];
     $minute = $row["minute"];
-
+    $date_created = date('d-m-Y', strtotime($row['date_created']));
     if($minute == 0){
       $textMinute = "";
     }else{
@@ -77,7 +77,7 @@ if($trainer_type == 3){
 
 $arrAttendee =  explode(',',$attendee);
 
-$date = date("d-m-Y");
+$date = $date_created;
 
 $divAttendee = "";
 $crtAttendee = 0;
@@ -397,7 +397,7 @@ if(isset($_GET['mail'])) {
 
       $message->attach($attachment);
 
-      //$message->setBcc(array('admin@eliteinsure.co.nz' => 'Admin'));
+      $message->setBcc(array('admin@eliteinsure.co.nz' => 'Admin'));
       $transport = (new Swift_SmtpTransport('eliteinsure.co.nz', 587))
       ->setUsername('wilfred@eliteinsure.co.nz')
       ->setPassword('Wilfred@2021@eliteinsure');
