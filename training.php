@@ -90,13 +90,10 @@ $page = $app->param($_GET, 'page', 'test_set');
 		<div class="collapse navbar-collapse" id="mainNav">
 			<ul class="navbar-nav mr-auto justify-content-end width100">
 				<li class="nav-item">
-					<?php
-                    if (1 == $idUserType || 4 == $idUserType || 3 == $idUserType) {
-                        ?>
-						<a class="nav-link" style="color:#FFFFFF;" href="index.php?page=test_result">Tests</a>
-						<?php
-                    }
-                    ?>
+					<?php   if (1 == $idUserType || 3 == $idUserType || 4 == $idUserType) {
+							echo '<a class="nav-link" style="color:#FFFFFF;" href="index.php?page=test_result">Tests</a>';
+						}
+					?>				
 				</li>
 				<li class="nav-item dropdown">
 					<a href="#" class="nav-link dropdown-toggle" id="otherSoftwareDropdown" style="color: white;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other Software</a>
@@ -132,16 +129,13 @@ $page = $app->param($_GET, 'page', 'test_set');
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
 
-						<?php if (in_array($idUserType, [1,4,3,9])) {
+						<?php if (in_array($idUserType, [1,3,9])) {
 
 							echo '<a class="dropdown-item" href="javascript:;">Take Assessment</a>';
 
 						}else{
 							echo '<a class="dropdown-item" href="test?page=test_set">Take Assessment</a>';
 						} ?>
-
-
-
 
 						<?php
                				if (5 != $idUserType) {
@@ -150,7 +144,7 @@ $page = $app->param($_GET, 'page', 'test_set');
 						<a class="dropdown-item" href="training?page=training_material_view">Training Materials</a>
 						<?php
                     			}
-                    		?>
+                			?>
 					</div>
 				</li>
 				<li class="nav-item">

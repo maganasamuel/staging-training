@@ -294,7 +294,7 @@ $adrTeam = $trainingController->adrTeam($idProfile);
 $adrList = '';
 
 while ($row = $adrTeam->fetch_assoc()) {
-    $name = $row['last_name'];
+    $name = $row['first_name'] .' '. $row['last_name'];
     $usID = $row['id_user'];
     $usEmail = $row['email_address'];
     $usNumber = $row['id_user_type'];
@@ -469,7 +469,7 @@ $submittedDeals = $indet->listSubmittedDeals();
 <div class="subHeader">
     <div class="row">
         <div class="col title"> 
-            Member Profile <?= $adviser_name ?>
+            Member Profile
         </div>
     </div>
 </div>

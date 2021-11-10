@@ -47,27 +47,32 @@ function securePage (
 		destroyCurrentSession();
 	}
 	else {
-		switch ($idUserType) {
-			case 1:case 3:case 4: //master, trainer
-				if ($groupName != "index") {
+		if($idUserType == 4){
+			correctPageURL($groupName, $allow);
+		}else{
+				switch ($idUserType) {
+				case 1:case 3: //master, trainer
+					if ($groupName != "index") {
+						destroyCurrentSession();
+					}
+					else {
+						correctPageURL($groupName, $allow);
+					}
+				break;
+				case 2: case 5: case 6: case 7: case 8://adviser, admin, bdm, telemarketer
+					if ($groupName != "trainee") {
+						destroyCurrentSession();
+					}
+					else {
+						correctPageURL($groupName);
+					}
+				break;
+				default:
 					destroyCurrentSession();
-				}
-				else {
-					correctPageURL($groupName, $allow);
-				}
-			break;
-			case 2: case 4: case 5: case 6: case 7: case 8://adviser, admin, bdm, telemarketer
-				if ($groupName != "trainee") {
-					destroyCurrentSession();
-				}
-				else {
-					correctPageURL($groupName);
-				}
-			break;
-			default:
-				destroyCurrentSession();
-			break;
+				break;
+			}
 		}
+		
 	}
 }
 

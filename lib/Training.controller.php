@@ -184,7 +184,7 @@ class TrainingController extends DB
                     ON ta_training.training_id = ta_training_topic.training_id
                     where   ta_training.training_id = "' . $trainingID . '"';
 
-        if (1 == $idUserType || 3 == $idUserType) {
+        if (1 == $idUserType || 3 == $idUserType || 4 == $idUserType) {
             //do nothing
         } else {
             $query .= " and ta_training.trainer_id = '$id' OR 
